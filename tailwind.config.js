@@ -1,3 +1,7 @@
+/** @type {import('tailwindcss').Config} */
+
+const defaultTheme = require("tailwindcss/defaultTheme"); // Import tema default buat fallback
+
 module.exports = {
     content: [
         "./resources/**/*.blade.php",
@@ -6,6 +10,14 @@ module.exports = {
         "./app/Http/Livewire/**/*.php",
     ],
     theme: {
+        fontFamily: {
+            sans: [
+                "Mooli",
+                ...defaultTheme.fontFamily.sans, // Fallback kalo gaada Mooli
+            ],
+            'titan': ['Titan One', 'cursive'],
+            'cursive-iwk': ['Tegak Bersambung IWK', 'cursive'],
+        },
         extend: {
             colors: {
                 "iqrain-pink": "#F387A9",

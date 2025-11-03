@@ -17,6 +17,10 @@ class DatabaseSeeder extends Seeder
 
         $this->call([
             DashboardTableSeeder::class,
+            RolePermissionSeeder::class,
+            AdminSeeder::class,
+            TingkatanIqraSeeder::class,
+            JenisGameSeeder::class,
         ]);
     }
 }

@@ -3,34 +3,27 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\DataFeed;
+use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
     public function index()
     {
-        $dataFeed = new DataFeed();
+        $user = Auth::user();
 
-        return view('pages/dashboard/dashboard', compact('dataFeed'));
-    }
+        if ($user->hasRole('admin')) {
+            return redirect()->route('admin.dashboard');
+        } elseif ($user->hasRole('mentor')) {
+            // Check if mentor is approved
+            if ($user->mentor && $user->mentor->status_approval !== 'approved') {
+                return view('auth.pending-approval');
+            }
+            return redirect()->route('mentor.dashboard');
+        } elseif ($user->hasRole('murid')) {
+            return redirect()->route('murid.dashboard');
+        }
 
-    /**
-     * Displays the analytics screen
-     *
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
-     */
-    public function analytics()
-    {
-        return view('pages/dashboard/analytics');
-    }
-
-    /**
-     * Displays the fintech screen
-     *
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
-     */
-    public function fintech()
-    {
-        return view('pages/dashboard/fintech');
+        // Fallback
+        return redirect()->route('landing');
     }
 }
