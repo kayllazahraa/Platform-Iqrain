@@ -2,190 +2,129 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LandingController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\Admin\AdminDashboardController;
+use App\Http\Controllers\Mentor\MentorDashboardController;
+use App\Http\Controllers\Auth\RegisterMuridController;
+use App\Http\Controllers\Auth\RegisterMentorController;
+use App\Http\Controllers\Auth\ForgotPasswordMuridController;
+use App\Models\TingkatanIqra;
+
+use App\Http\Controllers\Murid\ModulController;
+use App\Http\Controllers\Murid\GameController;
+use App\Http\Controllers\Murid\EvaluasiController;
+use App\Http\Controllers\Murid\MentorController;
 
 /*
 |--------------------------------------------------------------------------
 | Web Routes
 |--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
 */
 
 Route::get('/', [LandingController::class, 'index'])->name('landing');
 
 Route::redirect('/dashboard', '/')->middleware('guest');
 
+/*
+|--------------------------------------------------------------------------
+| Authentication Routes (Custom)
+|--------------------------------------------------------------------------
+*/
+
+Route::middleware('guest')->group(function () {
+
+    // Murid Registration (2 steps)
+    Route::get('/register/murid', [RegisterMuridController::class, 'showRegistrationForm'])
+        ->name('register.murid');
+    Route::post('/register/murid', [RegisterMuridController::class, 'register'])
+        ->name('register.murid.post');
+    Route::get('/register/murid/preferensi', [RegisterMuridController::class, 'showPreferensiForm'])
+        ->name('register.murid.preferensi');
+
+    // Mentor Registration
+    Route::get('/register/mentor', [RegisterMentorController::class, 'showRegistrationForm'])
+        ->name('register.mentor');
+    Route::post('/register/mentor', [RegisterMentorController::class, 'register'])
+        ->name('register.mentor.post');
+    Route::get('/register/mentor/pending', [RegisterMentorController::class, 'showPendingPage'])
+        ->name('register.mentor.pending');
+
+    // Registration Success Page
+    Route::get('/register/success', function () {
+        return view('auth.register-success');
+    })->name('register.success');
+
+    // Forgot Password for Murid (with security question)
+    Route::get('/password/murid/request', [ForgotPasswordMuridController::class, 'showUsernameForm'])
+        ->name('password.murid.request');
+    Route::post('/password/murid/check', [ForgotPasswordMuridController::class, 'checkUsername'])
+        ->name('password.murid.check');
+    Route::post('/password/murid/verify', [ForgotPasswordMuridController::class, 'verifyAnswer'])
+        ->name('password.murid.verify');
+    Route::post('/password/murid/reset', [ForgotPasswordMuridController::class, 'resetPassword'])
+        ->name('password.murid.reset');
+});
+
+/*
+|--------------------------------------------------------------------------
+| Authenticated Routes
+|--------------------------------------------------------------------------
+*/
+
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    Route::get('/dashboard/analytics', [DashboardController::class, 'analytics'])->name('analytics');
-    Route::get('/dashboard/fintech', [DashboardController::class, 'fintech'])->name('fintech');
-    Route::get('/ecommerce/customers', [CustomerController::class, 'index'])->name('customers');
-    Route::get('/ecommerce/orders', [OrderController::class, 'index'])->name('orders');
-    Route::get('/ecommerce/invoices', [InvoiceController::class, 'index'])->name('invoices');
-    Route::get('/ecommerce/shop', function () {
-        return view('pages/ecommerce/shop');
-    })->name('shop');    
-    Route::get('/ecommerce/shop-2', function () {
-        return view('pages/ecommerce/shop-2');
-    })->name('shop-2');     
-    Route::get('/ecommerce/product', function () {
-        return view('pages/ecommerce/product');
-    })->name('product');
-    Route::get('/ecommerce/cart', function () {
-        return view('pages/ecommerce/cart');
-    })->name('cart');    
-    Route::get('/ecommerce/cart-2', function () {
-        return view('pages/ecommerce/cart-2');
-    })->name('cart-2');    
-    Route::get('/ecommerce/cart-3', function () {
-        return view('pages/ecommerce/cart-3');
-    })->name('cart-3');    
-    Route::get('/ecommerce/pay', function () {
-        return view('pages/ecommerce/pay');
-    })->name('pay');     
-    Route::get('/campaigns', [CampaignController::class, 'index'])->name('campaigns');
-    Route::get('/community/users-tabs', [MemberController::class, 'indexTabs'])->name('users-tabs');
-    Route::get('/community/users-tiles', [MemberController::class, 'indexTiles'])->name('users-tiles');
-    Route::get('/community/profile', function () {
-        return view('pages/community/profile');
-    })->name('profile');
-    Route::get('/community/feed', function () {
-        return view('pages/community/feed');
-    })->name('feed');     
-    Route::get('/community/forum', function () {
-        return view('pages/community/forum');
-    })->name('forum');
-    Route::get('/community/forum-post', function () {
-        return view('pages/community/forum-post');
-    })->name('forum-post');    
-    Route::get('/community/meetups', function () {
-        return view('pages/community/meetups');
-    })->name('meetups');    
-    Route::get('/community/meetups-post', function () {
-        return view('pages/community/meetups-post');
-    })->name('meetups-post');    
-    Route::get('/finance/cards', function () {
-        return view('pages/finance/credit-cards');
-    })->name('credit-cards');
-    Route::get('/finance/transactions', [TransactionController::class, 'index01'])->name('transactions');
-    Route::get('/finance/transaction-details', [TransactionController::class, 'index02'])->name('transaction-details');
-    Route::get('/job/job-listing', [JobController::class, 'index'])->name('job-listing');
-    Route::get('/job/job-post', function () {
-        return view('pages/job/job-post');
-    })->name('job-post');    
-    Route::get('/job/company-profile', function () {
-        return view('pages/job/company-profile');
-    })->name('company-profile');
-    Route::get('/messages', function () {
-        return view('pages/messages');
-    })->name('messages');
-    Route::get('/tasks/kanban', function () {
-        return view('pages/tasks/tasks-kanban');
-    })->name('tasks-kanban');
-    Route::get('/tasks/list', function () {
-        return view('pages/tasks/tasks-list');
-    })->name('tasks-list');       
-    Route::get('/inbox', function () {
-        return view('pages/inbox');
-    })->name('inbox'); 
-    Route::get('/calendar', function () {
-        return view('pages/calendar');
-    })->name('calendar'); 
-    Route::get('/settings/account', function () {
-        return view('pages/settings/account');
-    })->name('account');  
-    Route::get('/settings/notifications', function () {
-        return view('pages/settings/notifications');
-    })->name('notifications');  
-    Route::get('/settings/apps', function () {
-        return view('pages/settings/apps');
-    })->name('apps');
-    Route::get('/settings/plans', function () {
-        return view('pages/settings/plans');
-    })->name('plans');      
-    Route::get('/settings/billing', function () {
-        return view('pages/settings/billing');
-    })->name('billing');  
-    Route::get('/settings/feedback', function () {
-        return view('pages/settings/feedback');
-    })->name('feedback');
-    Route::get('/utility/changelog', function () {
-        return view('pages/utility/changelog');
-    })->name('changelog');  
-    Route::get('/utility/roadmap', function () {
-        return view('pages/utility/roadmap');
-    })->name('roadmap');  
-    Route::get('/utility/faqs', function () {
-        return view('pages/utility/faqs');
-    })->name('faqs');  
-    Route::get('/utility/empty-state', function () {
-        return view('pages/utility/empty-state');
-    })->name('empty-state');  
-    Route::get('/utility/404', function () {
-        return view('pages/utility/404');
-    })->name('404');
-    Route::get('/utility/knowledge-base', function () {
-        return view('pages/utility/knowledge-base');
-    })->name('knowledge-base');
-    Route::get('/onboarding-01', function () {
-        return view('pages/onboarding-01');
-    })->name('onboarding-01');   
-    Route::get('/onboarding-02', function () {
-        return view('pages/onboarding-02');
-    })->name('onboarding-02');   
-    Route::get('/onboarding-03', function () {
-        return view('pages/onboarding-03');
-    })->name('onboarding-03');   
-    Route::get('/onboarding-04', function () {
-        return view('pages/onboarding-04');
-    })->name('onboarding-04');
-    Route::get('/component/button', function () {
-        return view('pages/component/button-page');
-    })->name('button-page');
-    Route::get('/component/form', function () {
-        return view('pages/component/form-page');
-    })->name('form-page');
-    Route::get('/component/dropdown', function () {
-        return view('pages/component/dropdown-page');
-    })->name('dropdown-page');
-    Route::get('/component/alert', function () {
-        return view('pages/component/alert-page');
-    })->name('alert-page');
-    Route::get('/component/modal', function () {
-        return view('pages/component/modal-page');
-    })->name('modal-page'); 
-    Route::get('/component/pagination', function () {
-        return view('pages/component/pagination-page');
-    })->name('pagination-page');
-    Route::get('/component/tabs', function () {
-        return view('pages/component/tabs-page');
-    })->name('tabs-page');
-    Route::get('/component/breadcrumb', function () {
-        return view('pages/component/breadcrumb-page');
-    })->name('breadcrumb-page');
-    Route::get('/component/badge', function () {
-        return view('pages/component/badge-page');
-    })->name('badge-page'); 
-    Route::get('/component/avatar', function () {
-        return view('pages/component/avatar-page');
-    })->name('avatar-page');
-    Route::get('/component/tooltip', function () {
-        return view('pages/component/tooltip-page');
-    })->name('tooltip-page');
-    Route::get('/component/accordion', function () {
-        return view('pages/component/accordion-page');
-    })->name('accordion-page');
-    Route::get('/component/icons', function () {
-        return view('pages/component/icons-page');
-    })->name('icons-page');
-    Route::fallback(function() {
-        return view('pages/utility/404');
-    });     
+    // Admin Routes
+    Route::middleware(['role:admin'])->prefix('admin')->name('admin.')->group(function () {
+        Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
+        // approval
+        Route::get('/approval', [AdminDashboardController::class, 'approval'])->name('approval');
+        Route::get('/mentors', [AdminDashboardController::class, 'mentors'])->name('mentors');
+        Route::get('/murids', [AdminDashboardController::class, 'murids'])->name('murids');
+        Route::get('/activities', [AdminDashboardController::class, 'activities'])->name('activities');
+        Route::get('/content', [AdminDashboardController::class, 'content'])->name('content');
+        Route::get('/soal-management', [AdminDashboardController::class, 'soalManagement'])->name('soal.management');
+    });
 
+    // Mentor Routes
+    Route::middleware(['role:mentor'])->prefix('mentor')->name('mentor.')->group(function () {
+        Route::get('/dashboard', [MentorDashboardController::class, 'index'])->name('dashboard');
+        Route::get('/murids', [MentorDashboardController::class, 'murids'])->name('murids');
+        Route::get('/progress', [MentorDashboardController::class, 'progress'])->name('progress');
+        Route::get('/soal', [MentorDashboardController::class, 'soal'])->name('soal');
+        Route::get('/leaderboard', [MentorDashboardController::class, 'leaderboard'])->name('leaderboard');
+        Route::get('/requests', [MentorDashboardController::class, 'requests'])->name('requests');
+    });
+
+    // Murid Routes
+    Route::middleware(['auth', 'role:murid'])->prefix('murid')->name('murid.')->group(function () {
+
+        Route::get('/pilih-iqra', function () {
+            $tingkatans = TingkatanIqra::orderBy('level')->get();
+            return view('pages.murid.pilih-iqra', compact('tingkatans'));
+        })->name('pilih-iqra');
+
+        // Modul
+        Route::get('/modul/{tingkatan_id}', [ModulController::class, 'index'])->name('modul.index');
+        Route::get('/modul/{tingkatan_id}/video', [ModulController::class, 'video'])->name('modul.video');
+        Route::get('/modul/{tingkatan_id}/materi/{materi_id}', [ModulController::class, 'materi'])->name('modul.materi');
+        Route::post('/modul/progress', [ModulController::class, 'updateProgress'])->name('modul.progress');
+
+        // Games
+        Route::get('/games/{tingkatan_id}', [GameController::class, 'index'])->name('games.index');
+        Route::get('/games/{tingkatan_id}/memory-card', [GameController::class, 'memoryCard'])->name('games.memory-card');
+        Route::get('/games/{tingkatan_id}/tracing', [GameController::class, 'tracing'])->name('games.tracing');
+        Route::get('/games/{tingkatan_id}/labirin', [GameController::class, 'labirin'])->name('games.labirin');
+        Route::get('/games/{tingkatan_id}/drag-drop', [GameController::class, 'dragDrop'])->name('games.drag-drop');
+        Route::post('/games/save-score', [GameController::class, 'saveScore'])->name('games.save-score');
+
+        // Evaluasi
+        Route::get('/evaluasi/{tingkatan_id}', [EvaluasiController::class, 'index'])->name('evaluasi.index');
+        Route::get('/evaluasi/{tingkatan_id}/leaderboard', [EvaluasiController::class, 'leaderboard'])->name('evaluasi.leaderboard');
+
+        // Mentor
+        Route::get('/mentor', [MentorController::class, 'index'])->name('mentor.index');
+        Route::post('/mentor/request/{mentor_id}', [MentorController::class, 'requestBimbingan'])->name('mentor.request');
+    });
 });
 
 // memory card game 
