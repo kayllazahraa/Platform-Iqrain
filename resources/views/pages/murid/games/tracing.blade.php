@@ -29,7 +29,7 @@
                 <span id="current-letter-arabic" class="arabic-letter">ا</span>
                 <span id="current-letter-name" class="letter-name-display">Alif</span>
             </div>
-            <a href="{{ url('/murid/games') }}" id="exit-button" class="exit-button">Keluar</a>
+            <a href="{{ url('/murid/games/1') }}" id="exit-button" class="exit-button">Keluar</a>
         </div>
 
         <!-- Main Game Area -->

@@ -955,11 +955,11 @@ function setupEventListeners() {
     document.getElementById('replay-button').addEventListener('click', playAnimation);
     
     // UDAH ADA DI BLADE
-    // document.getElementById('prev-button').addEventListener('click', loadPreviousLetter);
-    // document.getElementById('next-button').addEventListener('click', loadNextLetter);
+    document.getElementById('prev-button').addEventListener('click', loadPreviousLetter);
+    document.getElementById('next-button').addEventListener('click', loadNextLetter);
     
     // document.getElementById('try-again-button').addEventListener('click', restartCurrentLetter);
-    // document.getElementById('next-letter-button').addEventListener('click', loadNextLetter);
+    //document.getElementById('next-letter-button').addEventListener('click', loadNextLetter);
 }
 
 // ========================================
