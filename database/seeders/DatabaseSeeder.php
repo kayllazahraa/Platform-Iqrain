@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             TingkatanIqraSeeder::class,
             JenisGameSeeder::class,
-        ]);
+            GameStaticSeeder::class,
+        ]); 
     }
 }

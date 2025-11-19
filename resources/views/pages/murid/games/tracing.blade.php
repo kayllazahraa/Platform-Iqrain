@@ -113,21 +113,30 @@
             <div id="final-stars" class="final-stars">⭐⭐⭐</div>
             <p id="success-message" class="success-message">Kamu menulis huruf dengan sangat baik!</p>
             
-            {{-- REVISI MINOR: Akurasi akan diisi oleh JavaScript --}}
+            {{-- REVISI MINOR: Akurasi --}}
             <p id="final-accuracy" class="final-score">Akurasi: 0%</p> 
             
             {{-- Pesan status penyimpanan skor --}}
             <p id="save-status" class="text-sm mt-2 text-yellow-600">Menyimpan skor...</p> 
 
             <div class="success-buttons">
-                {{-- Tombol "Coba Lagi" / "Kembali" --}}
-                {{-- Tombol ini dinonaktifkan sementara skor sedang diproses --}}
+                {{-- Tombol 1: Ulangi Huruf Ini --}}
+                <button id="try-again-button" class="btn btn-secondary" onclick="restartCurrentLetter()">
+                    Ulangi Huruf Ini
+                </button>
+                
+                {{-- Tombol 2: Lanjut Huruf Berikutnya --}}
+                <button id="next-letter-button" class="btn btn-primary" onclick="loadNextLetter()">
+                    Huruf Berikutnya
+                </button>
+                
+                {{-- Tombol 3: Selesai & Kembali ke Menu (Dipakai untuk mengambil tingkatan ID) --}}
                 <button id="back-to-menu-button" 
-                        class="btn btn-secondary"
-                        data-tingkatan-id="{{ $tingkatan->tingkatan_id ?? 0 }}"
-                        onclick="window.location.href = '{{ route('murid.games.index', ['tingkatan_id' => $tingkatan->tingkatan_id ?? 0]) }}'"
-                        disabled>
-                    Selesai & Kembali
+                        class="btn btn-tertiary"
+                        data-tingkatan-id="{{ $tingkatan->tingkatan_id ?? 1 }}"
+                        onclick="window.location.href = '{{ route('murid.games.index', ['tingkatan_id' => $tingkatan->tingkatan_id ?? 1]) }}'"
+                        style="margin-top: 10px;">
+                    Selesai & Kembali ke Menu
                 </button>
             </div>
         </div>
@@ -150,15 +159,16 @@
         // PENTING: Fungsi ini HARUS dipanggil oleh logika game tracing Anda 
         // saat tracing selesai.
         function showGameResults(finalScore, accuracyPercentage) {
-            window.gameFinalScore = finalScore; 
-            window.gameAccuracyPercentage = accuracyPercentage;
+            showSuccessScreen(finalScore, accuracyPercentage);
+            // window.gameFinalScore = finalScore; 
+            // window.gameAccuracyPercentage = accuracyPercentage;
             
-            // 1. Update Tampilan Modal
-            document.getElementById('final-accuracy').innerText = `Akurasi: ${accuracyPercentage}%`; 
-            document.getElementById('success-modal').style.display = 'flex'; 
+            // // 1. Update Tampilan Modal
+            // document.getElementById('final-accuracy').innerText = `Akurasi: ${accuracyPercentage}%`; 
+            // document.getElementById('success-modal').style.display = 'flex'; 
             
-            // 2. Langsung Panggil Fungsi Penyimpanan Skor
-            saveTracingScore(); // Didefinisikan di game-tracing.js
+            // // 2. Langsung Panggil Fungsi Penyimpanan Skor
+            // saveTracingScore(); // Didefinisikan di game-tracing.js
         }
     </script>
 

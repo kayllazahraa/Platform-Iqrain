@@ -582,25 +582,25 @@ const allHijaiyahData = [
             {
                 type: 'line',
                 points: [
-                    { x: 220, y: 130 },
-                    { x: 200, y: 135 },
-                    { x: 175, y: 130 },
-                    { x: 180, y: 100 },
-                    { x: 200, y: 90 },
-                    { x: 220, y: 100 },
-                    { x: 220, y: 140 },
-                    { x: 200, y: 160 },
-                    { x: 170, y: 170 },
-                    { x: 140, y: 165 },
-                    { x: 120, y: 155 },
-                    { x: 110, y: 150 },
-                    { x: 100, y: 145 },
-                    { x: 90, y: 140 }
+                    { x: 250, y: 150 },
+                    { x: 230, y: 155 },
+                    { x: 205, y: 150 },
+                    { x: 210, y: 120 },
+                    { x: 230, y: 110 },
+                    { x: 250, y: 110 },
+                    { x: 250, y: 150 },
+                    { x: 230, y: 180 },
+                    { x: 200, y: 190 },
+                    { x: 170, y: 185 },
+                    { x: 150, y: 175 },
+                    { x: 140, y: 170 },
+                    { x: 130, y: 165 },
+                    { x: 120, y: 160 }
                 ]
             },
             {
                 type: 'circle',
-                center: { x: 200, y: 65 },
+                center: { x: 230, y: 85 },
                 radius: 8
             }
         ]
@@ -615,30 +615,30 @@ const allHijaiyahData = [
             {
                 type: 'line',
                 points: [
-                    { x: 220, y: 130 },
-                    { x: 200, y: 135 },
-                    { x: 175, y: 130 },
-                    { x: 180, y: 100 },
-                    { x: 200, y: 90 },
-                    { x: 220, y: 100 },
-                    { x: 220, y: 140 },
-                    { x: 200, y: 160 },
-                    { x: 170, y: 170 },
-                    { x: 140, y: 165 },
-                    { x: 120, y: 155 },
-                    { x: 110, y: 150 },
-                    { x: 100, y: 145 },
-                    { x: 90, y: 140 }
+                    { x: 250, y: 150 },
+                    { x: 230, y: 155 },
+                    { x: 205, y: 150 },
+                    { x: 210, y: 120 },
+                    { x: 230, y: 110 },
+                    { x: 250, y: 110 },
+                    { x: 250, y: 150 },
+                    { x: 230, y: 180 },
+                    { x: 200, y: 190 },
+                    { x: 170, y: 185 },
+                    { x: 150, y: 175 },
+                    { x: 140, y: 170 },
+                    { x: 130, y: 165 },
+                    { x: 120, y: 160 }
                 ]
             },
             {
                 type: 'circle',
-                center: { x: 210, y: 65 },
+                center: { x: 240, y: 85 },
                 radius: 6
             },
             {
                 type: 'circle',
-                center: { x: 185, y: 65 },
+                center: { x: 215, y: 85 },
                 radius: 6
             }
         ]
@@ -913,7 +913,9 @@ let gameState = {
     tracedPoints: [],
     totalPoints: 0,
     correctPoints: 0,
-    circleClicked: false
+    circleClicked: false,
+    totalGamePoints: 0, 
+    totalGameCorrectPoints: 0,
 };
 
 let guideCanvas, guideCtx;
@@ -952,11 +954,12 @@ function setupEventListeners() {
     document.getElementById('clear-button').addEventListener('click', clearCanvas);
     document.getElementById('replay-button').addEventListener('click', playAnimation);
     
-    document.getElementById('prev-button').addEventListener('click', loadPreviousLetter);
-    document.getElementById('next-button').addEventListener('click', loadNextLetter);
+    // UDAH ADA DI BLADE
+    // document.getElementById('prev-button').addEventListener('click', loadPreviousLetter);
+    // document.getElementById('next-button').addEventListener('click', loadNextLetter);
     
-    document.getElementById('try-again-button').addEventListener('click', restartCurrentLetter);
-    document.getElementById('next-letter-button').addEventListener('click', loadNextLetter);
+    // document.getElementById('try-again-button').addEventListener('click', restartCurrentLetter);
+    // document.getElementById('next-letter-button').addEventListener('click', loadNextLetter);
 }
 
 // ========================================
@@ -981,7 +984,9 @@ function loadGame(index) {
         tracedPoints: [],
         totalPoints: 0,
         correctPoints: 0,
-        circleClicked: false
+        circleClicked: false,
+        totalGamePoints: 0, 
+        totalGameCorrectPoints: 0,
     };
 
     drawGuide(letter);
@@ -1249,6 +1254,18 @@ function handleTouchMove(e) {
 // ========================================
 function advanceToNextStroke() {
     const letter = allHijaiyahData[currentHurufIndex];
+
+    // 1. Akumulasi skor dari goresan garis
+    gameState.totalGamePoints += gameState.totalPoints;
+    gameState.totalGameCorrectPoints += gameState.correctPoints;
+    
+    // 2. Jika stroke adalah circle, kita tambahkan skor tetap (misalnya 10 poin)
+    if (letter.strokes[currentStrokeIndex].type === 'circle') {
+         // Asumsi: Circle selalu benar dan bernilai 10 poin
+         gameState.totalGamePoints += 10;
+         gameState.totalGameCorrectPoints += 10;
+    }
+
     gameState.completedStrokes.push(currentStrokeIndex);
     
     if (gameState.completedStrokes.length >= letter.strokes.length) {
@@ -1469,14 +1486,35 @@ function updateNavigationButtons() {
 // SUCCESS SCREEN
 // ========================================
 function showSuccessScreen() {
+    // 1. Hitung Akurasi/Skor Global
+    let overallAccuracy = 0;
+
+    if (gameState.totalGamePoints > 0) {
+        overallAccuracy = Math.round((gameState.totalGameCorrectPoints / gameState.totalGamePoints) * 100);
+    } else {
+         // Jika tidak ada poin (misal semua stroke adalah circle), set 100% jika semua stroke selesai
+         if (allHijaiyahData[currentHurufIndex].strokes.length === gameState.completedStrokes.length) {
+             overallAccuracy = 100;
+         }
+    }
+
+    // 2. Set Global Variables (agar bisa diakses oleh saveTracingScore)
+    window.gameFinalScore = overallAccuracy; // Menggunakan Akurasi sebagai skor yang disimpan
+    window.gameAccuracyPercentage = overallAccuracy;
+
     const modal = document.getElementById('success-modal');
+    const backButton = document.getElementById('back-to-menu-button');
+    const saveStatusElement = document.getElementById('save-status');
+    const nextLetterButton = document.getElementById('next-letter-button'); 
+    const tryAgainButton = document.getElementById('try-again-button'); 
     const finalStars = document.getElementById('final-stars');
+    const finalAccuracyDisplay = document.getElementById('final-accuracy');
     const finalScore = document.getElementById('final-score');
     const successMessage = document.getElementById('success-message');
 
     const stars = getStars(gameState.currentStrokeAccuracy);
     finalStars.innerHTML = '⭐'.repeat(stars) + '☆'.repeat(3 - stars);
-    finalScore.textContent = `Akurasi: ${gameState.currentStrokeAccuracy}%`;
+    finalScore.textContent = `Akurasi: ${overallAccuracy}%`;
 
     if (stars === 3) {
         successMessage.textContent = 'Sempurna! Kamu menulis huruf dengan sangat baik!';
@@ -1488,7 +1526,42 @@ function showSuccessScreen() {
         successMessage.textContent = 'Terus berlatih! Kamu pasti bisa lebih baik!';
     }
 
+    // Reset status tampilan save
+    if (saveStatusElement) {
+        saveStatusElement.innerText = 'Menyimpan skor...';
+        saveStatusElement.classList.remove('text-green-600', 'text-red-600');
+        saveStatusElement.classList.add('text-yellow-600');
+    }
+    if (backButton) {
+        backButton.disabled = true; // Nonaktifkan tombol Kembali saat proses save
+    }
+    saveTracingScore();
+
     modal.style.display = 'flex';
+
+    saveStatusElement.innerText = 'Menyimpan skor...';
+    saveStatusElement.classList.add('text-yellow-600');
+    backButton.disabled = true;
+    nextLetterButton.disabled = true; 
+    tryAgainButton.disabled = true; 
+    
+    saveTracingScore().then(() => {
+        // SUKSES: Aktifkan tombol navigasi setelah skor terkirim
+        saveStatusElement.innerText = `Skor ${window.gameFinalScore}% berhasil disimpan!`;
+        saveStatusElement.classList.remove('text-yellow-600');
+        saveStatusElement.classList.add('text-green-600');
+        backButton.disabled = false;
+        nextLetterButton.disabled = false;
+        tryAgainButton.disabled = false; 
+    }).catch(error => {
+        // GAGAL
+        saveStatusElement.innerText = `Gagal menyimpan skor. Coba Lagi!`;
+        saveStatusElement.classList.remove('text-yellow-600');
+        saveStatusElement.classList.add('text-red-600');
+        backButton.disabled = false;
+        tryAgainButton.disabled = false; // Boleh ulang walau skor gagal dikirim
+    });
+
 }
 
 function hideSuccessScreen() {
@@ -1504,58 +1577,15 @@ function calculateAccuracy(strokesDone, totalStrokes) {
     return Math.round((strokesDone / totalStrokes) * 100);
 }
 
-async function submitTracingScore(hurufId, accuracy) {
-    const resp = await fetch('/games/save-score', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-        },
-        body: JSON.stringify({ huruf_id: hurufId, accuracy: accuracy })
-    });
-    const result = await resp.json();
-    if(result.success){
-        showScoreModal(result.skor, result.aggregateScore);
-    } else {
-        alert('Gagal menyimpan skor.');
-    }
-}
-
-document.getElementById('finish-button').addEventListener('click', function() {
-    // Hitung akurasi & submit ke backend
-     const accuracy = calculateAccuracy(completedStrokes, totalStrokes);
-    submitTracingScore(currentHurufId, accuracy);
-});
-
-
-
-// Contoh di function checkWaypoint atau checkCircle
-function checkWaypointReached() {
-    if (userReachedWaypoint) {
-        // Existing logic...
-        
-        // Tambahkan:
-        onStrokeComplete();
-    }
-}
-
-function checkCircleCompleted() {
-    if (userCompletedCircle) {
-        
-        
-        onStrokeComplete();
-    }
-}
-
 // Tambahkan fungsi ini di dalam script di tracing.blade.php atau di public/js/game-tracing.js
 
-function saveTracingScore() {
+async function saveTracingScore() {
     const tingkatanId = document.getElementById('back-to-menu-button').getAttribute('data-tingkatan-id');
     const skor = window.gameFinalScore; 
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+
     const saveStatusElement = document.getElementById('save-status');
     const backButton = document.getElementById('back-to-menu-button');
-    const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
-    
     // Set status loading awal
     saveStatusElement.innerText = 'Menyimpan skor...';
     saveStatusElement.classList.remove('text-green-600', 'text-red-600');
