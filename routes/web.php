@@ -25,6 +25,10 @@ Route::get('/', [LandingController::class, 'index'])->name('landing');
 
 Route::redirect('/dashboard', '/')->middleware('guest');
 
+Route::get('/ini', function () {
+    return view('ini');
+})->name('ini');
+
 /*
 |--------------------------------------------------------------------------
 | Authentication Routes (Custom)
