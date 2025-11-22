@@ -31,7 +31,7 @@ class JenisGameSeeder extends Seeder
             [
                 'nama_game' => 'Memory Card',
                 'tingkatan_id' => 1,
-                'poin_maksimal' => 100,
+                'poin_maksimal' => 60,
                 'deskripsi' => 'Mengingat dan mencocokkan pasangan huruf'
             ],
         ];

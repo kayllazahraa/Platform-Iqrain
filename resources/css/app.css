@@ -9,6 +9,17 @@
 @custom-variant dark (&:is(.dark *));
 @custom-variant sidebar-expanded (&:is(.sidebar-expanded *));
 
+@layer base {
+  @font-face {
+    font-family: 'TegakBersambung';
+    /* Pastikan file ada di public/fonts/ */
+    src: url('/fonts/TegakBersambung_IWK.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+  }
+}
+
 @theme {
   --shadow-sm: 0 1px 1px 0 rgb(0 0 0 / 0.05), 0 1px 2px 0 rgb(0 0 0 / 0.02);
 
@@ -117,6 +128,8 @@
 
   --breakpoint-xs: 480px;
 
+  --font-tegak: "TegakBersambung", "sans-serif";
+
   --color-iqrain-pink: #F387A9;
   --color-iqrain-yellow: #FFC801;
   --color-iqrain-blue: #56B1F3;
@@ -196,13 +209,7 @@
   If we ever want to remove these styles, we need to add an explicit border
   color utility to any element that depends on these defaults.
 */
-@layer base {
-  @font-face {
-      font-family: 'TegakBersambung';
-      src: url('/fonts/TegakBersambung_IWK.ttf') format('truetype');
-      unicode-range: U+0041-007A;
-  }
-  
+@layer base {  
   *,
   ::after,
   ::before,
@@ -211,3 +218,68 @@
     border-color: var(--color-gray-200, currentColor);
   }
 }
+
+/* ============================================== */
+/* CSS UNTUK KARTU FLIP (Taruh di app.css) */
+/* ============================================== */
+@layer components {
+    /* Ini adalah KARTU-nya (elemen terluar).
+      Dia jadi "wadah" 3D.
+    */
+    .card {
+        @apply w-20 h-24 sm:w-24 sm:h-28; /* <-- Ukuran kartu. Sesuaikan kalo kurang pas */
+        @apply bg-transparent rounded-lg cursor-pointer;
+        perspective: 1000px; /* <-- Ini biar efek 3D-nya kelihatan */
+    }
+
+    /* Ini adalah "mesin pemutar"-nya.
+      Dia yang akan berputar 180 derajat.
+    */
+    .card-inner {
+        @apply relative w-full h-full text-center;
+        transition: transform 0.6s;
+        transform-style: preserve-3d;
+    }
+
+    /* Ini SISI DEPAN (yang ada ❓) dan SISI BELAKANG (isi).
+      Keduanya "ditumpuk" di posisi yang sama.
+    */
+    .card-front, .card-back {
+        @apply absolute w-full h-full rounded-lg shadow-md;
+        backface-visibility: hidden; /* <-- Ini kuncinya, biar sisi belakang nggak kelihatan */
+    }
+
+    /* SISI DEPAN (Cover ❓)
+      Kita pakai warna pink dari desainmu.
+    */
+    .card-front {
+        @apply bg-[#FADCEB] text-[#D084A8] flex items-center justify-center text-4xl font-bold;
+        /* Ganti '❓' di JS kalau mau ganti isinya */
+    }
+
+    /* SISI BELAKANG (Isi: <img> atau Teks)
+      Ini diputar 180 derajat (sembunyi di awal).
+    */
+    .card-back {
+        @apply bg-white text-gray-800 flex items-center justify-center;
+        transform: rotateY(180deg);
+    }
+
+    /* Ini kelas "Sakti"-nya.
+      Kalau .card punya kelas .is-flipped, .card-inner akan muter.
+    */
+    .card.is-flipped .card-inner {
+        transform: rotateY(180deg);
+    }
+
+    /* Ini buat nyesuain gambar <img> dan teks <span>
+      biar pas di dalem kartu.
+    */
+    .card-back img {
+        @apply w-3/4 h-3/4 object-contain; /* Gambar jadi 75% ukuran kartu */
+    }
+    .card-back span {
+        @apply text-3xl font-bold font-tegak; 
+    }
+}
+

@@ -16,47 +16,100 @@ class EvaluasiController extends Controller
     {
         $tingkatan = TingkatanIqra::findOrFail($tingkatan_id);
         $murid = Auth::user()->murid;
+        $leaderboardType = request()->get('type', 'global');
+       
+        $query = Leaderboard::with('murid.user')
+            ->orderBy('total_poin_semua_game', 'desc'); 
+    
+        if ($leaderboardType === 'mentor' && $murid->mentor_id) {            
+             $query->where('mentor_id', $murid->mentor_id);
+        }         
 
-        // Get leaderboard data
-        $leaderboardType = request()->get('type', 'global'); // global or mentor
+        $leaderboards = $query->get();
 
-        if ($leaderboardType === 'mentor' && $murid->mentor_id) {
-            $leaderboards = Leaderboard::with('murid.user')
-                ->where('mentor_id', $murid->mentor_id)
-                ->whereNotNull('ranking_mentor')
-                ->orderBy('ranking_mentor')
-                ->get();
+        foreach ($leaderboards as $index => $board) {
+            $rankBaru = $index + 1; 
 
-            $myRanking = Leaderboard::where('murid_id', $murid->murid_id)
-                ->where('mentor_id', $murid->mentor_id)
-                ->first();
-        } else {
-            $leaderboards = Leaderboard::with('murid.user')
-                ->whereNull('mentor_id')
-                ->whereNotNull('ranking_global')
-                ->orderBy('ranking_global')
-                ->get();
-
-            $myRanking = Leaderboard::where('murid_id', $murid->murid_id)
-                ->whereNull('mentor_id')
-                ->first();
+            if ($leaderboardType === 'mentor') {                
+                if ($board->ranking_mentor !== $rankBaru) {
+                    $board->update(['ranking_mentor' => $rankBaru]);
+                }
+            } else {
+                if ($board->ranking_global !== $rankBaru) {
+                    $board->update(['ranking_global' => $rankBaru]);
+                }
+            }
         }
 
-        // Get personal evaluation data
+        $leaderboards = $leaderboards->map(function ($item) use ($leaderboardType) {
+            
+            if ($leaderboardType === 'mentor') {                
+                $item->ranking_display = $item->ranking_mentor;
+            } else {                
+                $item->ranking_display = $item->ranking_global;
+            }
+            
+            return $item;
+        });
+        
+        $myRanking = $leaderboards->firstWhere('murid_id', $murid->murid_id);
+        
+
+        // ============================================================
+        // EVALUASI 
+        // ============================================================
         $jenisGames = JenisGame::all();
         $evaluasiData = [];
 
-        foreach ($jenisGames as $game) {
-            $latestResult = HasilGame::where('murid_id', $murid->murid_id)
-                ->where('jenis_game_id', $game->jenis_game_id)
-                ->latest('dimainkan_at')
-                ->first();
+       foreach ($jenisGames as $game) {
 
+            // --- LOGIKA BARU ---
+
+            // 1. Ambil semua hasil permainan untuk game ini
+            $allResults = HasilGame::where('murid_id', $murid->murid_id)
+                ->where('jenis_game_id', $game->jenis_game_id)
+                ->get();
+
+            // 2. Hitung total poin dan total jumlah main
+            $totalPoinGameIni = $allResults->sum('total_poin');
+            $jumlahMain       = $allResults->count();
+
+            // Siapkan variabel default
+            $ulasan         = null;
+            $resultForView  = null;
+
+            if ($jumlahMain > 0) {
+                // Buat objek sederhana agar mudah dibaca di Blade
+                $resultForView = (object) [
+                    'total_poin' => $totalPoinGameIni, // total semua poin
+                    'skor'       => $jumlahMain        // jumlah bermain
+                ];
+
+                // Hitung rata-rata dan persentase
+                $poinMaksimal = $game->poin_maksimal ?? 100;
+                $rataRata     = $totalPoinGameIni / $jumlahMain;
+                $persen       = ($rataRata / $poinMaksimal) * 100;
+
+                // Tentukan ulasan berdasarkan persentase rata-rata
+                if ($persen >= 90) {
+                    $ulasan = 'Luar biasa! Kamu konsisten hebat! 🌟';
+                } elseif ($persen >= 75) {
+                    $ulasan = 'Bagus sekali! Rata-rata skormu tinggi! 💪';
+                } elseif ($persen >= 60) {
+                    $ulasan = 'Cukup baik! Terus tingkatkan! 😊';
+                } else {
+                    $ulasan = 'Tetap semangat! Latihan lagi ya! 🔥';
+                }
+            }
+
+            // Masukkan ke array evaluasi
             $evaluasiData[] = [
-                'game' => $game,
-                'result' => $latestResult,
+                'game'   => $game,
+                'result' => $resultForView,
+                'ulasan' => $ulasan,
             ];
         }
+
 
         return view('pages.murid.evaluasi.index', compact(
             'tingkatan',
@@ -67,30 +120,31 @@ class EvaluasiController extends Controller
         ));
     }
 
-    public function leaderboard($tingkatan_id)
-    {
-        $tingkatan = TingkatanIqra::findOrFail($tingkatan_id);
-        $murid = Auth::user()->murid;
 
-        $type = request()->get('type', 'global');
+    // public function leaderboard($tingkatan_id)
+    // {
+    //     $tingkatan = TingkatanIqra::findOrFail($tingkatan_id);
+    //     $murid = Auth::user()->murid;
 
-        if ($type === 'mentor' && $murid->mentor_id) {
-            $leaderboards = Leaderboard::with('murid.user')
-                ->where('mentor_id', $murid->mentor_id)
-                ->whereNotNull('ranking_mentor')
-                ->orderBy('ranking_mentor')
-                ->get();
-        } else {
-            $leaderboards = Leaderboard::with('murid.user')
-                ->whereNull('mentor_id')
-                ->whereNotNull('ranking_global')
-                ->orderBy('ranking_global')
-                ->get();
-        }
+    //     $type = request()->get('type', 'global');
 
-        return response()->json([
-            'leaderboards' => $leaderboards,
-            'type' => $type
-        ]);
-    }
+    //     if ($type === 'mentor' && $murid->mentor_id) {
+    //         $leaderboards = Leaderboard::with('murid.user')
+    //             ->where('mentor_id', $murid->mentor_id)
+    //             ->whereNotNull('ranking_mentor')
+    //             ->orderBy('ranking_mentor')
+    //             ->get();
+    //     } else {
+    //         $leaderboards = Leaderboard::with('murid.user')
+    //             ->whereNull('mentor_id')
+    //             ->whereNotNull('ranking_global')
+    //             ->orderBy('ranking_global')
+    //             ->get();
+    //     }
+
+    //     return response()->json([
+    //         'leaderboards' => $leaderboards,
+    //         'type' => $type
+    //     ]);
+    // }
 }
