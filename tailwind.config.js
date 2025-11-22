@@ -13,7 +13,7 @@ module.exports = {
         fontFamily: {
             sans: [
                 "Mooli",
-                ...defaultTheme.fontFamily.sans, // Fallback kalo gaada Mooli
+                ...defaultTheme.fontFamily.sans, 
             ],
             'titan': ['Titan One', 'cursive'],
             'cursive-iwk': ['Tegak Bersambung IWK', 'cursive'],

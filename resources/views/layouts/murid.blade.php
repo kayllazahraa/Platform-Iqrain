@@ -11,11 +11,6 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500;600;700&display=swap');
-
-        * {
-            font-family: 'Fredoka', sans-serif;
-        }
 
         /* --- PERUBAHAN 1: Sederhanakan Body --- */
         body {
