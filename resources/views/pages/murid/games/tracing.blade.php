@@ -40,11 +40,11 @@
         
         <!-- Header with Exit Button -->
         <div class="game-header">
-            <div class="letter-info-display">
-                <span id="current-letter-arabic" class="arabic-letter">ا</span>
-                <span id="current-letter-name" class="letter-name-display">Alif</span>
-            </div>
             <a href="{{ url('/murid/games/1') }}" id="exit-button" class="exit-button">Keluar</a>
+            <div class="letter-info-display">
+                <span id="current-letter-arabic" class="arabic-letter" style="color: #f472b6;">ا</span>
+                <span id="current-letter-name" class="letter-name-display" style="color: #f472b6;">Alif</span>
+            </div>
         </div>
 
         <!-- Main Game Area -->
@@ -112,8 +112,8 @@
             </div>
 
             <div class="navigation-buttons">
-                <button id="prev-button" class="nav-btn btn-prev">← Sebelumnya</button>
-                <button id="next-button" class="nav-btn btn-next">Berikutnya →</button>
+                <button id="prev-button" class="nav-btn btn-prev"><span>←</span>← Sebelumnya</button>
+                <button id="next-button" class="nav-btn btn-next">Berikutnya <span>→</span></button>
             </div>
         </div>
 

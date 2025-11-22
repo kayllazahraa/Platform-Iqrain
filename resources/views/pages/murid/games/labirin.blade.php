@@ -5,16 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-
-    {{-- PENTING: Meta Token CSRF (Diperlukan oleh script saveScore di bawah) --}}
+    
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>Labirin Hijaiyah</title>
 
-    {{-- Memuat CSS/Tailwind (Sesuaikan dengan setup Laravel kamu, biasanya @vite atau mix) --}}
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    {{-- Jika tampilan berantakan (Tailwind tidak jalan), kamu bisa uncomment CDN di bawah ini untuk sementara: --}}
-    {{-- <script src="https://cdn.tailwindcss.com"></script> --}}
 
     {{-- CSS Kustom --}}
     <style>
@@ -88,25 +84,29 @@
 
     {{-- Konten Halaman --}}
     <div id="game-content-wrapper">
-        <div class="p-4">
-            {{-- Tombol Kembali --}}
+    {{-- Main --}}
+    <div class="font-sans text-center min-h-screen flex flex-col bg-gradient-to-b from-[#56B1F3] to-[#D3F2FF]">
+        {{-- Tombol Kembali --}}
+        <div class="p-4">    
             <a href="{{ route('murid.games.index', $tingkatan->tingkatan_id) }}"
-                class="relative flex items-center justify-center w-[140px] h-[45px] rounded-full bg-[#FEFFD0] shadow-md transition-transform hover:scale-105">
-
-                {{-- Ikon: Tetap di posisi kiri (absolute) --}}
+                class="relative flex items-center justify-center w-[140px] h-[45px] rounded-full bg-pink-400 shadow-md transition-transform hover:scale-105">        
+                {{-- icon < --}}
                 <div class="absolute left-4 flex items-center">
-                    <svg class="w-6 h-6 text-gray-800" fill="none" stroke="currentColor" stroke-width="3"
-                        viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"></path>
                     </svg>
-                </div>
-
-                {{-- Teks: Ditambah pl-4 agar geser ke kanan sedikit --}}
-                <span class="font-cursive-iwk text-gray-800 text-[25px] font-normal leading-none pt-2 pl-4">
+                </div>                    
+                <span class="font-['TegakBersambung'] text-white text-[25px] font-normal leading-none pt-2 pl-4">
                     Kembali
                 </span>
             </a>
         </div>
+
+        {{-- Balon kiri --}}
+        <div class="fixed left-4 top-1/3 w-40 md:w-50 h-auto animate-bounce-slow z-10 pointer-events-none">
+            <img src="{{ asset('images/icon/balon.webp') }}" alt="Balon Kiri" class="w-full h-auto drop-shadow-lg">
+        </div>    
 
         <div class="container mx-auto p-2 max-w-4xl">
 
@@ -203,6 +203,11 @@
                     </p>
                 </div>
             </div>
+        </div>
+
+        {{-- Balon kanan --}}
+        <div class="fixed right-4 top-1/4 w-40 md:w-50 h-auto animate-bounce-slow z-10 pointer-events-none">
+            <img src="{{ asset('images/icon/balon.webp') }}" alt="Balon Kanan" class="w-full h-auto drop-shadow-lg transform scale-x-[-1]"> 
         </div>
 
         {{-- Spacer Bottom --}}
