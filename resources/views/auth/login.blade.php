@@ -41,6 +41,18 @@
             }
         }
 
+        body::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-image: url('images/pattern/game-pattern.webp');
+            background-size: 500px;
+            background-repeat: repeat;
+            opacity: 0.4; 
+            z-index: -1; 
+        }
+
+
         .mascot-bounce {
             animation: bounceMascot 2s ease-in-out infinite;
         }
@@ -79,7 +91,7 @@
         }
     </style>
 </head>
-<body class="min-h-screen flex items-center justify-center" style="background: linear-gradient(135deg, #5CB8E6 0%, #7CC9EE 100%);">
+    <body class="min-h-screen flex items-center justify-center relative bg-[#7CC9EE]">
     
     <div class="w-full max-w-6xl flex rounded-3xl shadow-2xl overflow-hidden relative min-h-[600px]">
 

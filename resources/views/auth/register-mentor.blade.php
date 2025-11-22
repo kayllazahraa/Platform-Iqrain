@@ -29,12 +29,7 @@
                 </a>
             </div>
 
-            <div class="flex items-center mb-4 space-x-2">
-                <div class="w-7 h-7 rounded-full bg-yellow-400 text-white flex items-center justify-center font-bold text-sm">1</div>
-                <div class="w-3 h-3 rounded-full bg-white opacity-60"></div>
-                <div class="w-3 h-3 rounded-full bg-white opacity-60"></div>
-            </div>
-
+            {{-- **BAGIAN INI DIHAPUS** karena error akan ditampilkan per field.
             @if ($errors->any())
                 <div class="mb-4 p-4 bg-red-100 border-l-4 border-red-600 text-red-700 rounded-xl">
                     <ul class="list-disc ml-5 text-sm">
@@ -44,6 +39,7 @@
                     </ul>
                 </div>
             @endif
+            --}}
 
             <form method="POST" action="{{ route('register.mentor.post') }}">
                 @csrf
@@ -60,30 +56,42 @@
                     <div>
                         <label for="username" class="text-white font-semibold block mb-1 text-sm">Username</label>
                         <input id="username" type="text" name="username" value="{{ old('username') }}" required
-                            class="w-full px-3 py-2 rounded-lg border-2 border-white bg-white text-gray-800 focus:ring-2 focus:ring-yellow-300"
+                            class="w-full px-3 py-2 rounded-lg border-2 {{ $errors->has('username') ? 'border-red-500' : 'border-white' }} bg-white text-gray-800 focus:ring-2 focus:ring-yellow-300"
                             placeholder="Pilih username unik">
+                        @error('username')
+                            <p class="text-red-300 text-xs mt-1">{{ $message }}</p>
+                        @enderror
                         <p class="text-xs text-white opacity-75 mt-1">Username hanya boleh huruf, angka, dash (-) dan underscore (_)</p>
                     </div>
 
                     <div>
                         <label for="nama_lengkap" class="text-white font-semibold block mb-1 text-sm">Nama Lengkap</label>
                         <input id="nama_lengkap" type="text" name="nama_lengkap" value="{{ old('nama_lengkap') }}" required autofocus
-                            class="w-full px-3 py-2 rounded-lg border-2 border-white bg-white text-gray-800 focus:ring-2 focus:ring-yellow-300"
+                            class="w-full px-3 py-2 rounded-lg border-2 {{ $errors->has('nama_lengkap') ? 'border-red-500' : 'border-white' }} bg-white text-gray-800 focus:ring-2 focus:ring-yellow-300"
                             placeholder="Masukkan nama lengkap">
+                        @error('nama_lengkap')
+                            <p class="text-red-300 text-xs mt-1">{{ $message }}</p>
+                        @enderror
                     </div>
 
                     <div>
                         <label for="no_wa" class="text-white font-semibold block mb-1 text-sm">Nomor WhatsApp</label>
                         <input id="no_wa" type="tel" name="no_wa" value="{{ old('no_wa') }}" required
-                            class="w-full px-3 py-2 rounded-lg border-2 border-white bg-white text-gray-800 focus:ring-2 focus:ring-yellow-300"
+                            class="w-full px-3 py-2 rounded-lg border-2 {{ $errors->has('no_wa') ? 'border-red-500' : 'border-white' }} bg-white text-gray-800 focus:ring-2 focus:ring-yellow-300"
                             placeholder="08xxxxxxxxxx">
+                        @error('no_wa')
+                            <p class="text-red-300 text-xs mt-1">{{ $message }}</p>
+                        @enderror
                     </div>
 
                     <div>
                         <label for="email" class="text-white font-semibold block mb-1 text-sm">Email</label>
                         <input id="email" type="email" name="email" value="{{ old('email') }}" required
-                            class="w-full px-3 py-2 rounded-lg border-2 border-white bg-white text-gray-800 focus:ring-2 focus:ring-yellow-300"
+                            class="w-full px-3 py-2 rounded-lg border-2 {{ $errors->has('email') ? 'border-red-500' : 'border-white' }} bg-white text-gray-800 focus:ring-2 focus:ring-yellow-300"
                             placeholder="email@example.com">
+                        @error('email')
+                            <p class="text-red-300 text-xs mt-1">{{ $message }}</p>
+                        @enderror
                         <p class="text-xs text-white opacity-75 mt-1">Untuk reset password dan notifikasi</p>
                     </div>
 
@@ -97,18 +105,27 @@
                     <div>
                         <label for="password" class="text-white font-semibold block mb-1 text-sm">Password</label>
                         <input id="password" type="password" name="password" required
-                            class="w-full px-3 py-2 rounded-lg border-2 border-white bg-white text-gray-800 focus:ring-2 focus:ring-yellow-300"
+                            class="w-full px-3 py-2 rounded-lg border-2 {{ $errors->has('password') ? 'border-red-500' : 'border-white' }} bg-white text-gray-800 focus:ring-2 focus:ring-yellow-300"
                             placeholder="Minimal 8 karakter">
+                        @error('password')
+                            <p class="text-red-300 text-xs mt-1">{{ $message }}</p>
+                        @enderror
+                        <p class="text-xs text-white opacity-75 mt-1">Password harus minimal 8 karakter.</p>
                     </div>
 
                     <div>
                         <label for="password_confirmation" class="text-white font-semibold block mb-1 text-sm">Konfirmasi Password</label>
                         <input id="password_confirmation" type="password" name="password_confirmation" required
-                            class="w-full px-3 py-2 rounded-lg border-2 border-white bg-white text-gray-800 focus:ring-2 focus:ring-yellow-300"
+                            class="w-full px-3 py-2 rounded-lg border-2 {{ $errors->has('password_confirmation') ? 'border-red-500' : 'border-white' }} bg-white text-gray-800 focus:ring-2 focus:ring-yellow-300"
                             placeholder="Ketik ulang password">
+                        @error('password_confirmation')
+                            <p class="text-red-300 text-xs mt-1">{{ $message }}</p>
+                        @enderror
                     </div>
 
-                </div> <div class="mt-6 flex justify-end">
+                </div> 
+                
+                <div class="mt-6 flex justify-end">
                     <button type="submit"
                         class="bg-pink-400 text-white font-bold py-2.5 px-8 rounded-xl shadow-lg hover:bg-pink-500 transition">
                         Ajukan Daftar

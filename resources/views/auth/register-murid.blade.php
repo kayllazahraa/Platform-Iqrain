@@ -41,14 +41,19 @@
 
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6"> 
                 
-                <div>
+                    <div>
                         <label class="text-white font-semibold block mb-2">Username</label>
                         <input type="text"
                             name="username"
                             value="{{ old('username') }}"
                             required
-                            class="w-full px-4 py-3 rounded-xl border-2 border-white bg-white text-gray-800 focus:ring-2 focus:ring-yellow-300"
+                            class="w-full px-4 py-3 rounded-xl border-2 {{ $errors->has('username') ? 'border-red-500' : 'border-white' }} bg-white text-gray-800 focus:ring-2 focus:ring-yellow-300"
                             placeholder="Masukkan username">
+                        {{-- Pesan Error untuk Username --}}
+                        @error('username')
+                            <p class="text-red-300 text-sm mt-1">{{ $message }}</p>
+                        @enderror
+                        {{-- Tambahkan petunjuk jika perlu, misal: <p class="text-white text-sm mt-1 opacity-80">Minimal 4 karakter, hanya boleh huruf dan angka.</p> --}}
                     </div>
 
                     <div>
@@ -58,6 +63,7 @@
                             value="{{ old('sekolah') }}"
                             class="w-full px-4 py-3 rounded-xl border-2 border-white bg-white text-gray-800 focus:ring-2 focus:ring-yellow-300"
                             placeholder="Nama sekolah">
+                        {{-- Sekolah tidak memiliki @error karena dianggap opsional atau validasi sederhana --}}
                     </div>
 
                     <div>
@@ -65,8 +71,12 @@
                         <input type="password"
                             name="password"
                             required
-                            class="w-full px-4 py-3 rounded-xl border-2 border-white bg-white text-gray-800 focus:ring-2 focus:ring-yellow-300"
+                            class="w-full px-4 py-3 rounded-xl border-2 {{ $errors->has('password') ? 'border-red-500' : 'border-white' }} bg-white text-gray-800 focus:ring-2 focus:ring-yellow-300"
                             placeholder="Masukkan password">
+                        {{-- Pesan Error untuk Password --}}
+                        @error('password')
+                            <p class="text-red-300 text-sm mt-1">{{ $message }}</p>
+                        @enderror
                     </div>
 
                     <div>
@@ -74,8 +84,12 @@
                         <input type="password"
                             name="password_confirmation"
                             required
-                            class="w-full px-4 py-3 rounded-xl border-2 border-white bg-white text-gray-800 focus:ring-2 focus:ring-yellow-300"
+                            class="w-full px-4 py-3 rounded-xl border-2 {{ $errors->has('password_confirmation') ? 'border-red-500' : 'border-white' }} bg-white text-gray-800 focus:ring-2 focus:ring-yellow-300"
                             placeholder="Ketik ulang password">
+                        {{-- Pesan Error untuk Konfirmasi Password --}}
+                        @error('password_confirmation')
+                            <p class="text-red-300 text-sm mt-1">{{ $message }}</p>
+                        @enderror
                     </div>
 
                 </div>

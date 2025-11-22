@@ -56,11 +56,15 @@
             border: 1px solid #f08097;
         }
 
+        /* Menambahkan border merah untuk fokus/error */
+        .input-error {
+            border: 2px solid #ef4444 !important; /* Tailwind red-500 */
+        }
+
         input:focus {
             outline: none;
             border-color: #5CB8E6;
-            ring: 2px;
-            ring-color: #5CB8E6;
+            box-shadow: 0 0 0 2px #5CB8E6; /* Menggunakan box-shadow untuk fokus yang lebih menonjol */
         }
     </style>
 </head>
@@ -69,7 +73,6 @@
     
     <div class="pattern-bg"></div>
 
-    <!-- Container -->
     <div class="w-full max-w-md relative z-20">
         
         <div class="forgot-card-single p-8 sm:p-10">
@@ -87,17 +90,10 @@
                 </p>
             </div>
 
-            @if ($errors->any() || session('error'))
+            {{-- Menampilkan error non-spesifik (seperti 'Username tidak ditemukan') dan status --}}
+            @if (session('error'))
                 <div class="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg">
-                    @if (session('error'))
-                        {{ session('error') }}
-                    @else
-                        <ul class="list-disc list-inside text-sm">
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    @endif
+                    {{ session('error') }}
                 </div>
             @endif
 
@@ -120,9 +116,15 @@
                         value="{{ old('username') }}"
                         required 
                         autofocus
-                        class="w-full px-5 py-4 border-0 rounded-xl text-gray-800 text-lg"
+                        class="w-full px-5 py-4 border-0 rounded-xl text-gray-800 text-lg {{ $errors->has('username') ? 'input-error' : '' }}"
                         style="background-color: white;"
                     >
+                    {{-- Pesan Error Validasi Spesifik untuk Username --}}
+                    @error('username')
+                        <p class="text-red-600 text-sm mt-2 font-semibold">
+                            ⚠️ {{ $message }}
+                        </p>
+                    @enderror
                 </div>
 
                 <div class="pt-4">
