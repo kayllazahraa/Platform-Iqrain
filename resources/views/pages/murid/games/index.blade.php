@@ -3,58 +3,76 @@
 {{-- Judul halaman diambil dari $tingkatan --}}
 @section('title', 'Games - Iqra ' . $tingkatan->level)
 
-{{-- 1. Style & Font --}}
+{{-- STYLES --}}
 @push('styles')
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Mooli&family=Titan+One&display=swap" rel="stylesheet">
 
     <style>
-
-        /* Font Khusus Angka (Nanum Myeongjo) */
+        /* Font Import */
+        @import url('https://fonts.googleapis.com/css2?family=Titan+One&display=swap');
+        
         @font-face {
-            font-family: 'NanumMyeongjo';
-            src: url('{{ asset('fonts/NanumMyeongjo-Regular.ttf') }}') format('truetype');
+            font-family: 'Tegak Bersambung_IWK';
+            src: url("{{ asset('fonts/TegakBersambung_IWK.ttf') }}") format('truetype');
+            font-weight: normal;
+            font-style: normal;
         }
 
-        .font-nanum {
-            font-family: 'NanumMyeongjo', serif;
-            padding-left: 4px;
+        /* Utility Classes */
+        .font-cursive-iwk {
+            font-family: 'Tegak Bersambung_IWK', cursive !important;
         }
 
+        .font-titan {
+            font-family: 'Titan One', cursive !important;
+        }
+
+        .text-shadow-header {
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
+        }
+
+        /* Background Pattern */
         body {
-            background-color: #E4F2FF;
-            background-image: url('{{ asset('images/games/game-pattern.webp') }}');
+            background: linear-gradient(180deg, #56B1F3 0%, #D3F2FF 100%);
+            background-attachment: fixed;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("{{ asset('images/games/game-pattern.webp') }}");
             background-size: 500px;
             background-repeat: repeat;
-            background-attachment: fixed;
             background-position: center;
+            opacity: 0.3;
+            z-index: -1;
+            pointer-events: none;
+        }
+        
+        html {
+            scroll-behavior: smooth;
         }
 
         /* Animasi Goyang */
         @keyframes wiggle {
-
-            0%,
-            100% {
-                transform: rotate(-3deg);
-            }
-
-            50% {
-                transform: rotate(3deg);
-            }
+            0%, 100% { transform: rotate(-3deg); }
+            50% { transform: rotate(3deg); }
         }
 
         .btn-goyang {
-            /* Warna Pink */
             background-color: #AC3F61;
-            /* Jalankan animasi */
             animation: wiggle 0.8s ease-in-out infinite;
         }
 
-        /* Saat di-hover: Stop goyang & perbesar sedikit */
         .btn-goyang:hover {
             background-color: #963653;
-            /* Pink lebih gelap dikit */
             animation: none;
             transform: scale(1.05);
         }
@@ -68,8 +86,7 @@
     {{-- ========================================= --}}
     {{-- MODAL POP-UP (VIDEO + LANGKAH) --}}
     {{-- ========================================= --}}
-    <div id="gameModal" class="fixed inset-0 bg-black bg-opacity-60 hidden items-center justify-center z-50"
-        style="display: none;">
+    <div id="gameModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50" style="display: none;">
 
         {{-- Container Modal --}}
         <div class="bg-gradient-to-br from-pink-100 to-white rounded-[30px] p-1 w-full max-w-5xl mx-4 shadow-2xl relative">
@@ -80,7 +97,9 @@
                 &times;
             </button>
 
-            <div class="bg-white rounded-[26px] p-6 md:p-8">
+            {{-- Konten Modal (Putih) --}}
+            <div class="bg-white rounded-[26px] p-6 md:p-8 overflow-y-auto max-h-[90vh]">
+                
                 {{-- Judul Game --}}
                 <h3 class="text-3xl md:text-4xl font-titan text-[#234275] text-center mb-6" id="modalGameTitle">
                     Panduan Bermain
@@ -91,60 +110,43 @@
 
                     {{-- BAGIAN KIRI: VIDEO --}}
                     <div class="w-full lg:w-1/2 flex flex-col justify-center">
-                        <div
-                            class="relative w-full pt-[56.25%] rounded-2xl overflow-hidden shadow-lg border-2 border-gray-100 bg-black">
+                        <div class="relative w-full pt-[56.25%] rounded-2xl overflow-hidden shadow-lg border-2 border-gray-100 bg-black">
                             <iframe id="gameVideoIframe" class="absolute top-0 left-0 w-full h-full" src=""
                                 title="YouTube video player" frameborder="0"
                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                                 allowfullscreen>
                             </iframe>
                         </div>
-                        <p class="text-center text-gray-500 text-xl mt-3 font-cursive-iwk text-lg">Tonton video untuk
-                            panduan lengkap</p>
+                        <p class="text-center text-gray-500 mt-3 font-cursive-iwk text-lg">
+                            Tonton video untuk panduan lengkap
+                        </p>
                     </div>
 
                     {{-- BAGIAN KANAN: LANGKAH-LANGKAH --}}
                     <div class="w-full lg:w-1/2 flex flex-col justify-center">
                         <div class="space-y-4">
                             {{-- Step 1 --}}
-                            {{-- PERUBAHAN: items-start -> items-center, w-10 -> w-12, text-xl -> text-2xl --}}
                             <div class="flex items-center gap-4 p-3 rounded-xl hover:bg-pink-50 transition-colors">
-                                <div
-                                    class="bg-pink-500 text-white rounded-full w-12 h-12 flex items-center justify-center font-nanum text-2xl flex-shrink-0 shadow-md">
-                                    1
-                                </div>
-                                <p class="text-pink-900 font-cursive-iwk text-2xl leading-snug pt-1" id="step1">
-                                </p>
+                                <div class="bg-pink-500 text-white rounded-full w-12 h-12 flex items-center justify-center font-nanum text-2xl flex-shrink-0 shadow-md">1</div>
+                                <p class="text-pink-900 font-cursive-iwk text-2xl leading-snug pt-1" id="step1"></p>
                             </div>
 
                             {{-- Step 2 --}}
                             <div class="flex items-center gap-4 p-3 rounded-xl hover:bg-pink-50 transition-colors">
-                                <div
-                                    class="bg-pink-500 text-white rounded-full w-12 h-12 flex items-center justify-center font-nanum text-2xl flex-shrink-0 shadow-md">
-                                    2
-                                </div>
-                                <p class="text-pink-900 font-cursive-iwk text-2xl leading-snug pt-1" id="step2">
-                                </p>
+                                <div class="bg-pink-500 text-white rounded-full w-12 h-12 flex items-center justify-center font-nanum text-2xl flex-shrink-0 shadow-md">2</div>
+                                <p class="text-pink-900 font-cursive-iwk text-2xl leading-snug pt-1" id="step2"></p>
                             </div>
 
                             {{-- Step 3 --}}
                             <div class="flex items-center gap-4 p-3 rounded-xl hover:bg-pink-50 transition-colors">
-                                <div
-                                    class="bg-pink-500 text-white rounded-full w-12 h-12 flex items-center justify-center font-nanum text-2xl flex-shrink-0 shadow-md">
-                                    3
-                                </div>
-                                <p class="text-pink-900 font-cursive-iwk text-2xl leading-snug pt-1" id="step3">
-                                </p>
+                                <div class="bg-pink-500 text-white rounded-full w-12 h-12 flex items-center justify-center font-nanum text-2xl flex-shrink-0 shadow-md">3</div>
+                                <p class="text-pink-900 font-cursive-iwk text-2xl leading-snug pt-1" id="step3"></p>
                             </div>
 
                             {{-- Step 4 --}}
                             <div class="flex items-center gap-4 p-3 rounded-xl hover:bg-pink-50 transition-colors">
-                                <div
-                                    class="bg-pink-500 text-white rounded-full w-12 h-12 flex items-center justify-center font-nanum text-2xl flex-shrink-0 shadow-md">
-                                    4
-                                </div>
-                                <p class="text-pink-900 font-cursive-iwk text-2xl leading-snug pt-1" id="step4">
-                                </p>
+                                <div class="bg-pink-500 text-white rounded-full w-12 h-12 flex items-center justify-center font-nanum text-2xl flex-shrink-0 shadow-md">4</div>
+                                <p class="text-pink-900 font-cursive-iwk text-2xl leading-snug pt-1" id="step4"></p>
                             </div>
                         </div>
                     </div>
@@ -153,12 +155,13 @@
                 {{-- Tombol Main --}}
                 <div class="flex justify-center">
                     <button onclick="startGame()"
-                        class="btn-goyang w-full md:w-1/4 text-2xl md:text-3xl py-4 text-white font-cursive-iwk rounded-2xl shadow-lg transition-transform duration-200 hover:shadow-xl">
+                        class="btn-goyang w-full md:w-1/2 lg:w-1/3 text-2xl md:text-3xl py-4 text-white font-cursive-iwk rounded-2xl shadow-lg transition-transform duration-200 hover:shadow-xl">
                         Mainkan Sekarang!
                     </button>
                 </div>
-            </div>
-        </div>
+
+            </div> {{-- End Inner White Box --}}
+        </div> {{-- End Modal Container --}}
     </div>
 
     {{-- ========================================= --}}
@@ -166,16 +169,20 @@
     {{-- ========================================= --}}
     <div class="container mx-auto px-6 py-12">
         <div class="flex flex-col md:flex-row items-center justify-between gap-8">
-            <div class="md:w-1/2">
-                <h1 class="font-titan text-[60px] lg:text-[80px] text-[#234275] leading-none">
+            
+            {{-- Text Header (KIRI) --}}
+            <div class="md:w-1/2 text-center md:text-left">
+                <h1 class="font-titan text-[50px] lg:text-[80px] text-[#234275] leading-none">
                     Siap untuk Berpetualang?
                 </h1>
-                <h2 class="font-cursive-iwk text-[45px] lg:text-[55px] text-gray-700 leading-tight mt-2">
+                <h2 class="font-cursive-iwk text-[35px] lg:text-[55px] text-[#234275] leading-tight mt-2">
                     Mainkan dan Raih Skormu
                 </h2>
             </div>
+            
+            {{-- Maskot Qira Game (KANAN) --}}
             <div class="md:w-1/2 flex justify-center md:justify-end">
-                <img src="/images/games/qira-game.webp" alt="Qira Game" class="max-w-sm md:max-w-md">
+                <img src="{{ asset('images/games/qira-game.webp') }}" alt="Qira Game" class="max-w-xs md:max-w-md drop-shadow-xl">
             </div>
         </div>
     </div>
@@ -183,93 +190,94 @@
     {{-- ========================================= --}}
     {{-- GRID PILIHAN GAME --}}
     {{-- ========================================= --}}
-    <div class="container mx-auto px-6 py-12">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+    <div class="container mx-auto px-6 pb-20">
+        
+        {{-- ✨ CONTAINER PUTIH (Untuk wrap semua game cards) ✨ --}}
+        <div class="bg-white rounded-[40px] shadow-2xl p-6 md:p-12">
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
 
-            {{-- Kartu 1: Kartu Memori --}}
-            <div class="block p-8 rounded-[20px] shadow-lg bg-[#6DC2FF] text-[#234275] transition-transform hover:scale-105 cursor-pointer"
-                onclick="showGameModal('memory-card')">
-                <div class="flex flex-col md:flex-row items-center justify-between gap-6">
-                    <div class="md:w-1/2 text-center md:text-left">
-                        <h3 class="font-titan text-3xl mb-3">Kartu Memori</h3>
-                        <p class="font-cursive-iwk text-3xl">
-                            <span class="phrase">Yuk</span> cocokin huruf yang sama. Buka kartunya dan ingat di mana
-                            hurufnya tersembunyi!
-                        </p>
-                    </div>
-                    <div class="md:w-1/2 flex justify-center">
-                        <img src="/images/games/KartuMemori.webp" alt="Kartu Memori" class="max-w-[180px]">
+                {{-- Kartu 1: Kartu Memori (Biru) --}}
+                <div class="block p-6 md:p-8 rounded-[20px] shadow-lg bg-[#6DC2FF] text-[#234275] transition-transform hover:scale-105 cursor-pointer"
+                    onclick="showGameModal('memory-card')">
+                    <div class="flex flex-col md:flex-row items-center justify-between gap-6 h-full">
+                        <div class="md:w-1/2 text-center md:text-left">
+                            <h3 class="font-titan text-3xl mb-3">Kartu Memori</h3>
+                            <p class="font-cursive-iwk text-2xl md:text-3xl leading-snug">
+                                Yuk cocokin huruf yang sama. Buka kartunya dan ingat letaknya!
+                            </p>
+                        </div>
+                        <div class="md:w-1/2 flex justify-center">
+                            <img src="{{ asset('images/games/KartuMemori.webp') }}" alt="Kartu Memori" class="max-w-[160px] md:max-w-[180px]">
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            {{-- Kartu 2: Labirin Hijaiyah --}}
-            <div class="block p-8 rounded-[20px] shadow-lg bg-[#FFCE6B] text-[#234275] transition-transform hover:scale-105 cursor-pointer"
-                onclick="showGameModal('labirin')">
-                <div class="flex flex-col md:flex-row-reverse items-center justify-between gap-6">
-                    <div class="md:w-1/2 text-center md:text-left">
-                        <h3 class="font-titan text-3xl mb-3">Labirin Hijaiyah</h3>
-                        <p class="font-cursive-iwk text-3xl">
-                            Temukan jalan menuju huruf hijaiyah yang dicari! Hati-hati jangan tersesat di labirin
-                        </p>
-                    </div>
-                    <div class="md:w-1/2 flex justify-center">
-                        <img src="/images/games/LabirinHijaiyah.webp" alt="Labirin Hijaiyah" class="max-w-[180px]">
+                {{-- Kartu 2: Labirin Hijaiyah (Kuning) --}}
+                <div class="block p-6 md:p-8 rounded-[20px] shadow-lg bg-[#FFCE6B] text-[#234275] transition-transform hover:scale-105 cursor-pointer"
+                    onclick="showGameModal('labirin')">
+                    <div class="flex flex-col md:flex-row-reverse items-center justify-between gap-6 h-full">
+                        <div class="md:w-1/2 text-center md:text-left">
+                            <h3 class="font-titan text-3xl mb-3">Labirin Hijaiyah</h3>
+                            <p class="font-cursive-iwk text-2xl md:text-3xl leading-snug">
+                                Temukan jalan menuju huruf hijaiyah! Hati-hati jangan tersesat.
+                            </p>
+                        </div>
+                        <div class="md:w-1/2 flex justify-center">
+                            <img src="{{ asset('images/games/LabirinHijaiyah.webp') }}" alt="Labirin Hijaiyah" class="max-w-[160px] md:max-w-[180px]">
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            {{-- Kartu 3: Seret & Lepas --}}
-            <div class="block p-8 rounded-[20px] shadow-lg bg-[#F387A9] text-[#234275] transition-transform hover:scale-105 cursor-pointer"
-                onclick="showGameModal('drag-drop')">
-                <div class="flex flex-col md:flex-row items-center justify-between gap-6">
-                    <div class="md:w-1/2 text-center md:text-left">
-                        <h3 class="font-titan text-3xl mb-3">Seret & Lepas</h3>
-                        <p class="font-cursive-iwk text-3xl">
-                            Seret huruf hijaiyah ke tempat huruf latinnya yang cocok. Yuk, pasangkan dengan benar!
-                        </p>
-                    </div>
-                    <div class="md:w-1/2 flex justify-center">
-                        <img src="/images/games/SeretLepas.webp" alt="Seret & Lepas" class="max-w-[180px]">
+                {{-- Kartu 3: Seret & Lepas (Pink) --}}
+                <div class="block p-6 md:p-8 rounded-[20px] shadow-lg bg-[#F387A9] text-[#234275] transition-transform hover:scale-105 cursor-pointer"
+                    onclick="showGameModal('drag-drop')">
+                    <div class="flex flex-col md:flex-row items-center justify-between gap-6 h-full">
+                        <div class="md:w-1/2 text-center md:text-left">
+                            <h3 class="font-titan text-3xl mb-3">Seret & Lepas</h3>
+                            <p class="font-cursive-iwk text-2xl md:text-3xl leading-snug">
+                                Seret huruf hijaiyah ke tempat yang cocok. Pasangkan dengan benar!
+                            </p>
+                        </div>
+                        <div class="md:w-1/2 flex justify-center">
+                            <img src="{{ asset('images/games/SeretLepas.webp') }}" alt="Seret & Lepas" class="max-w-[160px] md:max-w-[180px]">
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            {{-- Kartu 4: Tulis Huruf --}}
-            <div class="block p-8 rounded-[20px] shadow-lg bg-[#BEFA70] text-[#234275] transition-transform hover:scale-105 cursor-pointer"
-                onclick="showGameModal('tracing')">
-                <div class="flex flex-col md:flex-row-reverse items-center justify-between gap-6">
-                    <div class="md:w-1/2 text-center md:text-left">
-                        <h3 class="font-titan text-3xl mb-3">Tulis Huruf</h3>
-                        <p class="font-cursive-iwk text-3xl">
-                            Ikuti garis titik-titik dan tulis huruf hijaiyah dengan rapi. Yuk belajar menulis sambil
-                            bermain!
-                        </p>
-                    </div>
-                    <div class="md:w-1/2 flex justify-center">
-                        <img src="/images/games/TulisHuruf.webp" alt="Tulis Huruf" class="max-w-[180px]">
+                {{-- Kartu 4: Tulis Huruf (Hijau) --}}
+                <div class="block p-6 md:p-8 rounded-[20px] shadow-lg bg-[#BEFA70] text-[#234275] transition-transform hover:scale-105 cursor-pointer"
+                    onclick="showGameModal('tracing')">
+                    <div class="flex flex-col md:flex-row-reverse items-center justify-between gap-6 h-full">
+                        <div class="md:w-1/2 text-center md:text-left">
+                            <h3 class="font-titan text-3xl mb-3">Tulis Huruf</h3>
+                            <p class="font-cursive-iwk text-2xl md:text-3xl leading-snug">
+                                Ikuti garis titik-titik dan tulis huruf hijaiyah dengan rapi.
+                            </p>
+                        </div>
+                        <div class="md:w-1/2 flex justify-center">
+                            <img src="{{ asset('images/games/TulisHuruf.webp') }}" alt="Tulis Huruf" class="max-w-[160px] md:max-w-[180px]">
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
+
+            </div> {{-- Tutup grid --}}
+        </div> {{-- Tutup container putih --}}
+    </div> {{-- Tutup container mx-auto --}}
 
 @endsection
 
-{{-- 3. JavaScript --}}
+{{-- SCRIPTS --}}
 @push('scripts')
     <script>
         let selectedGame = '';
-        const tingkatanId = {{ $tingkatan->tingkatan_id }};
+        // Pastikan variabel PHP dirender dengan aman
+        const tingkatanId = "{{ $tingkatan->tingkatan_id }}";
 
-        // ==========================================
-        // DATA GAME: VIDEO & INSTRUKSI TEKS
-        // Ganti 'YOUR_VIDEO_ID_HERE' dengan ID Video YouTube yang benar
-        // ==========================================
         const gameData = {
             'memory-card': {
                 title: 'Panduan Kartu Memori',
-                videoId: 'YOUR_VIDEO_ID_HERE', // Ganti ID Youtube
+                videoId: 'dQw4w9WgXcQ', // GANTI DENGAN ID YOUTUBE ASLI
                 steps: [
                     'Klik kartu untuk membuka dan lihat hurufnya',
                     'Cari pasangan huruf yang sama',
@@ -279,7 +287,7 @@
             },
             'labirin': {
                 title: 'Panduan Labirin Hijaiyah',
-                videoId: 'YOUR_VIDEO_ID_HERE', // Ganti ID Youtube
+                videoId: 'dQw4w9WgXcQ', // GANTI DENGAN ID YOUTUBE ASLI
                 steps: [
                     'Gunakan tombol panah untuk bergerak',
                     'Cari huruf yang diminta di labirin',
@@ -289,7 +297,7 @@
             },
             'drag-drop': {
                 title: 'Panduan Seret & Lepas',
-                videoId: 'YOUR_VIDEO_ID_HERE', // Ganti ID Youtube
+                videoId: 'dQw4w9WgXcQ', // GANTI DENGAN ID YOUTUBE ASLI
                 steps: [
                     'Lihat huruf hijaiyah di layar',
                     'Seret huruf ke huruf latin yang cocok',
@@ -299,7 +307,7 @@
             },
             'tracing': {
                 title: 'Panduan Tulis Huruf',
-                videoId: 'YOUR_VIDEO_ID_HERE', // Ganti ID Youtube
+                videoId: 'dQw4w9WgXcQ', // GANTI DENGAN ID YOUTUBE ASLI
                 steps: [
                     'Lihat huruf yang akan kamu tulis',
                     'Ikuti garis titik-titik dengan jarimu',
@@ -309,7 +317,6 @@
             }
         };
 
-        // Fungsi Buka Modal
         function showGameModal(gameType) {
             selectedGame = gameType;
             const modal = document.getElementById('gameModal');
@@ -318,49 +325,53 @@
             // 1. Update Judul
             document.getElementById('modalGameTitle').textContent = data.title;
 
-            // 2. Update Video Youtube
+            // 2. Update Video Youtube (Mencegah error jika ID kosong)
             const embedUrl = `https://www.youtube.com/embed/${data.videoId}?rel=0&autoplay=1`;
             document.getElementById('gameVideoIframe').src = embedUrl;
 
-            // 3. Update Langkah-langkah (Step 1-4)
+            // 3. Update Langkah-langkah
             document.getElementById('step1').textContent = data.steps[0];
             document.getElementById('step2').textContent = data.steps[1];
             document.getElementById('step3').textContent = data.steps[2];
             document.getElementById('step4').textContent = data.steps[3];
 
-            // 4. Tampilkan Modal
+            // 4. Tampilkan Modal (Flex agar centered)
             modal.style.display = 'flex';
+            modal.classList.remove('hidden');
         }
 
-        // Fungsi Tutup Modal
         function closeGameModal() {
             const modal = document.getElementById('gameModal');
             modal.style.display = 'none';
+            modal.classList.add('hidden');
 
-            // Reset src iframe agar video berhenti
+            // Reset video
             document.getElementById('gameVideoIframe').src = '';
         }
 
-        // Fungsi Mulai Game
         function startGame() {
+            // URL Routing Laravel
             const gameUrls = {
-                'memory-card': `{{ route('murid.games.memory-card', ['tingkatan_id' => $tingkatan->tingkatan_id]) }}`,
-                'labirin': `{{ route('murid.games.labirin', ['tingkatan_id' => $tingkatan->tingkatan_id]) }}`,
-                'drag-drop': `{{ route('murid.games.drag-drop', ['tingkatan_id' => $tingkatan->tingkatan_id]) }}`,
-                'tracing': `{{ route('murid.games.tracing', ['tingkatan_id' => $tingkatan->tingkatan_id]) }}`
+                'memory-card': "{{ route('murid.games.memory-card', ['tingkatan_id' => $tingkatan->tingkatan_id]) }}",
+                'labirin': "{{ route('murid.games.labirin', ['tingkatan_id' => $tingkatan->tingkatan_id]) }}",
+                'drag-drop': "{{ route('murid.games.drag-drop', ['tingkatan_id' => $tingkatan->tingkatan_id]) }}",
+                'tracing': "{{ route('murid.games.tracing', ['tingkatan_id' => $tingkatan->tingkatan_id]) }}"
             };
 
-            window.location.href = gameUrls[selectedGame];
+            if(gameUrls[selectedGame]) {
+                window.location.href = gameUrls[selectedGame];
+            } else {
+                console.error("Game URL not found");
+            }
         }
 
-        // Tutup modal jika klik di luar area putih
+        // Tutup modal jika klik di luar (overlay hitam)
         document.getElementById('gameModal').addEventListener('click', function(e) {
             if (e.target === this) {
                 closeGameModal();
             }
         });
 
-        // Simpan session
         sessionStorage.setItem('current_tingkatan_id', tingkatanId);
     </script>
 @endpush

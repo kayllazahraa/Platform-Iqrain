@@ -11,12 +11,16 @@
 
 @layer base {
   @font-face {
-    font-family: 'TegakBersambung';
-    /* Pastikan file ada di public/fonts/ */
-    src: url('/fonts/TegakBersambung_IWK.ttf') format('truetype');
+    font-family: 'TegakBersambung';     
+    src: url('../fonts/TegakBersambung_IWK.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
     font-display: swap;
+  }
+  
+  @font-face {
+      font-family: 'Tegak Bersambung_IWK'; 
+      src: url('../fonts/TegakBersambung_IWK.ttf') format('truetype');
   }
 }
 
@@ -280,6 +284,22 @@
     }
     .card-back span {
         @apply text-3xl font-bold font-tegak; 
+    }
+}
+
+/* Animasi Balon Goyang slur ea */
+@layer utilities {   
+    @keyframes bounce-slow {
+        0%, 100% {
+            transform: translateY(-20px);
+        }
+        50% {
+            transform: translateY(0);
+        }
+    }
+        
+    .animate-bounce-slow {
+        animation: bounce-slow 5s ease-in-out infinite;
     }
 }
 
