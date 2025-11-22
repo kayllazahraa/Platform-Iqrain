@@ -1,106 +1,187 @@
 @extends('layouts.murid')
 
-{{-- Judul halaman akan diambil dari $tingkatan --}}
+{{-- Judul halaman diambil dari $tingkatan --}}
 @section('title', 'Games - Iqra ' . $tingkatan->level)
 
-{{-- 1. @push('styles') yang sudah diperbaiki --}}
+{{-- 1. Style & Font --}}
 @push('styles')
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Mooli&family=Titan+One&display=swap" rel="stylesheet">
 
     <style>
+
+        /* Font Khusus Angka (Nanum Myeongjo) */
+        @font-face {
+            font-family: 'NanumMyeongjo';
+            src: url('{{ asset('fonts/NanumMyeongjo-Regular.ttf') }}') format('truetype');
+        }
+
+        .font-nanum {
+            font-family: 'NanumMyeongjo', serif;
+            padding-left: 4px;
+        }
+
         body {
-            /* Warna latar soft biru */
             background-color: #E4F2FF;
-            /* Gambar pattern */
             background-image: url('{{ asset('images/games/game-pattern.webp') }}');
-
-            /* PERUBAHAN: Membuat pattern lebih kecil dan berulang */
             background-size: 500px;
-            /* Atur ukuran ubin pattern di sini (misal: 300px) */
             background-repeat: repeat;
-            /* ------------------------------------------------ */
-
             background-attachment: fixed;
             background-position: center;
+        }
+
+        /* Animasi Goyang */
+        @keyframes wiggle {
+
+            0%,
+            100% {
+                transform: rotate(-3deg);
+            }
+
+            50% {
+                transform: rotate(3deg);
+            }
+        }
+
+        .btn-goyang {
+            /* Warna Pink */
+            background-color: #AC3F61;
+            /* Jalankan animasi */
+            animation: wiggle 0.8s ease-in-out infinite;
+        }
+
+        /* Saat di-hover: Stop goyang & perbesar sedikit */
+        .btn-goyang:hover {
+            background-color: #963653;
+            /* Pink lebih gelap dikit */
+            animation: none;
+            transform: scale(1.05);
         }
     </style>
 @endpush
 
-
-{{-- 2. Ini adalah @section('content') yang baru, berisi HTML dari kode lama Anda --}}
+{{-- 2. Konten Utama --}}
 @section('content')
 
-    {{-- Kita tetap gunakan Modal/Pop-up dari file BARU Anda, karena JS-nya sudah terhubung --}}
-    <div id="gameModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50"
+    {{-- ========================================= --}}
+    {{-- MODAL POP-UP (VIDEO + LANGKAH) --}}
+    {{-- ========================================= --}}
+    <div id="gameModal" class="fixed inset-0 bg-black bg-opacity-60 hidden items-center justify-center z-50"
         style="display: none;">
-        <div class="bg-gradient-to-br from-pink-200 to-pink-300 rounded-3xl p-8 max-w-md mx-4 shadow-2xl relative">
+
+        {{-- Container Modal --}}
+        <div class="bg-gradient-to-br from-pink-100 to-white rounded-[30px] p-1 w-full max-w-5xl mx-4 shadow-2xl relative">
+
+            {{-- Tombol Close --}}
             <button onclick="closeGameModal()"
-                class="absolute top-4 right-4 text-pink-600 hover:text-pink-800 text-3xl font-bold">
+                class="absolute -top-4 -right-4 bg-pink-500 text-white w-10 h-10 rounded-full hover:bg-pink-600 text-2xl font-bold shadow-lg flex items-center justify-center z-10 transition-transform hover:scale-110">
                 &times;
             </button>
 
-            <h3 class="text-3xl font-cursive-iwk text-pink-700 text-center mb-6">Cara Bermain</h3>
+            <div class="bg-white rounded-[26px] p-6 md:p-8">
+                {{-- Judul Game --}}
+                <h3 class="text-3xl md:text-4xl font-titan text-[#234275] text-center mb-6" id="modalGameTitle">
+                    Panduan Bermain
+                </h3>
 
-            <div class="space-y-3 mb-8">
-                <div class="flex items-center gap-3">
-                    <div
-                        class="bg-pink-500 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold text-lg flex-shrink-0">
-                        1</div>
-                    <p class="text-pink-900 font-cursive-iwk text-xl" id="step1">Klik tombol mulai untuk memulai
-                        permainan</p>
+                {{-- Layout Grid: Kiri Video, Kanan Teks --}}
+                <div class="flex flex-col lg:flex-row gap-8 mb-8">
+
+                    {{-- BAGIAN KIRI: VIDEO --}}
+                    <div class="w-full lg:w-1/2 flex flex-col justify-center">
+                        <div
+                            class="relative w-full pt-[56.25%] rounded-2xl overflow-hidden shadow-lg border-2 border-gray-100 bg-black">
+                            <iframe id="gameVideoIframe" class="absolute top-0 left-0 w-full h-full" src=""
+                                title="YouTube video player" frameborder="0"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                allowfullscreen>
+                            </iframe>
+                        </div>
+                        <p class="text-center text-gray-500 text-xl mt-3 font-cursive-iwk text-lg">Tonton video untuk
+                            panduan lengkap</p>
+                    </div>
+
+                    {{-- BAGIAN KANAN: LANGKAH-LANGKAH --}}
+                    <div class="w-full lg:w-1/2 flex flex-col justify-center">
+                        <div class="space-y-4">
+                            {{-- Step 1 --}}
+                            {{-- PERUBAHAN: items-start -> items-center, w-10 -> w-12, text-xl -> text-2xl --}}
+                            <div class="flex items-center gap-4 p-3 rounded-xl hover:bg-pink-50 transition-colors">
+                                <div
+                                    class="bg-pink-500 text-white rounded-full w-12 h-12 flex items-center justify-center font-nanum text-2xl flex-shrink-0 shadow-md">
+                                    1
+                                </div>
+                                <p class="text-pink-900 font-cursive-iwk text-2xl leading-snug pt-1" id="step1">
+                                </p>
+                            </div>
+
+                            {{-- Step 2 --}}
+                            <div class="flex items-center gap-4 p-3 rounded-xl hover:bg-pink-50 transition-colors">
+                                <div
+                                    class="bg-pink-500 text-white rounded-full w-12 h-12 flex items-center justify-center font-nanum text-2xl flex-shrink-0 shadow-md">
+                                    2
+                                </div>
+                                <p class="text-pink-900 font-cursive-iwk text-2xl leading-snug pt-1" id="step2">
+                                </p>
+                            </div>
+
+                            {{-- Step 3 --}}
+                            <div class="flex items-center gap-4 p-3 rounded-xl hover:bg-pink-50 transition-colors">
+                                <div
+                                    class="bg-pink-500 text-white rounded-full w-12 h-12 flex items-center justify-center font-nanum text-2xl flex-shrink-0 shadow-md">
+                                    3
+                                </div>
+                                <p class="text-pink-900 font-cursive-iwk text-2xl leading-snug pt-1" id="step3">
+                                </p>
+                            </div>
+
+                            {{-- Step 4 --}}
+                            <div class="flex items-center gap-4 p-3 rounded-xl hover:bg-pink-50 transition-colors">
+                                <div
+                                    class="bg-pink-500 text-white rounded-full w-12 h-12 flex items-center justify-center font-nanum text-2xl flex-shrink-0 shadow-md">
+                                    4
+                                </div>
+                                <p class="text-pink-900 font-cursive-iwk text-2xl leading-snug pt-1" id="step4">
+                                </p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="flex items-center gap-3">
-                    <div
-                        class="bg-pink-500 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold text-lg flex-shrink-0">
-                        2</div>
-                    <p class="text-pink-900 font-cursive-iwk text-xl" id="step2">Ikuti instruksi yang ada di layar
-                    </p>
-                </div>
-                <div class="flex items-center gap-3">
-                    <div
-                        class="bg-pink-500 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold text-lg flex-shrink-0">
-                        3</div>
-                    <p class="text-pink-900 font-cursive-iwk text-xl" id="step3">Selesaikan tantangan untuk mendapat
-                        poin</p>
-                </div>
-                <div class="flex items-center gap-3">
-                    <div
-                        class="bg-pink-500 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold text-lg flex-shrink-0">
-                        4</div>
-                    <p class="text-pink-900 font-cursive-iwk text-xl" id="step4">Lihat skormu di halaman evaluasi
-                    </p>
+
+                {{-- Tombol Main --}}
+                <div class="flex justify-center">
+                    <button onclick="startGame()"
+                        class="btn-goyang w-full md:w-1/4 text-2xl md:text-3xl py-4 text-white font-cursive-iwk rounded-2xl shadow-lg transition-transform duration-200 hover:shadow-xl">
+                        Mainkan Sekarang!
+                    </button>
                 </div>
             </div>
-
-            <button onclick="startGame()"
-                class="w-full text-2xl py-4 bg-gradient-to-r from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600 text-white font-cursive-iwk rounded-xl shadow-lg">
-                Mainkan!
-            </button>
         </div>
     </div>
 
-    {{-- Ini adalah Konten Header dari file LAMA Anda --}}
+    {{-- ========================================= --}}
+    {{-- HEADER HALAMAN --}}
+    {{-- ========================================= --}}
     <div class="container mx-auto px-6 py-12">
         <div class="flex flex-col md:flex-row items-center justify-between gap-8">
             <div class="md:w-1/2">
                 <h1 class="font-titan text-[60px] lg:text-[80px] text-[#234275] leading-none">
                     Siap untuk Berpetualang?
                 </h1>
-                {{-- PERBAIKAN FONT: Ganti font-mooli menjadi font-cursive-iwk --}}
                 <h2 class="font-cursive-iwk text-[45px] lg:text-[55px] text-gray-700 leading-tight mt-2">
                     Mainkan dan Raih Skormu
                 </h2>
             </div>
             <div class="md:w-1/2 flex justify-center md:justify-end">
-                {{-- Ganti path gambar qira-game.webp jika perlu --}}
                 <img src="/images/games/qira-game.webp" alt="Qira Game" class="max-w-sm md:max-w-md">
             </div>
         </div>
     </div>
 
-    {{-- Ini adalah Grid Game dari file LAMA Anda, dengan 'onclick' yang disesuaikan --}}
+    {{-- ========================================= --}}
+    {{-- GRID PILIHAN GAME --}}
+    {{-- ========================================= --}}
     <div class="container mx-auto px-6 py-12">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
 
@@ -110,7 +191,6 @@
                 <div class="flex flex-col md:flex-row items-center justify-between gap-6">
                     <div class="md:w-1/2 text-center md:text-left">
                         <h3 class="font-titan text-3xl mb-3">Kartu Memori</h3>
-                        {{-- PERBAIKAN FONT: Ganti font-mooli menjadi font-cursive-iwk --}}
                         <p class="font-cursive-iwk text-3xl">
                             <span class="phrase">Yuk</span> cocokin huruf yang sama. Buka kartunya dan ingat di mana
                             hurufnya tersembunyi!
@@ -128,7 +208,6 @@
                 <div class="flex flex-col md:flex-row-reverse items-center justify-between gap-6">
                     <div class="md:w-1/2 text-center md:text-left">
                         <h3 class="font-titan text-3xl mb-3">Labirin Hijaiyah</h3>
-                        {{-- PERBAIKAN FONT: Ganti font-mooli menjadi font-cursive-iwk --}}
                         <p class="font-cursive-iwk text-3xl">
                             Temukan jalan menuju huruf hijaiyah yang dicari! Hati-hati jangan tersesat di labirin
                         </p>
@@ -145,7 +224,6 @@
                 <div class="flex flex-col md:flex-row items-center justify-between gap-6">
                     <div class="md:w-1/2 text-center md:text-left">
                         <h3 class="font-titan text-3xl mb-3">Seret & Lepas</h3>
-                        {{-- PERBAIKAN FONT: Ganti font-mooli menjadi font-cursive-iwk --}}
                         <p class="font-cursive-iwk text-3xl">
                             Seret huruf hijaiyah ke tempat huruf latinnya yang cocok. Yuk, pasangkan dengan benar!
                         </p>
@@ -162,7 +240,6 @@
                 <div class="flex flex-col md:flex-row-reverse items-center justify-between gap-6">
                     <div class="md:w-1/2 text-center md:text-left">
                         <h3 class="font-titan text-3xl mb-3">Tulis Huruf</h3>
-                        {{-- PERBAIKAN FONT: Ganti font-mooli menjadi font-cursive-iwk --}}
                         <p class="font-cursive-iwk text-3xl">
                             Ikuti garis titik-titik dan tulis huruf hijaiyah dengan rapi. Yuk belajar menulis sambil
                             bermain!
@@ -173,72 +250,99 @@
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
 
-    {{-- Ini adalah Footer dari file LAMA Anda
-    <footer class="w-full mt-12">
-        <img src="/images/games/game-footer.webp" alt="Footer Hiasan" class="w-full object-cover">
-    </footer> --}}
-
 @endsection
 
-{{-- 3. Kita tetap gunakan @push('scripts') dari file BARU Anda --}}
+{{-- 3. JavaScript --}}
 @push('scripts')
     <script>
         let selectedGame = '';
         const tingkatanId = {{ $tingkatan->tingkatan_id }};
 
-        const gameInstructions = {
+        // ==========================================
+        // DATA GAME: VIDEO & INSTRUKSI TEKS
+        // Ganti 'YOUR_VIDEO_ID_HERE' dengan ID Video YouTube yang benar
+        // ==========================================
+        const gameData = {
             'memory-card': {
-                step1: 'Klik kartu untuk membuka dan lihat hurufnya',
-                step2: 'Cari pasangan huruf yang sama',
-                step3: 'Cocokkan semua pasangan untuk menang',
-                step4: 'Semakin cepat, semakin tinggi skormu!'
+                title: 'Panduan Kartu Memori',
+                videoId: 'YOUR_VIDEO_ID_HERE', // Ganti ID Youtube
+                steps: [
+                    'Klik kartu untuk membuka dan lihat hurufnya',
+                    'Cari pasangan huruf yang sama',
+                    'Cocokkan semua pasangan untuk menang',
+                    'Semakin cepat, semakin tinggi skormu!'
+                ]
             },
             'labirin': {
-                step1: 'Gunakan tombol panah untuk bergerak',
-                step2: 'Cari huruf yang diminta di labirin',
-                step3: 'Hindari jalan buntu dan temukan jalan keluar',
-                step4: 'Kumpulkan semua huruf untuk menyelesaikan level'
+                title: 'Panduan Labirin Hijaiyah',
+                videoId: 'YOUR_VIDEO_ID_HERE', // Ganti ID Youtube
+                steps: [
+                    'Gunakan tombol panah untuk bergerak',
+                    'Cari huruf yang diminta di labirin',
+                    'Hindari jalan buntu dan temukan jalan keluar',
+                    'Kumpulkan semua huruf untuk menyelesaikan level'
+                ]
             },
             'drag-drop': {
-                step1: 'Lihat huruf hijaiyah di layar',
-                step2: 'Seret huruf ke huruf latin yang cocok',
-                step3: 'Lepaskan di tempat yang benar',
-                step4: 'Jawab semua soal dengan benar!'
+                title: 'Panduan Seret & Lepas',
+                videoId: 'YOUR_VIDEO_ID_HERE', // Ganti ID Youtube
+                steps: [
+                    'Lihat huruf hijaiyah di layar',
+                    'Seret huruf ke huruf latin yang cocok',
+                    'Lepaskan di tempat yang benar',
+                    'Jawab semua soal dengan benar!'
+                ]
             },
             'tracing': {
-                step1: 'Lihat huruf yang akan kamu tulis',
-                step2: 'Ikuti garis titik-titik dengan jarimu',
-                step3: 'Tulis dengan rapi mengikuti panduan',
-                step4: 'Selesaikan semua huruf untuk lanjut!'
+                title: 'Panduan Tulis Huruf',
+                videoId: 'YOUR_VIDEO_ID_HERE', // Ganti ID Youtube
+                steps: [
+                    'Lihat huruf yang akan kamu tulis',
+                    'Ikuti garis titik-titik dengan jarimu',
+                    'Tulis dengan rapi mengikuti panduan',
+                    'Selesaikan semua huruf untuk lanjut!'
+                ]
             }
         };
 
+        // Fungsi Buka Modal
         function showGameModal(gameType) {
             selectedGame = gameType;
             const modal = document.getElementById('gameModal');
-            const instructions = gameInstructions[gameType];
+            const data = gameData[gameType];
 
-            // Update instructions
-            document.getElementById('step1').textContent = instructions.step1;
-            document.getElementById('step2').textContent = instructions.step2;
-            document.getElementById('step3').textContent = instructions.step3;
-            document.getElementById('step4').textContent = instructions.step4;
+            // 1. Update Judul
+            document.getElementById('modalGameTitle').textContent = data.title;
 
+            // 2. Update Video Youtube
+            const embedUrl = `https://www.youtube.com/embed/${data.videoId}?rel=0&autoplay=1`;
+            document.getElementById('gameVideoIframe').src = embedUrl;
+
+            // 3. Update Langkah-langkah (Step 1-4)
+            document.getElementById('step1').textContent = data.steps[0];
+            document.getElementById('step2').textContent = data.steps[1];
+            document.getElementById('step3').textContent = data.steps[2];
+            document.getElementById('step4').textContent = data.steps[3];
+
+            // 4. Tampilkan Modal
             modal.style.display = 'flex';
         }
 
+        // Fungsi Tutup Modal
         function closeGameModal() {
-            document.getElementById('gameModal').style.display = 'none';
+            const modal = document.getElementById('gameModal');
+            modal.style.display = 'none';
+
+            // Reset src iframe agar video berhenti
+            document.getElementById('gameVideoIframe').src = '';
         }
 
+        // Fungsi Mulai Game
         function startGame() {
-            // Rute ini diambil dari file web.php proyek BARU Anda
             const gameUrls = {
-                // PENTING: Pastikan nama rute ini benar-benar ada di routes/web.php
                 'memory-card': `{{ route('murid.games.memory-card', ['tingkatan_id' => $tingkatan->tingkatan_id]) }}`,
                 'labirin': `{{ route('murid.games.labirin', ['tingkatan_id' => $tingkatan->tingkatan_id]) }}`,
                 'drag-drop': `{{ route('murid.games.drag-drop', ['tingkatan_id' => $tingkatan->tingkatan_id]) }}`,
@@ -248,14 +352,14 @@
             window.location.href = gameUrls[selectedGame];
         }
 
-        // Close modal on outside click
+        // Tutup modal jika klik di luar area putih
         document.getElementById('gameModal').addEventListener('click', function(e) {
             if (e.target === this) {
                 closeGameModal();
             }
         });
 
-        // Initialize
+        // Simpan session
         sessionStorage.setItem('current_tingkatan_id', tingkatanId);
     </script>
 @endpush
