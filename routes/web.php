@@ -15,6 +15,8 @@ use App\Http\Controllers\Murid\GameController;
 use App\Http\Controllers\Murid\EvaluasiController;
 use App\Http\Controllers\Murid\MentorController;
 
+use App\Livewire\Murid\MuridUpdateProfile;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -143,6 +145,9 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
             $tingkatans = TingkatanIqra::orderBy('level')->get();
             return view('pages.murid.pilih-iqra', compact('tingkatans'));
         })->name('pilih-iqra');
+
+        // Update profile
+        Route::get('/profile', MuridUpdateProfile::class)->name('profile');
 
         // Modul
         Route::get('/modul/{tingkatan_id}', [ModulController::class, 'index'])->name('modul.index');
