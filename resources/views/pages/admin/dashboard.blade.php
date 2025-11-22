@@ -12,7 +12,7 @@
                     </div>
                     {{-- Qira Mascot --}}
                     <div class="flex-shrink-0">
-                        <img src="{{ asset('images/maskot/maskot_1.webp') }}" 
+                        <img src="{{ asset('images/maskot/mengaji.webp') }}" 
                              alt="Qira" 
                              class="w-32 h-32 sm:w-40 sm:h-40 object-contain drop-shadow-2xl"
                              onerror="this.style.display='none'">
@@ -22,98 +22,100 @@
         </div>
 
         {{-- Quick Stats Grid --}}
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             
             {{-- Total Murids --}}
-            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border-l-4 border-pink-400 transform transition-all duration-300 hover:scale-105 hover:shadow-xl">
-                <div class="flex items-center justify-between">
-                    <div class="flex-1">
-                        <p class="text-gray-600 dark:text-gray-400 text-sm font-medium mb-1">Total Murid</p>
-                        <h3 class="text-4xl font-bold text-gray-800 dark:text-white">{{ $stats['total_murids'] }}</h3>
-                        <p class="text-gray-500 dark:text-gray-400 text-xs mt-2">
-                            <span class="font-semibold text-pink-600 dark:text-pink-400">{{ $stats['active_murids'] }}</span> aktif minggu ini
-                        </p>
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6 transform transition-all duration-300 hover:shadow-xl relative overflow-hidden">
+                <div class="absolute top-4 right-4">
+                    <div class="bg-iqrain-pink/10 rounded-full p-3 w-14 h-14 flex items-center justify-center">
+                        <i class="fas fa-users text-xl text-iqrain-pink"></i>
                     </div>
-                    <div class="bg-pink-50 dark:bg-pink-900/20 rounded-xl p-4">
-                        <i class="fas fa-users text-4xl text-pink-500 dark:text-pink-400"></i>
+                </div>
+                
+                {{-- Main Content --}}
+                <div class="mt-2 pr-16">
+                    <h3 class="text-4xl font-bold text-gray-800 dark:text-white mb-2 leading-none">
+                        {{ number_format($stats['total_murids']) }}
+                    </h3>
+                    <p class="text-gray-600 dark:text-gray-400 text-sm font-medium mb-3">Total Murid</p>
+                    
+                    {{-- Growth Indicator --}}
+                    <div class="flex items-center text-xs">
+                        <i class="fas fa-arrow-up text-green-500 mr-1"></i>
+                        <span class="text-green-500 font-semibold">{{ $stats['active_murids'] }}</span>
+                        <span class="text-gray-500 dark:text-gray-400 ml-1">aktif minggu ini</span>
                     </div>
                 </div>
             </div>
 
-            {{-- Active Mentors --}}
-            <div class="bg-gradient-to-br from-pink-50 to-white dark:from-gray-800 dark:to-gray-800 rounded-2xl shadow-lg p-6 border-l-4 border-pink-500 transform transition-all duration-300 hover:scale-105 hover:shadow-xl">
-                <div class="flex items-center justify-between">
-                    <div class="flex-1">
-                        <p class="text-gray-600 dark:text-gray-400 text-sm font-medium mb-1">Mentor Aktif</p>
-                        <h3 class="text-4xl font-bold text-gray-800 dark:text-white">{{ $stats['approved_mentors'] }}</h3>
-                        <p class="text-gray-500 dark:text-gray-400 text-xs mt-2">
-                            <span class="font-semibold text-pink-600 dark:text-pink-400">{{ $stats['pending_mentors'] }}</span> menunggu persetujuan
-                        </p>
+            {{-- Active Mentors (Iqrain Blue) --}}
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6 transform transition-all duration-300 hover:shadow-xl relative overflow-hidden">
+                {{-- Icon Circle Top Right --}}
+                <div class="absolute top-4 right-4">
+                    <div class="bg-iqrain-blue/10 rounded-full p-3 w-14 h-14 flex items-center justify-center">
+                        <i class="fas fa-chalkboard-teacher text-xl text-iqrain-blue"></i>
                     </div>
-                    <div class="bg-pink-100 dark:bg-pink-900/30 rounded-xl p-4">
-                        <i class="fas fa-chalkboard-teacher text-4xl text-pink-600 dark:text-pink-400"></i>
+                </div>
+                
+                {{-- Main Content --}}
+                <div class="mt-2 pr-16">
+                    <h3 class="text-4xl font-bold text-gray-800 dark:text-white mb-2 leading-none">
+                        {{ number_format($stats['approved_mentors']) }}
+                    </h3>
+                    <p class="text-gray-600 dark:text-gray-400 text-sm font-medium mb-3">Mentor Aktif</p>
+                    
+                    {{-- Pending Indicator --}}
+                    <div class="flex items-center text-xs">
+                        <i class="fas fa-clock text-iqrain-yellow mr-1"></i>
+                        <span class="text-iqrain-yellow font-semibold">{{ $stats['pending_mentors'] }}</span>
+                        <span class="text-gray-500 dark:text-gray-400 ml-1">menunggu</span>
                     </div>
                 </div>
             </div>
 
-            {{-- Pending Requests --}}
-            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border-l-4 border-rose-400 transform transition-all duration-300 hover:scale-105 hover:shadow-xl">
-                <div class="flex items-center justify-between">
-                    <div class="flex-1">
-                        <p class="text-gray-600 dark:text-gray-400 text-sm font-medium mb-1">Permintaan</p>
-                        <h3 class="text-4xl font-bold text-gray-800 dark:text-white">{{ $stats['pending_requests'] }}</h3>
-                        <p class="text-gray-500 dark:text-gray-400 text-xs mt-2">
-                            Bimbingan menunggu
-                        </p>
-                    </div>
-                    <div class="bg-rose-50 dark:bg-rose-900/20 rounded-xl p-4">
-                        <i class="fas fa-clock text-4xl text-rose-500 dark:text-rose-400"></i>
+            {{-- Pending Requests (Iqrain Pink) --}}
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6 transform transition-all duration-300 hover:shadow-xl relative overflow-hidden">
+                {{-- Icon Circle Top Right --}}
+                <div class="absolute top-4 right-4">
+                    <div class="bg-iqrain-pink/10 rounded-full p-3 w-14 h-14 flex items-center justify-center">
+                        <i class="fas fa-clock text-xl text-iqrain-pink"></i>
                     </div>
                 </div>
-            </div>
-        </div>
-
-        {{-- Secondary Stats --}}
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-            
-            {{-- Videos Available --}}
-            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border-l-4 border-pink-300 transform transition-all duration-300 hover:scale-105 hover:shadow-xl">
-                <div class="flex items-center justify-between">
-                    <div class="flex-1">
-                        <p class="text-gray-600 dark:text-gray-400 text-sm font-medium mb-2">Video Tersedia</p>
-                        <h4 class="text-4xl font-bold text-gray-800 dark:text-white mb-1">{{ $stats['total_videos'] }}</h4>
-                    </div>
-                    <div class="bg-pink-50 dark:bg-pink-900/20 rounded-xl p-4">
-                        <i class="fas fa-video text-4xl text-pink-600 dark:text-pink-400"></i>
+                
+                {{-- Main Content --}}
+                <div class="mt-2 pr-16">
+                    <h3 class="text-4xl font-bold text-gray-800 dark:text-white mb-2 leading-none">
+                        {{ number_format($stats['pending_requests']) }}
+                    </h3>
+                    <p class="text-gray-600 dark:text-gray-400 text-sm font-medium mb-3">Permintaan</p>
+                    
+                    {{-- Status --}}
+                    <div class="flex items-center text-xs">
+                        <span class="text-gray-500 dark:text-gray-400">Bimbingan menunggu</span>
                     </div>
                 </div>
             </div>
 
-            {{-- Games Played Today --}}
-            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border-l-4 border-rose-300 transform transition-all duration-300 hover:scale-105 hover:shadow-xl">
-                <div class="flex items-center justify-between">
-                    <div class="flex-1">
-                        <p class="text-gray-600 dark:text-gray-400 text-sm font-medium mb-2">Game Hari Ini</p>
-                        <h4 class="text-4xl font-bold text-gray-800 dark:text-white mb-1">{{ $stats['games_today'] }}</h4>
-                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                            <span class="font-semibold text-rose-600 dark:text-rose-400">{{ $stats['games_this_week'] }}</span> minggu ini
-                        </p>
-                    </div>
-                    <div class="bg-rose-50 dark:bg-rose-900/20 rounded-xl p-4">
-                        <i class="fas fa-gamepad text-4xl text-rose-600 dark:text-rose-400"></i>
+            {{-- Total Users (Iqrain Blue) --}}
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6 transform transition-all duration-300 hover:shadow-xl relative overflow-hidden">
+                {{-- Icon Circle Top Right --}}
+                <div class="absolute top-4 right-4">
+                    <div class="bg-iqrain-blue/10 rounded-full p-3 w-14 h-14 flex items-center justify-center">
+                        <i class="fas fa-user-friends text-xl text-iqrain-blue"></i>
                     </div>
                 </div>
-            </div>
-
-            {{-- Total Users --}}
-            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border-l-4 border-pink-400 transform transition-all duration-300 hover:scale-105 hover:shadow-xl">
-                <div class="flex items-center justify-between">
-                    <div class="flex-1">
-                        <p class="text-gray-600 dark:text-gray-400 text-sm font-medium mb-2">Total Pengguna</p>
-                        <h4 class="text-4xl font-bold text-gray-800 dark:text-white mb-1">{{ $stats['total_users'] }}</h4>
-                    </div>
-                    <div class="bg-pink-50 dark:bg-pink-900/20 rounded-xl p-4">
-                        <i class="fas fa-user-friends text-4xl text-pink-600 dark:text-pink-400"></i>
+                
+                {{-- Main Content --}}
+                <div class="mt-2 pr-16">
+                    <h3 class="text-4xl font-bold text-gray-800 dark:text-white mb-2 leading-none">
+                        {{ number_format($stats['total_users']) }}
+                    </h3>
+                    <p class="text-gray-600 dark:text-gray-400 text-sm font-medium mb-3">Total Pengguna</p>
+                    
+                    {{-- Growth Indicator --}}
+                    <div class="flex items-center text-xs">
+                        <i class="fas fa-arrow-up text-green-500 mr-1"></i>
+                        <span class="text-green-500 font-semibold">112.71%</span>
                     </div>
                 </div>
             </div>
