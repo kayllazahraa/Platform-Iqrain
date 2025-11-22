@@ -35,20 +35,27 @@
         </div>
     </div>
 
+    
+
     <!-- Game Container -->
     <div id="game-container" class="game-container">
         
         <!-- Header with Exit Button -->
         <div class="game-header">
-            <div class="letter-info-display font-cursive-iwk">
-                <span id="current-letter-arabic" class="arabic-letter">ا</span>
-                <span id="current-letter-name" class="letter-name-display">Alif</span>
-            </div>
             <a href="{{ url('/murid/games/1') }}" id="exit-button" class="exit-button">Keluar</a>
+            <div class="letter-info-display">
+                <span id="current-letter-arabic" class="arabic-letter" style="color:white;">ا</span>
+                <span id="current-letter-name" class="letter-name-display" style="color: white;">Alif</span>
+            </div>
         </div>
 
         <!-- Main Game Area -->
         <div class="game-main">
+
+            {{-- Balon kiri --}}
+            <div class="balloon balloon-left">
+                <img src="{{ asset('images/icon/balon.webp') }}" alt="Balon Kiri" style="width:100%; height:auto;">
+            </div>
             
             <!-- Canvas Area (Left Side) -->
             <div class="canvas-section">
@@ -66,11 +73,10 @@
             </div>
 
             <!-- Animation Preview (Right Side) -->
-            <div class="preview-section font-cursive-iwk">
-                <div class="preview-title">Perhatikan Cara Menulisnya</div>
+            <div class="preview-section font-cursive-iwk">                
                 <div class="preview-wrapper">
                     <div id="letter-display" class="letter-display">ا</div>
-                    <canvas id="animationCanvas" width="300" height="250"></canvas>
+                    <canvas id="animationCanvas" width="400" height="300"></canvas>
                 </div>
             </div>
 
@@ -93,7 +99,16 @@
                 Kembali ke Menu Game
             </a>
 
+              <!-- Balon kanan -->
+            <div class="balloon balloon-right">
+                <img src="{{ asset('images/icon/balon.webp') }}" alt="Balon Kanan" style="width:100%; height:auto;">
+            </div>
+
+
+
         </div>
+
+
 
         <!-- Progress Footer -->
         <div class="game-footer">
@@ -112,8 +127,8 @@
             </div>
 
             <div class="navigation-buttons">
-                <button id="prev-button" class="nav-btn btn-prev font-titan">← Sebelumnya</button>
-                <button id="next-button" class="nav-btn btn-next font-titan">Berikutnya →</button>
+                <button id="prev-button" class="nav-btn btn-prev"><span>←</span>← Sebelumnya</button>
+                <button id="next-button" class="nav-btn btn-next">Berikutnya <span>→</span></button>
             </div>
         </div>
 
