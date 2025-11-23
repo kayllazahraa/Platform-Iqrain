@@ -5,7 +5,7 @@
         {{-- Header --}}
         <div class="mb-6">
             <h1 class="text-3xl text-white font-black">Progres Kelas</h1>
-            <p class="text-gray-400 mt-1">Lihat perkembangan kelas yang dibimbing</p>
+            <p class="text-white mt-1">Lihat perkembangan kelas yang dibimbing</p>
         </div>
 
         {{-- Stats Cards Row --}}
