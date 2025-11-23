@@ -12,8 +12,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
-
-
 class GameController extends Controller
 {
     public function index($tingkatan_id)
@@ -102,8 +100,7 @@ class GameController extends Controller
             ]);
 
         } catch (\Exception $e) {
-            DB::rollBack();
-            Log::error("Error saving tracing score: " . $e->getMessage());
+            DB::rollBack();            
             return response()->json(['error' => 'Gagal menyimpan skor. Silakan coba lagi.'], 500);
         }
     }
@@ -209,7 +206,6 @@ class GameController extends Controller
             'targetFiles' => $targetFiles,
         ]);
     }
-
 
     public function dragDrop($tingkatan_id)
     {

@@ -186,9 +186,7 @@
                 @endif
                 
                 <div class="flex-1 min-h-0 overflow-y-auto space-y-2 px-6">
-                    @php
-                        // Kalau podium tampil, list mulai dari orang ke-4 (skip 3).
-                        // Kalau podium TIDAK tampil (cuma 1-2 orang), list tampilkan SEMUA (skip 0).
+                    @php                        
                         $listItems = $cukupBuatPodium ? $leaderboards->skip(3) : $leaderboards;
                     @endphp
 
@@ -210,7 +208,7 @@
                             <p class="text-lg font-bold text-pink-500">{{ $leaderboard->total_poin_semua_game }}</p>
                         </div>
                         @empty
-                        <div class="font-cursive-iwk text-lg text-center text-gray-500 py-8">
+                        <div class="font-cursive-iwk text-4xl text-center text-gray-500 py-8">
                             Belum ada peringkat lainnya
                         </div>
                     @endforelse

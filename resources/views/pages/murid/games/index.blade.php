@@ -154,7 +154,7 @@
                 {{-- Tombol Main --}}
                 <div class="flex justify-center">
                     <button onclick="startGame()"
-                        class="btn-goyang w-full md:w-1/2 lg:w-1/3 text-2xl md:text-3xl py-4 text-white font-cursive-iwk rounded-2xl shadow-lg transition-transform duration-200 hover:shadow-xl">
+                        class="btn-goyang w-full md:w-1/2 lg:w-1/3 text-2xl md:text-3xl py-4 text-white font-cursive-iwk rounded-2xl shadow-lg transition-transform duration-200 hover:shadow-xl cursor-pointer">
                         Mainkan Sekarang!
                     </button>
                 </div>
@@ -281,7 +281,7 @@
                     'Klik kartu untuk membuka dan lihat hurufnya',
                     'Cari pasangan huruf yang sama',
                     'Cocokkan semua pasangan untuk menang',
-                    'Semakin cepat, semakin tinggi skormu!'
+                    'Tekan restart jika dirasa susah'
                 ]
             },
             'labirin': {

@@ -53,9 +53,9 @@
                 </div>
                 <button
                     id="reset-button"
-                    class="font-['TegakBersambung'] bg-white text-[#D084A8] border-2 border-[#D084A8] px-5 py-2 rounded-full text-base font-bold cursor-pointer shadow-sm transition-all duration-300 hover:bg-[#D084A8] hover:text-white"
+                    class="font-['TegakBersambung'] bg-white text-[#D084A8] border-2 border-[#D084A8] px-5 py-2 rounded-full text-2xl font-bold cursor-pointer shadow-sm transition-all duration-300 hover:bg-[#D084A8] hover:text-white"
                 >
-                    ↻ Main lagi
+                    ↻ Restart
                 </button>
             </div>
 
@@ -70,13 +70,49 @@
         </div>
 
         {{-- Ucapan selamat datang --}}
-        <div id="welcome-backdrop" class="fixed inset-0 z-40 transition-opacity duration-1000" style="background-color: rgba(0, 0, 0, 0.6);"></div>
-        <h1 id="welcome-message" class="font-['TegakBersambung'] fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 
-                                    font-sans text-7xl md:text-8xl font-bold text-white 
-                                    opacity-0 transition-opacity duration-1000 ease-out"
-                                    style="text-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);">
-            Selamat Datang!
-        </h1> 
+        <div id="welcome-backdrop" class="fixed inset-0 z-40 transition-opacity duration-1000" style="background-color: rgba(135, 206, 250, 0.4);"></div>
+            <h1 id="welcome-message" class="font-['TegakBersambung'] fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 
+                                        text-7xl md:text-8xl font-bold text-pink-400  
+                                        opacity-0 transition-opacity duration-1000 ease-out"
+                                        style="text-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);">
+                Selamat Bermain
+            </h1> 
+        </div>    
+
+    {{-- POP UP SELESAI BERMAIN --}}
+    <div id="success-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden">    
+        <div class="absolute inset-0 transition-opacity duration-300" style="background-color: rgba(135, 206, 250, 0.4);"></div>
+        
+        <div class="relative bg-white rounded-3xl p-8 max-w-sm w-full mx-4 shadow-2xl transform  scale-90 transition-transform duration-300 border-4 border-pink-300 text-center">                
+            <div class=" mb-4 animate-bounce">
+                <img src="{{ asset('images/icon/piala.webp') }}" alt="Piala" class="w-16 h-auto mx-auto">
+            </div>
+            
+            <h2 class="font-['TegakBersambung'] text-4xl text-pink-500 font-bold mb-2">
+                Luar Biasa!
+            </h2>
+            
+            <p class="font-['TegakBersambung'] text-gray-600 mb-6 text-lg">
+                Kamu berhasil menyelesaikan permainan!
+            </p>
+            
+            <div class="bg-pink-50 rounded-xl p-4 mb-6 border border-pink-100">
+                <p class="text-gray-500 text-sm font-bold uppercase">Total Poin</p>
+                <p class="text-4xl font-bold text-pink-600" id="modal-score">0</p>
+            </div>
+
+            <div class="flex flex-col gap-3">
+                <button onclick="restartGame()" 
+                        class="w-full py-3 bg-gradient-to-r from-pink-400 to-pink-500 text-white rounded-xl font-bold text-xl shadow-lg hover:scale-105 transition-transform font-['TegakBersambung']">
+                    Main Lagi ↻
+                </button>
+                
+                <a href="{{ route('murid.games.index', $tingkatan->tingkatan_id) }}" 
+                class="w-full py-3 bg-white border-2 border-gray-200 text-gray-500 rounded-xl font-bold text-lg hover:bg-gray-50 transition-colors font-['TegakBersambung']">
+                    Kembali ke Menu
+                </a>
+            </div>
+        </div>
     </div>    
 </body>
 </html>
