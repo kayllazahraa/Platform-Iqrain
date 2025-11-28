@@ -185,7 +185,7 @@ function startGame() {
         // 5. BUKA KUNCI PAPAN, game siap dimainkan!
         lockBoard = false; 
         
-    }, 2000); 
+    }, 3000); 
 } 
 
 function selectCard() {

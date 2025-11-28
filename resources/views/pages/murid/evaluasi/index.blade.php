@@ -80,12 +80,12 @@
             <div class="bg-white rounded-full p-1 shadow-lg inline-flex">
                 <button onclick="switchTab('leaderboard')" 
                         id="tab-leaderboard" 
-                        class="font-cursive-iwk tab-button px-8 py-3 rounded-full font-bold text-3xl transition-all duration-300 bg-pink-500 text-white transition-all duration-300 cursor-pointer">
+                        class="font-cursive-iwk tab-button px-8 py-3 rounded-full font-bold text-3xl transition-all duration-300 bg-[var(--color-iqrain-pink)] text-white transition-all duration-300 cursor-pointer">
                     Leaderboard
                 </button>
                 <button onclick="switchTab('evaluasi')" 
                         id="tab-evaluasi" 
-                        class="font-cursive-iwk tab-button px-8 py-3 rounded-full font-bold text-3xl transition-all duration-300 text-pink-500 transition-all duration-300 cursor-pointer">
+                        class="font-cursive-iwk tab-button px-8 py-3 rounded-full font-bold text-3xl transition-all duration-300  text- transition-all duration-300 cursor-pointer text-pink-500">
                     Evaluasi
                 </button>
             </div>
@@ -100,7 +100,7 @@
                     <div class="relative inline-block text-left">
                         
                         <select onchange="changeLeaderboardType(this.value)" 
-                                class="appearance-none w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 pl-6 pr-12 rounded-full shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 transition-all duration-300 cursor-pointer border border-blue-500">
+                                class="appearance-none w-full bg-[var(--color-iqrain-blue)] hover:bg-blue-700 text-white font-semibold py-2.5 pl-6 pr-12 rounded-full shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all duration-300 cursor-pointer border ">
                             
                             <option value="global" class="bg-white text-gray-800 py-2" {{ $leaderboardType === 'global' ? 'selected' : '' }}>
                                 Global Rank
@@ -304,11 +304,11 @@
     
     if (tab === 'leaderboard') {
         // Aktifkan Leaderboard
-        leaderboardTab.classList.add('bg-pink-500', 'text-white');
+        leaderboardTab.classList.add('bg-[var(--color-iqrain-pink)]', 'text-white');
         leaderboardTab.classList.remove('text-pink-500', 'bg-transparent');
         
         // Nonaktifkan Evaluasi
-        evaluasiTab.classList.remove('bg-pink-500', 'text-white');
+        evaluasiTab.classList.remove('bg-[var(--color-iqrain-pink)]', 'text-white');
         evaluasiTab.classList.add('text-pink-500', 'bg-transparent');
         
         // Toggle content
@@ -316,11 +316,11 @@
         evaluasiContent.classList.add('hidden');
     } else {
         // Aktifkan Evaluasi
-        evaluasiTab.classList.add('bg-pink-500', 'text-white');
+        evaluasiTab.classList.add('bg-[var(--color-iqrain-pink)]', 'text-white');
         evaluasiTab.classList.remove('text-pink-500', 'bg-transparent');
         
         // Nonaktifkan Leaderboard
-        leaderboardTab.classList.remove('bg-pink-500', 'text-white');
+        leaderboardTab.classList.remove('bg-[var(--color-iqrain-pink)]', 'text-white');
         leaderboardTab.classList.add('text-pink-500', 'bg-transparent');
         
         // Toggle content

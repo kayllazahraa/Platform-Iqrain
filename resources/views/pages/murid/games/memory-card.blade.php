@@ -81,11 +81,11 @@
 
     {{-- POP UP SELESAI BERMAIN --}}
     <div id="success-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden">    
-        <div class="absolute inset-0 transition-opacity duration-300" style="background-color: rgba(135, 206, 250, 0.4);"></div>
+        <div class="absolute inset-0 transition-opacity duration-300" style="background-color: rgba(0, 0, 0, 0.6);"></div>
         
         <div class="relative bg-white rounded-3xl p-8 max-w-sm w-full mx-4 shadow-2xl transform  scale-90 transition-transform duration-300 border-4 border-pink-300 text-center">                
             <div class=" mb-4 animate-bounce">
-                <img src="{{ asset('images/icon/piala.webp') }}" alt="Piala" class="w-16 h-auto mx-auto">
+                <img src="{{ asset('images/icon/piala.webp') }}" alt="Piala" class="w-24 h-auto mx-auto">
             </div>
             
             <h2 class="font-['TegakBersambung'] text-4xl text-pink-500 font-bold mb-2">
