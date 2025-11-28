@@ -10,6 +10,9 @@
     {{-- Tailwind CSS & Custom CSS via Vite --}}
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
+    {{-- Font Awesome --}}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <style>
         /* Font Tegak Bersambung IWK (Pastikan path benar) */
         @font-face {
@@ -66,6 +69,17 @@
 
         .nav-item:not(.active) {
             color: white;
+        }
+
+        /* Mobile Menu */
+        .mobile-menu {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-in-out;
+        }
+
+        .mobile-menu.active {
+            max-height: 500px;
         }
 
         /* --- Padding Content --- */
@@ -157,6 +171,17 @@
             background-repeat: no-repeat;
             background-size: 100% 100%;
         }
+
+        /* Mobile responsive adjustments */
+        @media (max-width: 768px) {
+            .nav-item {
+                font-size: 20px;
+            }
+            
+            .content-wrapper {
+                padding-top: 100px;
+            }
+        }
     </style>
 
     @stack('styles')
@@ -165,9 +190,10 @@
 <body>
 
     @if (!isset($hideNavbar) || !$hideNavbar)
-        <nav class="navbar-murid fixed top-4 left-0 right-0 z-50 w-11/12 max-w-5xl mx-auto rounded-full">
+        <nav class="navbar-murid fixed top-4 left-4 right-4 z-50 mx-auto rounded-full md:w-11/12 md:max-w-5xl md:left-0 md:right-0">
             <div class="container mx-auto px-4 py-3">
-                <div class="flex items-center justify-between max-w-4xl mx-auto">
+                {{-- Desktop Navigation --}}
+                <div class="hidden md:flex items-center justify-between max-w-4xl mx-auto">
                     <a href="{{ route('murid.pilih-iqra') }}" class="flex items-center space-x-2">
                         <div class="bg-white rounded-full w-12 h-12 flex items-center justify-center">
                             <span class="text-2xl font-bold text-pink-500">IQ</span>
@@ -198,6 +224,54 @@
                             <path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" />
                         </svg>
                     </a>
+                </div>
+
+                {{-- Mobile Navigation --}}
+                <div class="md:hidden">
+                    <div class="flex items-center justify-between">
+                        {{-- Logo --}}
+                        <a href="{{ route('murid.pilih-iqra') }}" class="flex items-center space-x-2">
+                            <div class="bg-white rounded-full w-10 h-10 flex items-center justify-center">
+                                <span class="text-xl font-bold text-pink-500">IQ</span>
+                            </div>
+                        </a>
+
+                        <div class="flex items-center space-x-3">
+                            {{-- Profile Icon --}}
+                            <a href="#" class="bg-white rounded-full w-9 h-9 flex items-center justify-center">
+                                <svg class="w-5 h-5 text-pink-500" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" />
+                                </svg>
+                            </a>
+
+                            {{-- Hamburger Button --}}
+                            <button id="mobileMenuToggle" class="text-white focus:outline-none">
+                                <i class="fas fa-bars text-2xl"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    {{-- Mobile Menu --}}
+                    <div id="mobileMenu" class="mobile-menu mt-4">
+                        <div class="flex flex-col space-y-2">
+                            <a href="{{ route('murid.modul.index', ['tingkatan_id' => session('current_tingkatan_id', 1)]) }}"
+                                class="nav-item px-4 py-2 rounded-full text-center {{ request()->routeIs('murid.modul.*') ? 'active' : '' }}">
+                                <i class="fas fa-book mr-2"></i>Modul
+                            </a>
+                            <a href="{{ route('murid.games.index', ['tingkatan_id' => session('current_tingkatan_id', 1)]) }}"
+                                class="nav-item px-4 py-2 rounded-full text-center {{ request()->routeIs('murid.games.*') ? 'active' : '' }}">
+                                <i class="fas fa-gamepad mr-2"></i>Games
+                            </a>
+                            <a href="{{ route('murid.evaluasi.index', ['tingkatan_id' => session('current_tingkatan_id', 1)]) }}"
+                                class="nav-item px-4 py-2 rounded-full text-center {{ request()->routeIs('murid.evaluasi.*') ? 'active' : '' }}">
+                                <i class="fas fa-clipboard-check mr-2"></i>Evaluasi
+                            </a>
+                            <a href="{{ route('murid.mentor.index') }}"
+                                class="nav-item px-4 py-2 rounded-full text-center {{ request()->routeIs('murid.mentor.*') ? 'active' : '' }}">
+                                <i class="fas fa-user-tie mr-2"></i>Mentor
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </nav>
@@ -253,6 +327,40 @@
                 toastContainer.remove();
             }, 3000);
         }
+
+        // Mobile Menu Toggle
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+            const mobileMenu = document.getElementById('mobileMenu');
+            
+            if (mobileMenuToggle && mobileMenu) {
+                mobileMenuToggle.addEventListener('click', function() {
+                    mobileMenu.classList.toggle('active');
+                    
+                    // Toggle icon
+                    const icon = this.querySelector('i');
+                    if (mobileMenu.classList.contains('active')) {
+                        icon.classList.remove('fa-bars');
+                        icon.classList.add('fa-times');
+                    } else {
+                        icon.classList.remove('fa-times');
+                        icon.classList.add('fa-bars');
+                    }
+                });
+
+                // Close menu when clicking outside
+                document.addEventListener('click', function(event) {
+                    const isClickInside = mobileMenuToggle.contains(event.target) || mobileMenu.contains(event.target);
+                    
+                    if (!isClickInside && mobileMenu.classList.contains('active')) {
+                        mobileMenu.classList.remove('active');
+                        const icon = mobileMenuToggle.querySelector('i');
+                        icon.classList.remove('fa-times');
+                        icon.classList.add('fa-bars');
+                    }
+                });
+            }
+        });
     </script>
 
     @stack('scripts')
