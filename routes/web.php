@@ -176,8 +176,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::get('/games/{tingkatan_id}', [GameController::class, 'index'])->name('games.index');
 
         Route::get('/games/{tingkatan_id}/memory-card', [GameController::class, 'memoryCard'])->name('games.memory-card');    
-        Route::post('/game/save-score', [GameController::class, 'saveScore'])
-        ->name('game.saveScore');
+        Route::post('/game/save-score', [GameController::class, 'saveScore'])->name('games.saveScore');
 
         Route::get('/games/{tingkatan_id}/tracing', [GameController::class, 'tracing'])->name('games.tracing');
         Route::get('/games/{tingkatan_id}/labirin', [GameController::class, 'labirin'])->name('games.labirin');
