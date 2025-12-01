@@ -108,7 +108,7 @@ class CreateMurid extends Component
                 'jawaban' => $this->jawaban_preferensi,
             ]);
 
-            DB::commit();
+            DB::commit();   
 
             session()->flash('success', 'Murid "' . $this->username . '" berhasil ditambahkan!');
 

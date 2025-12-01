@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
+use App\Notifications\ResetPasswordNotification;
 
 class User extends Authenticatable
 {
@@ -69,5 +70,25 @@ class User extends Authenticatable
         }
         
         return $this->email; 
+    }
+
+    /**
+     * Get the email address for password reset.
+     * Method ini digunakan oleh Fortify password reset.
+     *
+     * @return string
+     */
+    public function getEmailForPasswordReset()
+    {
+        if ($this->hasRole('mentor') && $this->mentor) {
+            return $this->mentor->email;
+        }
+        
+        return $this->email; 
+    }
+
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new ResetPasswordNotification($token));
     }
 }

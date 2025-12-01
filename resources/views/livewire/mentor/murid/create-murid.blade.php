@@ -172,6 +172,7 @@
                                     class="shadow-sm focus:ring-pink-500 focus:border-pink-500 block w-full sm:text-sm border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md @error('jawaban_preferensi') border-red-500 @enderror"
                                     placeholder="Contoh: Merah"
                                 >
+
                                 @error('jawaban_preferensi')
                                     <p class="mt-2 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                                 @enderror
