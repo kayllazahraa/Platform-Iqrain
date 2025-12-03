@@ -158,7 +158,14 @@ function startGame() {
 
         let front = document.createElement("div");
         front.classList.add("card-front");
-        front.innerHTML = '❓';
+        let basePath = (typeof ASSET_BASE !== "undefined" ? ASSET_BASE : ""); 
+        
+        front.innerHTML = `
+            <img src="${basePath}images/icon/tanda-tanya.webp" 
+                 alt="?" 
+                 class="w-12 h-12 sm:w-14 sm:h-14 object-contain opacity-80"
+            >
+        `;
 
         let back = document.createElement("div");
         back.classList.add("card-back");

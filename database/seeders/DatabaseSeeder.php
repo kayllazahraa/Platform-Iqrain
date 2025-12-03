@@ -29,8 +29,9 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             TingkatanIqraSeeder::class,
             JenisGameSeeder::class,   
-            MateriPembelajaranSeeder::class,  
-            MateriSeeder::class,              
+            MateriPembelajaranSeeder::class,  // ✅ HARUS sebelum MateriSeeder
+            MateriSeeder::class,               // ✅ Seeder modul huruf
+            VideoPembelajaranSeeder::class,    
         ]);
 
         // 2. Buat 20 Murid (Sekarang kita panggil Murid::factory() langsung)

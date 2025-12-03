@@ -215,7 +215,7 @@ body {
     top: 0;
     left: 0;
     z-index: 2;
-    cursor: crosshair;    
+    cursor: cell;
 }
 
 .canvas-controls {
@@ -426,6 +426,8 @@ body {
     cursor: not-allowed;
     opacity: 0.5;
 }
+
+
 
 /* ========================================
    SUCCESS MODAL
