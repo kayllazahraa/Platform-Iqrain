@@ -40,7 +40,7 @@ class CreateMurid extends Component
                 'username' => 'required|string|min:3|max:50|unique:users,username',
                 'password' => 'required|string|min:6',
                 'sekolah' => 'nullable|string|max:100',
-                'jawaban_preferensi' => 'required|string|max:255',
+                'jawaban_preferensi' => 'nullable|string|max:255',
             ];
         } else {
             return [
@@ -98,15 +98,17 @@ class CreateMurid extends Component
                 'user_id' => $user->user_id,
                 'mentor_id' => $mentor->mentor_id,
                 'sekolah' => $this->sekolah ?: null,
-                'preferensi_terisi' => true,
+                'preferensi_terisi' => !empty($this->jawaban_preferensi),
             ]);
 
-            // 4. Create Preferensi Pertanyaan dengan pertanyaan fixed
-            PreferensiPertanyaan::create([
-                'murid_id' => $murid->murid_id,
-                'pertanyaan' => self::PERTANYAAN_PREFERENSI,
-                'jawaban' => $this->jawaban_preferensi,
-            ]);
+            // 4. Create Preferensi Pertanyaan dengan pertanyaan fixed (jika diisi)
+            if (!empty($this->jawaban_preferensi)) {
+                PreferensiPertanyaan::create([
+                    'murid_id' => $murid->murid_id,
+                    'pertanyaan' => self::PERTANYAAN_PREFERENSI,
+                    'jawaban' => $this->jawaban_preferensi,
+                ]);
+            }
 
             DB::commit();   
 
@@ -141,11 +143,8 @@ class CreateMurid extends Component
             foreach ($records as $index => $record) {
                 // dd($record);
                 try {
-                    // Validasi required fields (tanpa pertanyaan_preferensi)
-                    if (
-                        empty($record['username']) || empty($record['password']) ||
-                        empty($record['jawaban_preferensi'])
-                    ) {
+                    // Validasi required fields (username dan password saja)
+                    if (empty($record['username']) || empty($record['password'])) {
                         throw new \Exception('Data tidak lengkap');
                     }
 
@@ -167,15 +166,17 @@ class CreateMurid extends Component
                         'user_id' => $user->user_id,
                         'mentor_id' => $mentor->mentor_id,
                         'sekolah' => $record['sekolah'] ?? null,
-                        'preferensi_terisi' => true,
+                        'preferensi_terisi' => !empty($record['jawaban_preferensi']),
                     ]);
 
-                    // Create Preferensi dengan pertanyaan fixed
-                    PreferensiPertanyaan::create([
-                        'murid_id' => $murid->murid_id,
-                        'pertanyaan' => self::PERTANYAAN_PREFERENSI,
-                        'jawaban' => $record['jawaban_preferensi'],
-                    ]);
+                    // Create Preferensi dengan pertanyaan fixed (jika diisi)
+                    if (!empty($record['jawaban_preferensi'])) {
+                        PreferensiPertanyaan::create([
+                            'murid_id' => $murid->murid_id,
+                            'pertanyaan' => self::PERTANYAAN_PREFERENSI,
+                            'jawaban' => $record['jawaban_preferensi'],
+                        ]);
+                    }
 
                     $successCount++;
                 } catch (\Exception $e) {
