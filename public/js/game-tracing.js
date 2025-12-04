@@ -21,7 +21,7 @@ window.addEventListener("DOMContentLoaded", function () {
         setTimeout(() => {
             initGame();
         }, 500);
-    }, 2500);
+    }, 2000);
 });
 
 // ========================================
@@ -919,7 +919,7 @@ const settings = {
     canvasWidth: 400,
     canvasHeight: 300,
     lineWidth: 5,
-    tolerance: 30,
+    tolerance: 15, // Diperketat dari 30 ke 15
     colors: {
         correct: "#4CAF50",
         incorrect: "#F44336",
@@ -1232,8 +1232,8 @@ function drawGuide(letter) {
             guideCtx.strokeStyle = isCompleted
                 ? settings.colors.completed
                 : isCurrent
-                ? settings.colors.guide
-                : "#F0F0F0";
+                    ? settings.colors.guide
+                    : "#F0F0F0";
             guideCtx.lineWidth = settings.lineWidth;
             guideCtx.lineCap = "round";
             guideCtx.lineJoin = "round";
@@ -1304,8 +1304,8 @@ function drawGuide(letter) {
             guideCtx.strokeStyle = isCompleted
                 ? settings.colors.completed
                 : isCurrent
-                ? settings.colors.guide
-                : "#F0F0F0";
+                    ? settings.colors.guide
+                    : "#F0F0F0";
             guideCtx.lineWidth = 3;
             guideCtx.fillStyle = isCurrent
                 ? settings.colors.guideCircle
@@ -1519,12 +1519,18 @@ function draw(e) {
     if (stroke && stroke.type === "circle") return;
 
     const pos = getMousePos(e);
-    const isCorrect = checkAccuracy(pos);
+
+    // Cek akurasi dengan sistem bobot
+    const accuracyResult = checkAccuracy(pos);
+    const isCorrect = accuracyResult.isCorrect;
+    const score = accuracyResult.score;
 
     gameState.totalPoints++;
-    if (isCorrect) {
-        gameState.correctPoints++;
-    }
+
+    // Akumulasi skor kualitas (bukan cuma hitung jumlah titik benar)
+    // Kita anggap max skor per titik adalah 100
+    // Jadi nanti rata-ratanya: (totalSkor / (totalPoints * 100)) * 100
+    gameState.correctPoints += score;
 
     tracingCtx.strokeStyle = isCorrect
         ? settings.colors.correct
@@ -1588,15 +1594,23 @@ function advanceToNextStroke() {
 
     // 2. Jika stroke adalah circle, kita tambahkan skor tetap (misalnya 10 poin)
     if (letter.strokes[currentStrokeIndex].type === "circle") {
-        // Asumsi: Circle selalu benar dan bernilai 10 poin
-        gameState.totalGamePoints += 10;
-        gameState.totalGameCorrectPoints += 10;
+        // Asumsi: Circle selalu benar dan bernilai 100 poin (karena cuma 1 klik)
+        gameState.totalGamePoints += 1; // Anggap 1 titik
+        gameState.totalGameCorrectPoints += 100; // Skor sempurna
     }
 
     gameState.completedStrokes.push(currentStrokeIndex);
 
     if (gameState.completedStrokes.length >= letter.strokes.length) {
-        showSuccessScreen();
+        // Hitung akurasi total game (Weighted Average)
+        let finalAccuracy = 0;
+        if (gameState.totalGamePoints > 0) {
+            // totalGameCorrectPoints sekarang adalah akumulasi skor (bukan count)
+            // totalGamePoints adalah jumlah titik yang digambar
+            // Jadi rata-ratanya: totalSkor / jumlahTitik
+            finalAccuracy = Math.round(gameState.totalGameCorrectPoints / gameState.totalGamePoints);
+        }
+        showSuccessModal(finalAccuracy);
     } else {
         currentStrokeIndex++;
         gameState.tracedPoints = [];
@@ -1626,6 +1640,9 @@ function getMousePos(e) {
 // ========================================
 // CHECK ACCURACY (CURRENT STROKE ONLY)
 // ========================================
+// ========================================
+// CHECK ACCURACY (WEIGHTED SCORING)
+// ========================================
 function checkAccuracy(point) {
     const letter = allHijaiyahData[currentHurufIndex];
     if (
@@ -1633,21 +1650,33 @@ function checkAccuracy(point) {
         !letter.strokes ||
         currentStrokeIndex >= letter.strokes.length
     )
-        return false;
+        return { isCorrect: false, score: 0 };
 
     const stroke = letter.strokes[currentStrokeIndex];
-    if (stroke.type !== "line") return false;
+    if (stroke.type !== "line") return { isCorrect: false, score: 0 };
 
+    let minDistance = Infinity;
+
+    // Cari jarak terdekat ke segmen manapun di stroke ini
     for (let i = 0; i < stroke.points.length - 1; i++) {
         const start = stroke.points[i];
         const end = stroke.points[i + 1];
         const distance = distanceToLineSegment(point, start, end);
-        if (distance <= settings.tolerance) {
-            return true;
+        if (distance < minDistance) {
+            minDistance = distance;
         }
     }
 
-    return false;
+    // Hitung Skor Berdasarkan Jarak
+    if (minDistance <= 5) {
+        return { isCorrect: true, score: 100 }; // Sempurna
+    } else if (minDistance <= 10) {
+        return { isCorrect: true, score: 80 }; // Bagus
+    } else if (minDistance <= settings.tolerance) { // <= 15
+        return { isCorrect: true, score: 50 }; // Cukup
+    } else {
+        return { isCorrect: false, score: 0 }; // Salah
+    }
 }
 
 // ========================================
@@ -1717,8 +1746,9 @@ function calculateProgress() {
     );
 
     if (gameState.totalPoints > 0) {
+        // Rata-rata skor per titik (0-100)
         gameState.currentStrokeAccuracy = Math.round(
-            (gameState.correctPoints / gameState.totalPoints) * 100
+            gameState.correctPoints / gameState.totalPoints
         );
     }
 }
@@ -1796,14 +1826,14 @@ function loadPreviousLetter() {
 
 function loadNextLetter() {
     if (currentHurufIndex < allHijaiyahData.length - 1) {
-        hideSuccessScreen();
+        hideSuccessModal();
         loadGame(currentHurufIndex + 1);
     }
 }
 
-function restartCurrentLetter() {
-    hideSuccessScreen();
-    loadGame(currentHurufIndex);
+function hideSuccessModal() {
+    const modal = document.getElementById('success-modal');
+    if (modal) modal.classList.remove('show');
 }
 
 function updateNavigationButtons() {
@@ -1827,101 +1857,110 @@ function updateNavigationButtons() {
     }
 }
 
-// ========================================
-// SUCCESS SCREEN
-// ========================================
-function showSuccessScreen() {
-    // 1. Hitung Akurasi/Skor Global
-    let overallAccuracy = 0;
 
-    if (gameState.totalGamePoints > 0) {
-        overallAccuracy = Math.round(
-            (gameState.totalGameCorrectPoints / gameState.totalGamePoints) * 100
-        );
-    } else {
-        // Jika tidak ada poin (misal semua stroke adalah circle), set 100% jika semua stroke selesai
-        if (
-            allHijaiyahData[currentHurufIndex].strokes.length ===
-            gameState.completedStrokes.length
-        ) {
-            overallAccuracy = 100;
+// ========================================
+// SHOW SUCCESS MODAL (VANILLA JS VERSION)
+// ========================================
+function showSuccessModal(skorAkhir) {
+    const modal = document.getElementById('success-modal');
+    const scoreText = document.getElementById('modal-score');
+    const starsContainer = document.getElementById('final-stars');
+    const nextButton = document.getElementById('btn-next-letter'); // Ambil tombol next
+
+    // 1. Update Teks Skor
+    if (scoreText) scoreText.innerText = skorAkhir + "%";
+
+    // 2. Logika Bintang (HARUS DI DALAM FUNGSI)
+    let starCount = 1;
+    if (skorAkhir >= 85) starCount = 3;
+    else if (skorAkhir >= 60) starCount = 2;
+
+    let starsHTML = '';
+    for (let i = 1; i <= 3; i++) {
+        if (i <= starCount) {
+            // Bintang Emas (Muncul satu-satu)
+            const delay = i * 0.2;
+            starsHTML += `<span class="star-gold star-animate" style="animation-delay: ${delay}s">★</span>`;
+        } else {
+            // Bintang Abu
+            starsHTML += `<span class="star-gray">★</span>`;
         }
     }
 
-    // 2. Set Global Variables (agar bisa diakses oleh saveTracingScore)
-    window.gameFinalScore = overallAccuracy; // Menggunakan Akurasi sebagai skor yang disimpan
-    window.gameAccuracyPercentage = overallAccuracy;
-
-    const modal = document.getElementById("success-modal");
-    const backButton = document.getElementById("back-to-menu-button");
-    const saveStatusElement = document.getElementById("save-status");
-    const nextLetterButton = document.getElementById("next-letter-button");
-    const tryAgainButton = document.getElementById("try-again-button");
-    const finalStars = document.getElementById("final-stars");
-    const finalAccuracyDisplay = document.getElementById("final-accuracy");
-    const finalScore = document.getElementById("final-score");
-    const successMessage = document.getElementById("success-message");
-
-    const stars = getStars(gameState.currentStrokeAccuracy);
-    finalStars.innerHTML = "⭐".repeat(stars) + "☆".repeat(3 - stars);
-    finalScore.textContent = `Akurasi: ${overallAccuracy}%`;
-
-    if (stars === 3) {
-        successMessage.textContent =
-            "Sempurna! Kamu menulis huruf dengan sangat baik!";
-    } else if (stars === 2) {
-        successMessage.textContent =
-            "Bagus! Terus berlatih untuk hasil yang lebih baik!";
-    } else if (stars === 1) {
-        successMessage.textContent =
-            "Cukup baik! Coba lagi untuk meningkatkan akurasi!";
-    } else {
-        successMessage.textContent =
-            "Terus berlatih! Kamu pasti bisa lebih baik!";
+    if (starsContainer) {
+        starsContainer.innerHTML = starsHTML;
     }
 
-    // Reset status tampilan save
-    if (saveStatusElement) {
-        saveStatusElement.innerText = "Menyimpan skor...";
-        saveStatusElement.classList.remove("text-green-600", "text-red-600");
-        saveStatusElement.classList.add("text-yellow-600");
+    // 3. Cek Tombol Next (Sembunyikan jika huruf terakhir)
+    if (nextButton) {
+        // Cek apakah ini huruf terakhir di array
+        if (currentHurufIndex >= allHijaiyahData.length - 1) {
+            nextButton.style.display = 'none'; // Sembunyikan
+        } else {
+            nextButton.style.display = 'block'; // Tampilkan
+        }
     }
-    if (backButton) {
-        backButton.disabled = true; // Nonaktifkan tombol Kembali saat proses save
+
+    // 4. Tampilkan Modal
+    if (modal) {
+        modal.classList.add('show');
     }
 
-    modal.style.display = "flex";
+    // 5. Efek Confetti
+    launchConfetti();
 
-    saveStatusElement.innerText = "Menyimpan skor...";
-    saveStatusElement.classList.add("text-yellow-600");
-    backButton.disabled = true;
-    nextLetterButton.disabled = true;
-    tryAgainButton.disabled = true;
-
-    saveTracingScore()
-        .then(() => {
-            // SUKSES: Aktifkan tombol navigasi setelah skor terkirim
-            saveStatusElement.innerText = `Skor ${window.gameFinalScore}% berhasil disimpan!`;
-            saveStatusElement.classList.remove("text-yellow-600");
-            saveStatusElement.classList.add("text-green-600");
-            backButton.disabled = false;
-            nextLetterButton.disabled = false;
-            tryAgainButton.disabled = false;
-        })
-        .catch((error) => {
-            // GAGAL
-            saveStatusElement.innerText = `Gagal menyimpan skor. Coba Lagi!`;
-            saveStatusElement.classList.remove("text-yellow-600");
-            saveStatusElement.classList.add("text-red-600");
-            backButton.disabled = false;
-            tryAgainButton.disabled = false; // Boleh ulang walau skor gagal dikirim
-        });
+    // 6. Simpan Skor ke Database (Otomatis saat selesai)
+    saveTracingScore();
 }
 
-function hideSuccessScreen() {
-    const modal = document.getElementById("success-modal");
-    modal.style.display = "none";
+// ========================================
+// TOMBOL AKSI MODAL
+// ========================================
+
+// 1. Fungsi Restart Huruf Ini (Ulangi)
+function restartCurrentLetter() {
+    hideSuccessModal();
+
+    // Reset Canvas & Game State untuk huruf yang sama
+    loadGame(currentHurufIndex);
 }
+
+// 2. Fungsi Tombol Main Lagi (Reset Total)
+function restartGame() {
+    hideSuccessModal();
+
+    // Reset ke huruf pertama
+    currentHurufIndex = 0;
+    initGame();
+}
+
+// ========================================
+// CONFETTI EFFECT
+// ========================================
+function launchConfetti() {
+    if (typeof confetti === 'undefined') return; // Cek library ada/nggak
+
+    var duration = 3 * 1000;
+    var animationEnd = Date.now() + duration;
+    var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 60 };
+
+    function randomInOut(min, max) {
+        return Math.random() * (max - min) + min;
+    }
+
+    var interval = setInterval(function () {
+        var timeLeft = animationEnd - Date.now();
+
+        if (timeLeft <= 0) {
+            return clearInterval(interval);
+        }
+
+        var particleCount = 50 * (timeLeft / duration);
+        confetti({ ...defaults, particleCount, origin: { x: randomInOut(0.1, 0.3), y: Math.random() - 0.2 } });
+        confetti({ ...defaults, particleCount, origin: { x: randomInOut(0.7, 0.9), y: Math.random() - 0.2 } });
+    }, 250);
+}
+
 
 // ========================================
 // SUBMIT SCORE TO SERVER

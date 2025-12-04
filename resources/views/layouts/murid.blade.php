@@ -90,8 +90,15 @@
 
         /* Bee Animation */
         @keyframes float {
-            0%, 100% { transform: translateY(0px) rotate(-5deg); }
-            50% { transform: translateY(-20px) rotate(5deg); }
+
+            0%,
+            100% {
+                transform: translateY(0px) rotate(-5deg);
+            }
+
+            50% {
+                transform: translateY(-20px) rotate(5deg);
+            }
         }
 
         .bee-float {
@@ -138,10 +145,23 @@
         }
 
         /* Custom scrollbar */
-        ::-webkit-scrollbar { width: 10px; }
-        ::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb { background: #FF6B9D; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: #E85A8B; }
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #FF6B9D;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #E85A8B;
+        }
 
         /* Menambahkan font-family kustom (di sini kita bisa menambahkan !important) */
         .font-titan {
@@ -177,7 +197,7 @@
             .nav-item {
                 font-size: 20px;
             }
-            
+
             .content-wrapper {
                 padding-top: 100px;
             }
@@ -190,7 +210,8 @@
 <body>
 
     @if (!isset($hideNavbar) || !$hideNavbar)
-        <nav class="navbar-murid fixed top-4 left-4 right-4 z-50 mx-auto rounded-full md:w-11/12 md:max-w-5xl md:left-0 md:right-0">
+        <nav
+            class="navbar-murid fixed top-4 left-4 right-4 z-50 mx-auto rounded-full md:w-11/12 md:max-w-5xl md:left-0 md:right-0">
             <div class="container mx-auto px-4 py-3">
                 {{-- Desktop Navigation --}}
                 <div class="hidden md:flex items-center justify-between max-w-4xl mx-auto">
@@ -219,11 +240,39 @@
                         </a>
                     </div>
 
-                    <a href="#" class="bg-white rounded-full w-10 h-10 flex items-center justify-center">
-                        <svg class="w-6 h-6 text-pink-500" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" />
-                        </svg>
-                    </a>
+                    {{-- Profile Dropdown --}}
+                    <div class="relative" x-data="{ open: false }">
+                        <button @click="open = !open" @click.away="open = false"
+                            class="bg-white rounded-full w-10 h-10 flex items-center justify-center focus:outline-none cursor-pointer">
+                            <svg class="w-6 h-6 text-pink-500" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" />
+                            </svg>
+                        </button>
+
+                        {{-- Dropdown Menu --}}
+                        <div x-show="open" x-transition:enter="transition ease-out duration-200"
+                            x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
+                            x-transition:leave="transition ease-in duration-75"
+                            x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95"
+                            class="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg py-2 z-50 border-2 border-pink-100"
+                            style="display: none;">
+
+                            {{-- Edit Profil --}}
+                            <a href="{{ route('murid.profile') }}"
+                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-pink-50 hover:text-pink-600 font-medium transition-colors">
+                                <i class="fas fa-user-edit mr-2"></i>Edit Profil
+                            </a>
+
+                            {{-- Logout --}}
+                            <form method="POST" action="{{ route('logout') }}">
+                                @csrf
+                                <button type="submit"
+                                    class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 font-medium transition-colors">
+                                    <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                                </button>
+                            </form>
+                        </div>
+                    </div>
                 </div>
 
                 {{-- Mobile Navigation --}}
@@ -238,11 +287,41 @@
 
                         <div class="flex items-center space-x-3">
                             {{-- Profile Icon --}}
-                            <a href="#" class="bg-white rounded-full w-9 h-9 flex items-center justify-center">
-                                <svg class="w-5 h-5 text-pink-500" fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" />
-                                </svg>
-                            </a>
+                            {{-- Profile Icon Mobile --}}
+                            <div class="relative" x-data="{ open: false }">
+                                <button @click="open = !open" @click.away="open = false"
+                                    class="bg-white rounded-full w-9 h-9 flex items-center justify-center focus:outline-none cursor-pointer">
+                                    <svg class="w-5 h-5 text-pink-500" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" />
+                                    </svg>
+                                </button>
+
+                                {{-- Dropdown Menu Mobile --}}
+                                <div x-show="open" x-transition:enter="transition ease-out duration-200"
+                                    x-transition:enter-start="opacity-0 scale-95"
+                                    x-transition:enter-end="opacity-100 scale-100"
+                                    x-transition:leave="transition ease-in duration-75"
+                                    x-transition:leave-start="opacity-100 scale-100"
+                                    x-transition:leave-end="opacity-0 scale-95"
+                                    class="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg py-2 z-50 border-2 border-pink-100"
+                                    style="display: none;">
+
+                                    {{-- Edit Profil --}}
+                                    <a href="{{ route('murid.profile') }}"
+                                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-pink-50 hover:text-pink-600 font-medium transition-colors">
+                                        <i class="fas fa-user-edit mr-2"></i>Edit Profil
+                                    </a>
+
+                                    {{-- Logout --}}
+                                    <form method="POST" action="{{ route('logout') }}">
+                                        @csrf
+                                        <button type="submit"
+                                            class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 font-medium transition-colors">
+                                            <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
 
                             {{-- Hamburger Button --}}
                             <button id="mobileMenuToggle" class="text-white focus:outline-none">
@@ -329,14 +408,14 @@
         }
 
         // Mobile Menu Toggle
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const mobileMenuToggle = document.getElementById('mobileMenuToggle');
             const mobileMenu = document.getElementById('mobileMenu');
-            
+
             if (mobileMenuToggle && mobileMenu) {
-                mobileMenuToggle.addEventListener('click', function() {
+                mobileMenuToggle.addEventListener('click', function () {
                     mobileMenu.classList.toggle('active');
-                    
+
                     // Toggle icon
                     const icon = this.querySelector('i');
                     if (mobileMenu.classList.contains('active')) {
@@ -349,9 +428,9 @@
                 });
 
                 // Close menu when clicking outside
-                document.addEventListener('click', function(event) {
+                document.addEventListener('click', function (event) {
                     const isClickInside = mobileMenuToggle.contains(event.target) || mobileMenu.contains(event.target);
-                    
+
                     if (!isClickInside && mobileMenu.classList.contains('active')) {
                         mobileMenu.classList.remove('active');
                         const icon = mobileMenuToggle.querySelector('i');

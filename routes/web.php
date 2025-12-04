@@ -83,7 +83,7 @@ Route::middleware('guest')->group(function () {
     // Route untuk Murid (tanpa token di URL) & Mentor (dengan token dari email)
     Route::get('/reset-password/{token?}', [ForgotPasswordController::class, 'showResetForm'])
         ->name('password.reset.form'); // Route name harus sesuai config password reset laravel
-        
+
     Route::post('/reset-password', [ForgotPasswordController::class, 'updatePassword'])
         ->name('password.update');
 });
@@ -166,23 +166,23 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::get('/profile', MuridUpdateProfile::class)->name('profile');
 
         // Modul
+        Route::post('/modul/progress', [ModulController::class, 'updateProgress'])->name('modul.progress');
+        Route::get('/modul/completed', [ModulController::class, 'getCompletedModuls'])->name('modul.completed');
+
         Route::get('/modul/{tingkatan_id}', [ModulController::class, 'index'])->name('modul.index');
         Route::get('/modul/{tingkatan_id}/video', [ModulController::class, 'video'])->name('modul.video');
         Route::get('/modul/{tingkatan_id}/materi/{materi_id}', [ModulController::class, 'materi'])->name('modul.materi');
-        Route::post('/modul/progress', [ModulController::class, 'updateProgress'])->name('modul.progress');
-        Route::get('/modul/completed', [ModulController::class, 'getCompletedModuls'])->name('modul.completed');
 
         // Games
         Route::get('/games/{tingkatan_id}', [GameController::class, 'index'])->name('games.index');
 
-        Route::get('/games/{tingkatan_id}/memory-card', [GameController::class, 'memoryCard'])->name('games.memory-card');    
-        Route::post('/game/save-score', [GameController::class, 'saveScore'])
-        ->name('game.saveScore');
+        Route::get('/games/{tingkatan_id}/memory-card', [GameController::class, 'memoryCard'])->name('games.memory-card');
+        Route::post('/game/save-score', [GameController::class, 'saveScore'])->name('game.saveScore');
 
         Route::get('/games/{tingkatan_id}/tracing', [GameController::class, 'tracing'])->name('games.tracing');
         Route::get('/games/{tingkatan_id}/labirin', [GameController::class, 'labirin'])->name('games.labirin');
         Route::get('/games/{tingkatan_id}/drag-drop', [GameController::class, 'dragDrop'])->name('games.drag-drop');
-    
+
         // Evaluasi
         Route::get('/evaluasi/{tingkatan_id}', [EvaluasiController::class, 'index'])->name('evaluasi.index');
         Route::get('/evaluasi/{tingkatan_id}/leaderboard', [EvaluasiController::class, 'leaderboard'])->name('evaluasi.leaderboard');
@@ -192,7 +192,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::post('/mentor/request/{mentor_id}', [MentorController::class, 'requestBimbingan'])->name('mentor.request');
     });
 
-    
+
 });
 
-    
+

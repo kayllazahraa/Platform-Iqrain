@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,42 +8,45 @@
     <title>Tracing Huruf Hijaiyah - IQRain</title>
 
     <link rel="stylesheet" href="{{ asset('css/game-tracing.css') }}">
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <script>
-        var ASSET_BASE = "{{ asset('') }}";                        
+        var ASSET_BASE = "{{ asset('') }}";
         var REDIRECT_URL = "{{ route('murid.games.index', $tingkatan->tingkatan_id) }}";
-        
+
         // ID Game (Dari $jenisGame)
         var JENIS_GAME_ID = {{ $jenisGame->jenis_game_id }};
         var TINGKATAN_ID = {{ $tingkatan->tingkatan_id }};
-        
+
         // Data Huruf (Convert PHP Array ke JSON)
         // Asumsi: materiPembelajarans punya kolom 'huruf_arab' dan 'nama_latin'
         var ALL_HIJAIYAH_DATA = @json($materiPembelajarans);
     </script>
 
 </head>
-<body>
-    <!-- <p>hai</p> -->
-    <!-- Welcome Animation Backdrop -->
-    <div id="welcome-backdrop" class="welcome-backdrop fixed inset-0 bg-black opacity-0 transition-opacity duration-500 pointer-events-none z-50"></div>
-    
-    <!-- Welcome Message -->
-    <div id="welcome-message" class="welcome-message fixed inset-0 flex items-center justify-center opacity-0 transition-opacity duration-500 pointer-events-none z-50">
-        <div class="text-center">
-            <h1 class="welcome-title text-6xl font-titan text-white mb-4">Selamat Bermain!</h1>
-            <p class="welcome-subtitle text-2xl font-cursive-iwk text-white">Mari belajar menulis huruf hijaiyah</p>
-        </div>
-    </div>
 
-    
+<body>
+    <div id="welcome-backdrop" class="welcome-backdrop"></div>
+
+    <h1 id="welcome-message" class="welcome-message welcome-title">Selamat Bermain</h1>
+
 
     <!-- Game Container -->
     <div id="game-container" class="game-container">
-        
+
         <!-- Header with Exit Button -->
         <div class="game-header">
-            <a href="{{ url('/murid/games/1') }}" id="exit-button" class="exit-button">Keluar</a>
+            <a href="{{ route('murid.games.index', $tingkatan->tingkatan_id) }}" class="btn-kembali">
+                <div class="btn-kembali-icon">
+                    <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"></path>
+                    </svg>
+                </div>
+                <span class="btn-kembali-text">
+                    Kembali
+                </span>
+            </a>
             <div class="letter-info-display">
                 <span id="current-letter-arabic" class="arabic-letter" style="color:white;">ا</span>
                 <span id="current-letter-name" class="letter-name-display" style="color: white;">Alif</span>
@@ -56,7 +60,7 @@
             <div class="balloon balloon-left">
                 <img src="{{ asset('images/icon/balon.webp') }}" alt="Balon Kiri" style="width:100%; height:auto;">
             </div>
-            
+
             <!-- Canvas Area (Left Side) -->
             <div class="canvas-section">
                 <div class="canvas-wrapper">
@@ -65,7 +69,7 @@
                     <!-- Tracing Canvas - Where user draws -->
                     <canvas id="tracingCanvas" width="400" height="300"></canvas>
                 </div>
-                
+
                 <div class="canvas-controls font-cursive-iwk">
                     <button id="clear-button" class="control-btn btn-clear">Hapus</button>
                     <button id="replay-button" class="control-btn btn-replay">Ulang Animasi</button>
@@ -73,7 +77,7 @@
             </div>
 
             <!-- Animation Preview (Right Side) -->
-            <div class="preview-section font-cursive-iwk">                
+            <div class="preview-section font-cursive-iwk">
                 <div class="preview-wrapper">
                     <div id="letter-display" class="letter-display">ا</div>
                     <canvas id="animationCanvas" width="400" height="300"></canvas>
@@ -92,14 +96,13 @@
             </button> -->
 
             {{-- Tombol kembali ke menu --}}
-            <a href="{{ route('murid.games.index', ['tingkatan_id' => $tingkatan->tingkatan_id ?? 0]) }}" 
-            class="btn bg-gray-500 hover:bg-gray-600 text-white mt-4 ml-2 font-titan" 
-            style="display:none;" 
-            id="back-to-menu-btn">
+            <a href="{{ route('murid.games.index', ['tingkatan_id' => $tingkatan->tingkatan_id ?? 0]) }}"
+                class="btn bg-gray-500 hover:bg-gray-600 text-white mt-4 ml-2 font-titan" style="display:none;"
+                id="back-to-menu-btn">
                 Kembali ke Menu Game
             </a>
 
-              <!-- Balon kanan -->
+            <!-- Balon kanan -->
             <div class="balloon balloon-right">
                 <img src="{{ asset('images/icon/balon.webp') }}" alt="Balon Kanan" style="width:100%; height:auto;">
             </div>
@@ -127,7 +130,7 @@
             </div>
 
             <div class="navigation-buttons">
-                <button id="prev-button" class="nav-btn btn-prev"><span>←</span>← Sebelumnya</button>
+                <button id="prev-button" class="nav-btn btn-prev"><span>←</span>Sebelumnya</button>
                 <button id="next-button" class="nav-btn btn-next">Berikutnya <span>→</span></button>
             </div>
         </div>
@@ -135,39 +138,51 @@
         <!-- <button id="finish-button" class="btn btn-success" style="display:none;">Selesai & Simpan Skor</button> -->
     </div>
 
-    <!-- Success Modal (Hidden by default) -->
-    <div id="success-modal" class="success-modal" style="display:none;">
-        <div class="success-container">
-            <div class="success-animation">🎉</div>
-            <h2 class="success-title font-titan">Hebat!</h2>
-            <div id="final-stars" class="final-stars">⭐⭐⭐</div>
-            <p id="success-message" class="success-message font-cursive-iwk">Kamu menulis huruf dengan sangat baik!</p>
-            
-            {{-- REVISI MINOR: Akurasi --}}
-            <p id="final-accuracy" class="final-score font-cursive-iwk">Akurasi: 0%</p> 
-            
-            {{-- Pesan status penyimpanan skor --}}
-            <p id="save-status" class="text-sm mt-2 text-yellow-600 font-cursive-iwk">Menyimpan skor...</p> 
 
-            <div class="success-buttons">
-                {{-- Tombol 1: Ulangi Huruf Ini --}}
-                <button id="try-again-button" class="btn btn-secondary font-cursive-iwk" onclick="restartCurrentLetter()">
-                    Ulangi Huruf Ini
+
+    <!-- Success Modal (Hidden by default) -->
+    <div id="success-modal" class="custom-modal">
+        <div class="modal-overlay"></div>
+
+        <div class="modal-card">
+            {{-- Ikon Piala --}}
+            <div class="modal-icon animate-bounce">
+                <img src="{{ asset('images/icon/piala.webp') }}" alt="Piala">
+            </div>
+
+            <h2 class="modal-title font-cursive-iwk">Luar Biasa!</h2>
+
+            <p class="modal-subtitle font-cursive-iwk">
+                Kamu berhasil menyelesaikan huruf ini!
+            </p>
+
+            {{-- WADAH BINTANG (Perbaikan Class) --}}
+            <div id="final-stars" class="modal-stars">⭐⭐⭐</div>
+
+            {{-- Kotak Skor --}}
+            <div class="score-box">
+                <p class="score-label">Akurasi</p>
+                <p class="score-value" id="modal-score">0%</p>
+            </div>
+
+            {{-- Tombol Aksi --}}
+            <div class="modal-actions">
+
+                {{-- 1. Tombol Lanjut (Primary - Pink) --}}
+                <button id="btn-next-letter" onclick="loadNextLetter()" class="btn-action btn-pink font-cursive-iwk">
+                    Huruf Berikutnya ➔
                 </button>
-                
-                {{-- Tombol 2: Lanjut Huruf Berikutnya --}}
-                <button id="next-letter-button" class="btn btn-primary font-cursive-iwk" onclick="loadNextLetter()">
-                    Huruf Berikutnya
+
+                {{-- 2. Tombol Ulangi (Secondary - Putih Border Pink) --}}
+                <button onclick="restartCurrentLetter()" class="btn-action btn-outline-pink font-cursive-iwk">
+                    Ulangi Huruf Ini ↺
                 </button>
-                
-                {{-- Tombol 3: Selesai & Kembali ke Menu (Dipakai untuk mengambil tingkatan ID) --}}
-                <button id="back-to-menu-button" 
-                        class="btn btn-tertiary font-titan"
-                        data-tingkatan-id="{{ $tingkatan->tingkatan_id ?? 1 }}"
-                        onclick="window.location.href = '{{ route('murid.games.index', ['tingkatan_id' => $tingkatan->tingkatan_id ?? 1]) }}'"
-                        style="margin-top: 10px;">
-                    Selesai & Kembali ke Menu
-                </button>
+
+                {{-- 3. Tombol Menu (Tertiary - Abu) --}}
+                <a href="{{ route('murid.games.index', $tingkatan->tingkatan_id) }}"
+                    class="btn-action btn-ghost font-cursive-iwk">
+                    Kembali ke Menu
+                </a>
             </div>
         </div>
     </div>
@@ -181,6 +196,9 @@
         </div>
     </div> -->
 
+
+
+
     <script>
         // Variabel global yang akan diisi oleh logika game Anda
         window.gameFinalScore = 0; // Skor yang akan masuk ke DB (misalnya, total poin)
@@ -189,20 +207,22 @@
         // PENTING: Fungsi ini HARUS dipanggil oleh logika game tracing Anda 
         // saat tracing selesai.
         function showGameResults(finalScore, accuracyPercentage) {
-            showSuccessScreen(finalScore, accuracyPercentage);
+            showSuccessModal(accuracyPercentage);
             // window.gameFinalScore = finalScore; 
             // window.gameAccuracyPercentage = accuracyPercentage;
-            
+
             // // 1. Update Tampilan Modal
             // document.getElementById('final-accuracy').innerText = `Akurasi: ${accuracyPercentage}%`; 
             // document.getElementById('success-modal').style.display = 'flex'; 
-            
+
             // // 2. Langsung Panggil Fungsi Penyimpanan Skor
             // saveTracingScore(); // Didefinisikan di game-tracing.js
         }
     </script>
 
 
+
     <script src="{{ asset('js/game-tracing.js') }}"></script>
 </body>
+
 </html>

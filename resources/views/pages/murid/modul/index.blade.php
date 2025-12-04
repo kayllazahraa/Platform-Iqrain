@@ -127,6 +127,14 @@
                                 {{-- Progress Badge --}}
                                 <div class="absolute top-3 right-3 bg-white-500 text-white px-3 py-1 rounded-full text-xs font-bold">
                                 </div>
+
+                                {{-- Loading Overlay --}}
+                                <div id="loading-overlay" class="absolute inset-0 bg-white/80 backdrop-blur-sm z-50 flex items-center justify-center rounded-3xl hidden transition-opacity duration-300">
+                                    <div class="flex flex-col items-center">
+                                        <div class="w-12 h-12 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin mb-2"></div>
+                                        <span class="text-indigo-800 font-bold font-titan text-sm">Memuat...</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -179,13 +187,14 @@
         }{{ $loop->last ? '' : ',' }}
         @endforeach
     ];
-    console.log('staticMateriData:', staticMateriData);
+    // console.log('staticMateriData:', staticMateriData);
 
     let completedModuls = new Set();
     const initialCompletedCount = {{ $completedModulsCount }};
     const totalModulsCount = {{ $totalModuls }};
 
     let currentIndex = 0;
+    let isAnimating = false;
 
     // === 1. LOGIKA UTAMA DISPLAY ===
     function updateMateriDisplay() {
@@ -234,34 +243,99 @@
         document.getElementById('materi-fallback').style.display = 'block';
     }
 
-    function nextMateri() {
-        // ✅ Ambil data huruf saat ini
-        const currentHuruf = staticMateriData[currentIndex];
-        
-        // ✅ Debug: Log ke console
-        console.log('Current huruf:', currentHuruf);
-        console.log('modul_id:', currentHuruf?.modul_id);
-        
-        // ✅ Simpan progress jika modul_id ada
-        if (currentHuruf && currentHuruf.modul_id) {
-            saveProgressAsync(currentHuruf.modul_id);
-        } else {
-            console.error('❌ modul_id tidak ditemukan!', currentHuruf);
-        }
-        
-        currentIndex = (currentIndex + 1) % staticMateriData.length;
-        updateMateriDisplay();
+    function preloadImage(url) {
+        return new Promise((resolve, reject) => {
+            const img = new Image();
+            img.src = url;
+            img.onload = resolve;
+            img.onerror = resolve; // Tetap resolve agar tidak stuck
+        });
     }
 
-    function prevMateri() {
-        // ✅ HARUS ADA: Simpan progress modul saat ini
-        const currentHuruf = staticMateriData[currentIndex];
-        if (currentHuruf && currentHuruf.modul_id) {
-            saveProgressAsync(currentHuruf.modul_id);  // ← INI HARUS ADA!
-        }
+    async function nextMateri() {
+        if (isAnimating) return;
+        isAnimating = true;
+        showLoading(true);
+
+        // Hitung index berikutnya
+        const nextIndex = (currentIndex + 1) % staticMateriData.length;
+        const nextData = staticMateriData[nextIndex];
+
+        // Preload gambar
+        const imagePath = `{{ asset('images/hijaiyah/') }}/${nextData.file}`;
         
-        currentIndex = (currentIndex - 1 + staticMateriData.length) % staticMateriData.length;
+        // Tunggu gambar load atau timeout 3 detik
+        const timeout = new Promise(resolve => setTimeout(resolve, 3000));
+        await Promise.race([preloadImage(imagePath), timeout]);
+
+        // Update Index & Display
+        currentIndex = nextIndex;
         updateMateriDisplay();
+
+        // Simpan Progress
+        if (nextData && nextData.modul_id) {
+            saveProgressAsync(nextData.modul_id);
+        }
+
+        showLoading(false);
+        isAnimating = false;
+    }
+
+    async function prevMateri() {
+        if (isAnimating) return;
+        isAnimating = true;
+        showLoading(true);
+
+        // Hitung index sebelumnya
+        const prevIndex = (currentIndex - 1 + staticMateriData.length) % staticMateriData.length;
+        const prevData = staticMateriData[prevIndex];
+
+        // Preload gambar
+        const imagePath = `{{ asset('images/hijaiyah/') }}/${prevData.file}`;
+        
+        // Tunggu gambar load atau timeout 3 detik
+        const timeout = new Promise(resolve => setTimeout(resolve, 3000));
+        await Promise.race([preloadImage(imagePath), timeout]);
+
+        // Update Index & Display
+        currentIndex = prevIndex;
+        updateMateriDisplay();
+
+        // Simpan Progress
+        if (prevData && prevData.modul_id) {
+            saveProgressAsync(prevData.modul_id);
+        }
+
+        showLoading(false);
+        isAnimating = false;
+    }
+
+    function showLoading(show) {
+        const overlay = document.getElementById('loading-overlay');
+        const nextBtn = document.querySelector('button[onclick="nextMateri()"]');
+        const prevBtn = document.querySelector('button[onclick="prevMateri()"]');
+        
+        if (show) {
+            overlay.classList.remove('hidden');
+            if(nextBtn) {
+                nextBtn.classList.add('opacity-50', 'cursor-not-allowed', 'pointer-events-none');
+                nextBtn.disabled = true;
+            }
+            if(prevBtn) {
+                prevBtn.classList.add('opacity-50', 'cursor-not-allowed', 'pointer-events-none');
+                prevBtn.disabled = true;
+            }
+        } else {
+            overlay.classList.add('hidden');
+            if(nextBtn) {
+                nextBtn.classList.remove('opacity-50', 'cursor-not-allowed', 'pointer-events-none');
+                nextBtn.disabled = false;
+            }
+            if(prevBtn) {
+                prevBtn.classList.remove('opacity-50', 'cursor-not-allowed', 'pointer-events-none');
+                prevBtn.disabled = false;
+            }
+        }
     }
 
     // === 2. LOGIKA VIDEO (Hanya untuk list di kanan, tidak terpakai lagi untuk main player) ===
@@ -283,13 +357,17 @@
         const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
 
         if (isNaN(realModulId) || realModulId < 1) {
-            console.error('❌ Invalid modulId:', modulId);
             return;
         }
 
+        // ✅ OPTIMISTIC UI: Update state immediately
+        const wasAlreadyCompleted = completedModuls.has(realModulId);
+        if (!wasAlreadyCompleted) {
+            completedModuls.add(realModulId);
+            updateProgressBar(); // Update UI immediately
+        }
+
         try {   
-            console.log('📤 Sending progress for modul_id:', realModulId);
-            
             const response = await fetch('{{ route("murid.modul.progress") }}', { 
                 method: 'POST',
                 headers: {
@@ -305,19 +383,21 @@
             const result = await response.json();
             
             if (result.success) {
-                console.log(`✅ Progress saved for Modul ID: ${realModulId}`);
-                
-                // ✅ Tambahkan ke Set completed moduls
-                completedModuls.add(realModulId);
-                
-                // ✅ Update progress bar TANPA reload
-                updateProgressBar();
+                // State is already updated, so no need to do anything else
             } else {
-                console.error('❌ Server returned error:', result);
+                // ❌ REVERT if server error
+                if (!wasAlreadyCompleted) {
+                    completedModuls.delete(realModulId);
+                    updateProgressBar();
+                }
             }
 
         } catch (error) {
-            console.error('❌ Failed to save progress:', error);
+            // ❌ REVERT if network error
+            if (!wasAlreadyCompleted) {
+                completedModuls.delete(realModulId);
+                updateProgressBar();
+            }
         }
     }
 
@@ -339,7 +419,7 @@
             // ✅ Update text progress
             progressText.textContent = `${completedCount} / ${totalCount} Materi Selesai (${newPercentage}%)`;
             
-            console.log(`🎯 Progress bar updated: ${completedCount}/${totalCount} (${newPercentage}%)`);
+            // console.log(`🎯 Progress bar updated: ${completedCount}/${totalCount} (${newPercentage}%)`);
         } else {
             console.warn('⚠️ Progress bar elements not found!');
         }
@@ -357,10 +437,10 @@
                     completedModuls.add(parseInt(modulId));
                 });
                 
-                console.log('✅ Loaded completed moduls:', completedModuls);
+                // console.log('✅ Loaded completed moduls:', completedModuls);
             }
         } catch (error) {
-            console.error('❌ Failed to load completed moduls:', error);
+            // console.error('❌ Failed to load completed moduls:', error);
         }
     }
 

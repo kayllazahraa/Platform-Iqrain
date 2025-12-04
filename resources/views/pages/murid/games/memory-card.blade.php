@@ -70,7 +70,7 @@
         </div>
 
         {{-- Ucapan selamat datang --}}
-        <div id="welcome-backdrop" class="fixed inset-0 z-40 transition-opacity duration-1000" style="background-color: rgba(135, 206, 250, 0.4);"></div>
+        <div id="welcome-backdrop" class="fixed inset-0 z-40 transition-opacity duration-1000" style="background-color: rgba(255, 255, 255, 0.4);"></div>
             <h1 id="welcome-message" class="font-['TegakBersambung'] fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 
                                         text-7xl md:text-8xl font-bold text-pink-400  
                                         opacity-0 transition-opacity duration-1000 ease-out"

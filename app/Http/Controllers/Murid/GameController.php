@@ -11,6 +11,8 @@ use App\Models\Murid;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\View\View;
 
 class GameController extends Controller
 {
@@ -156,7 +158,7 @@ class GameController extends Controller
             'ا' => 'Alif.webp',
             'ب' => 'Ba.webp',
             'ت' => 'Ta.webp',
-            'ث' => 'tsa.webp',
+            'ث' => 'Tsa.webp',
             'ج' => 'Jim.webp',
             'ح' => 'Kha.webp',
             'خ' => 'Kho.webp',
@@ -207,13 +209,48 @@ class GameController extends Controller
         ]);
     }
 
-    public function dragDrop($tingkatan_id)
+
+    public function dragDrop($tingkatan_id): View
     {
         $tingkatan = TingkatanIqra::findOrFail($tingkatan_id);
 
-        $jenisGame = JenisGame::where('nama_game', 'Kuis Drag & Drop')->first();
+        $jenisGame = JenisGame::where('nama_game', 'Kuis Drag & Drop')->first(); 
+        
+        $hijaiyahData = [
+            ['file' => 'Alif', 'latin' => 'Alif'],
+            ['file' => 'Ba', 'latin' => 'Ba'],
+            ['file' => 'Ta', 'latin' => 'Ta'],
+            ['file' => 'Tsa', 'latin' => 'Tsa'],
+            ['file' => 'Jim', 'latin' => 'Jim'],
+            ['file' => 'Kha', 'latin' => 'Kha'],
+            ['file' => 'Kho', 'latin' => 'Kho'],
+            ['file' => 'Dal', 'latin' => 'Dal'],
+            ['file' => 'Dzal', 'latin' => 'Dzal'],
+            ['file' => 'Ra', 'latin' => 'Ra'],
+            ['file' => 'Za', 'latin' => 'Zayn'],
+            ['file' => 'Sin', 'latin' => 'Sin'],
+            ['file' => 'Syin', 'latin' => 'Syin'],
+            ['file' => 'Shod', 'latin' => 'Shod'],
+            ['file' => 'Dhod', 'latin' => 'Dhod'],
+            ['file' => 'Tho', 'latin' => 'Tho'],
+            ['file' => 'Dhlo', 'latin' => 'Dhlo'],
+            ['file' => 'Ain', 'latin' => 'Ain'],
+            ['file' => 'Ghoin', 'latin' => 'Ghoin'],
+            ['file' => 'Fa', 'latin' => 'Fa'],
+            ['file' => 'Qof', 'latin' => 'Qof'],
+            ['file' => 'Kaf', 'latin' => 'Kaf'],
+            ['file' => 'Lam', 'latin' => 'Lam'],
+            ['file' => 'Mim', 'latin' => 'Mim'],
+            ['file' => 'Nun', 'latin' => 'Nun'],
+            ['file' => 'Wawu', 'latin' => 'Wawu'],
+            ['file' => 'Ha', 'latin' => 'Ha'],
+            ['file' => 'Lamalif', 'latin' => 'Lam Alif'],
+            ['file' => 'Hamzah', 'latin' => 'Hamzah'],
+            ['file' => 'Ya', 'latin' => 'Ya'],
+        ];
 
-        return view('pages.murid.games.drag-drop', compact('tingkatan', 'jenisGame'));
+
+        return view('pages.murid.games.drag-drop', compact('tingkatan', 'jenisGame', 'hijaiyahData'));
     }
 
 

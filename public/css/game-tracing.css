@@ -20,30 +20,60 @@ body {
    WELCOME ANIMATION STYLES
    ======================================== */
 .welcome-backdrop {
-    background-color: rgba(0, 0, 0, 0.7);
+    position: fixed;
+    inset: 0;
+    z-index: -40;
+    transition: opacity 1s;
+    background-color: rgba(255, 255, 255, 0.4);
 }
 
+/* untuk h1 container */
 .welcome-message {
-    z-index: 51;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 50;
+    /* dari z-50 */
+    opacity: 0;
+    /* dari opacity-0 */
+    transition: opacity 1s ease-out;
+    /* duration-1000 + ease-out */
+    font-family: 'TegakBersambung';
 }
 
+/* untuk style teks */
 .welcome-title {
     font-size: 4rem;
-    font-weight: normal;
-    color: white;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-    animation: welcomePulse 1.5s ease-in-out infinite;
+    /* text-7xl */
+    font-weight: bold;
+    /* font-bold */
+    color: #f472b6;
+    /* text-pink-400 */
+    text-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
 }
 
-.welcome-subtitle {
-    font-size: 1.5rem;
-    color: #A0E9FF;
-    margin-top: 1rem;
+
+@font-face {
+    font-family: 'Tegak Bersambung_IWK';
+    src: url('/fonts/TegakBersambung_IWK.ttf') format('truetype');
+}
+
+
+.font-cursive-iwk {
+    font-family: 'Tegak Bersambung_IWK', cursive !important;
 }
 
 @keyframes welcomePulse {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.05); }
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.05);
+    }
 }
 
 /* Utility classes for welcome animation */
@@ -107,16 +137,16 @@ body {
    ======================================== */
 .game-container {
     width: 100vw;
-    height: 100vh;  
-    min-height: 100vh;    
+    height: 100vh;
+    min-height: 100vh;
     display: flex;
-    flex-direction: column;    
+    flex-direction: column;
     text-align: center;
-    
+
     font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
-                 "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans",
-                 sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
-                 "Segoe UI Symbol", "Noto Color Emoji";
+        "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans",
+        sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+        "Segoe UI Symbol", "Noto Color Emoji";
 
 }
 
@@ -124,11 +154,11 @@ body {
 /* ========================================
    GAME HEADER
    ======================================== */
-.game-header {    
+.game-header {
     padding: 1.5rem 2rem;
     display: flex;
     justify-content: space-between;
-    align-items: center;    
+    align-items: center;
 }
 
 .letter-info-display {
@@ -153,7 +183,7 @@ body {
 .exit-button {
     background-color: #f472b6;
     color: white;
-    padding: 10px 15px ; 
+    padding: 10px 15px;
     border-radius: 12px;
     text-decoration: none;
     font-weight: 600;
@@ -189,7 +219,7 @@ body {
     flex-direction: column;
     align-items: center;
     gap: 1.5rem;
-    
+
 }
 
 .canvas-wrapper {
@@ -309,243 +339,517 @@ body {
    ======================================== */
 .game-footer {
     background: white;
-    padding: 1.5rem 2rem;
+    padding: 1rem 2rem;
+    /* Sedikit lebih ramping biar rapi */
     display: flex;
     justify-content: space-between;
     align-items: center;
-    box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.1);
+    /* Memberikan border atas pink tipis sebagai pemanis */
+    border-top: 4px solid #f472b6;
+    box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.05);
     gap: 2rem;
+    position: relative;
+    z-index: 10;
 }
 
-/* Progress Container */
+/* --- Progress Bar Section --- */
 .progress-container {
     display: flex;
     align-items: center;
     gap: 1rem;
     flex: 1;
-    max-width: 400px;
+    max-width: 450px;
+    /* Sedikit diperlebar */
 }
 
 .progress-label {
-    font-weight: 600;
-    color: #333;
-    font-size: 1rem;
+    font-weight: 800;
+    /* Lebih tebal */
+    color: #f472b6;
+    /* Pink */
+    font-size: 1.1rem;
     min-width: 80px;
-    font-family: 'Tegak Bersambung_IWK', cursive;
+    font-family: 'Titan One', cursive;
+    /* Pastikan font ini terload */
+    text-shadow: 1px 1px 0px rgba(244, 114, 182, 0.2);
 }
 
 .progress-bar {
     flex: 1;
-    height: 24px;
-    background: #E0E0E0;
-    border-radius: 12px;
+    height: 20px;
+    /* Tinggi proporsional */
+    background: #eff6ff;
+    /* Putih kebiruan sangat muda */
+    border: 2px solid #56B1F3;
+    /* Border Biru */
+    border-radius: 20px;
+    /* Lebih bulat (kapsul) */
     overflow: hidden;
-    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+    position: relative;
 }
 
 .progress-fill {
     height: 100%;
-    background: linear-gradient(90deg, #A0E9FF 0%, #7DD3FC 100%);
+    background: #56B1F3;
+    /* Isi Biru Solid */
     width: 0%;
-    transition: width 0.3s ease;
-    border-radius: 12px;
+    transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    /* Animasi gerak lebih halus */
+    border-radius: 10px;
+    box-shadow: inset 0 -2px 5px rgba(0, 0, 0, 0.1);
+    /* Efek 3D dikit */
 }
 
 .progress-text {
-    font-weight: normal;
-    color: #7DD3FC;
+    font-weight: 700;
+    color: #56B1F3;
+    /* Biru */
     min-width: 50px;
-    font-size: 1rem;
+    font-size: 1.1rem;
+    font-family: 'Titan One', cursive;
 }
 
-/* Score Container */
+/* --- Score Section --- */
 .score-container {
     display: flex;
+    flex-direction: column;
+    /* Ditumpuk biar rapi (Label atas, Angka bawah) */
     align-items: center;
-    gap: 0.75rem;
+    justify-content: center;
+    gap: 0.2rem;
+    padding: 0 1rem;
+    border-left: 2px dashed #e5e7eb;
+    /* Pemisah tipis */
+    border-right: 2px dashed #e5e7eb;
 }
 
 .score-label {
-    font-weight: 600;
-    color: #333;
-    font-size: 1rem;
-    font-family: 'Tegak Bersambung_IWK', cursive;
+    font-weight: 700;
+    color: #f472b6;
+    /* Pink */
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-family: 'Titan One', cursive;
 }
 
 .score-display {
-    font-size: 1.25rem;
-    font-weight: normal;
-    color: #7DD3FC;
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #56B1F3;
+    /* Biru */
+    line-height: 1;
 }
 
 .stars-display {
-    display: flex;
-    gap: 0.25rem;
-    font-size: 1.5rem;
+    font-size: 1.2rem;
+    color: #ffd700;
+    margin-top: 2px;
 }
 
-/* Navigation Buttons */
+/* --- Navigation Buttons --- */
 .navigation-buttons {
     display: flex;
     gap: 1rem;
 }
 
 .nav-btn {
-    padding: 0.75rem 1.5rem;
+    padding: 0.8rem 1.5rem;
     border: none;
-    border-radius: 10px;
+    border-radius: 15px;
+    /* Lebih rounded */
     font-size: 1rem;
-    font-weight: 600;
+    font-weight: 700;
     cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    font-family: 'Tegak Bersambung_IWK', cursive;
+    transition: all 0.2s ease;
+    font-family: 'Titan One', cursive;
+    /* Font judul biar konsisten */
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
+/* Tombol Sebelumnya (Outline Style) */
 .btn-prev {
-    background: #E0E0E0;
-    color: #333;
+    background: white;
+    color: #56B1F3;
+    /* Teks Biru */
+    border: 3px solid #56B1F3;
+    /* Border Biru Tebal */
 }
 
 .btn-prev:hover:not(:disabled) {
-    background: #CCCCCC;
+    background: #56B1F3;
+    color: white;
     transform: translateY(-2px);
 }
 
+/* Tombol Berikutnya (Solid Style - Primary) */
 .btn-next {
-    background: linear-gradient(135deg, #A0E9FF 0%, #7DD3FC 100%);
+    background: #f472b6;
+    /* Background Pink */
     color: white;
+    /* Teks Putih */
+    border: 3px solid #f472b6;
+    /* Border Pink */
+    box-shadow: 0 4px 10px rgba(244, 114, 182, 0.4);
+    /* Bayangan Pink */
 }
 
 .btn-next:hover:not(:disabled) {
+    background: #f68bbd;
+    /* Pink lebih terang dikit pas hover */
+    border-color: #f68bbd;
     transform: translateY(-2px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 6px 15px rgba(244, 114, 182, 0.6);
 }
 
 .nav-btn:disabled {
     cursor: not-allowed;
     opacity: 0.5;
+    background: #e5e7eb !important;
+    border-color: #e5e7eb !important;
+    color: #9ca3af !important;
+    box-shadow: none !important;
+    transform: none !important;
 }
 
+/* Responsive buat HP */
+@media (max-width: 768px) {
+    .game-footer {
+        flex-direction: column;
+        padding: 1rem;
+        gap: 1rem;
+    }
+
+    .progress-container,
+    .navigation-buttons {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .score-container {
+        flex-direction: row;
+        gap: 1rem;
+        border: none;
+        padding: 0.5rem 0;
+    }
+}
 
 
 /* ========================================
-   SUCCESS MODAL
+   CUSTOM SUCCESS MODAL (VANILLA CSS)
    ======================================== */
-.success-modal {
-    display: none;
+
+.custom-modal {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(0, 0, 0, 0.7);
-    z-index: 100;
+    inset: 0;
+    /* top:0, left:0, right:0, bottom:0 */
+    z-index: 50;
+    display: flex;
     align-items: center;
     justify-content: center;
+
+    /* State Tersembunyi (Default) */
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.3s ease, visibility 0.3s;
 }
 
-.success-container {
-    text-align: center;
-    padding: 3rem;
+/* State Muncul (Ditambah via JS) */
+.custom-modal.show {
+    visibility: visible;
+    opacity: 1;
+}
+
+/* 2. Overlay Hitam Transparan */
+.modal-overlay {
+    position: absolute;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(2px);
+    /* Efek blur dikit biar keren */
+}
+
+/* 3. Kartu Modal (Kotak Putih) */
+.modal-card {
+    position: relative;
     background: white;
-    border-radius: 30px;
-    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.3);
-    max-width: 500px;
-    width: 90%;
-    max-width: 450px;
-    padding: 30px;
-    animation: bounceIn 0.5s ease-out;
+    border-radius: 24px;
+    /* rounded-3xl */
+    padding: 2rem;
+    width: 100%;
+    max-width: 24rem;
+    /* max-w-sm */
+    margin: 0 1rem;
+    text-align: center;
+
+    /* Border & Shadow */
+    border: 4px solid #f9a8d4;
+    /* Pink-300 */
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    /* shadow-2xl */
+
+    /* Animasi Zoom In */
+    transform: scale(0.9);
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    /* Efek membal */
 }
 
-@keyframes bounceIn {
-    0% {
-        transform: scale(0.3);
-        opacity: 0;
-    }
-    50% {
-        transform: scale(1.05);
-    }
+/* Saat modal muncul, kartu jadi ukuran normal */
+.custom-modal.show .modal-card {
+    transform: scale(1);
+}
+
+/* 4. Ikon Piala & Animasi */
+.modal-icon img {
+    width: 6rem;
+    /* w-24 */
+    height: auto;
+    margin: 0 auto;
+}
+
+.animate-bounce {
+    animation: bounce 1s infinite;
+}
+
+@keyframes bounce {
+
+    0%,
     100% {
-        transform: scale(1);
-        opacity: 1;
+        transform: translateY(-15%);
+        animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+    }
+
+    50% {
+        transform: translateY(0);
+        animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
     }
 }
 
-.success-animation {
-    font-size: 6rem;
-    margin-bottom: 1rem;
-    animation: rotate 1s ease-in-out infinite alternate;
+/* 5. Teks Judul & Subjudul */
+.modal-title {
+    font-size: 2.25rem;
+    /* text-4xl */
+    font-weight: bold;
+    color: #ec4899;
+    /* pink-500 */
+    margin-bottom: 0.5rem;
+    line-height: 1.2;
 }
 
-@keyframes rotate {
-    from {
-        transform: rotate(-10deg);
-    }
-    to {
-        transform: rotate(10deg);
-    }
+.modal-subtitle {
+    font-size: 1.125rem;
+    /* text-lg */
+    color: #4b5563;
+    /* gray-600 */
+    margin-bottom: 1.5rem;
 }
 
-.success-title {
-    font-size: 3rem;
-    color: #7DD3FC;
-    margin-bottom: 1rem;
-    font-weight: normal;
+/* 6. Kotak Skor */
+.score-box {
+    background-color: #fdf2f8;
+    /* pink-50 */
+    border: 1px solid #fbcfe8;
+    /* pink-100 */
+    border-radius: 0.75rem;
+    /* rounded-xl */
+    padding: 1rem;
+    margin-bottom: 1.5rem;
 }
 
-.final-stars {
-    font-size: 3rem;
-    margin-bottom: 1rem;
+.score-label {
+    color: #6b7280;
+    /* gray-500 */
+    font-size: 0.875rem;
+    /* text-sm */
+    font-weight: bold;
+    text-transform: uppercase;
 }
 
-.success-message {
-    font-size: 1.25rem;
-    color: #555;
-    margin-bottom: 1rem;
+.score-value {
+    color: #db2777;
+    /* pink-600 */
+    font-size: 2.25rem;
+    /* text-4xl */
+    font-weight: bold;
+    line-height: 1;
 }
 
-.final-score {
-    font-size: 1.75rem;
-    font-weight: normal;
-    color: #7DD3FC;
-    margin-bottom: 2rem;
-    font-family: 'Tegak Bersambung_IWK', cursive;
-}
-
-.success-buttons {
+/* 7. Tombol-tombol */
+.modal-actions {
     display: flex;
     flex-direction: column;
     gap: 10px;
-    margin-top: 20px;
+    /* Jarak antar tombol */
     width: 100%;
-    justify-content: center;
 }
 
-.btn {
-    padding: 0.875rem 1.75rem;
+/* Tombol Main Lagi (Gradient Pink) */
+.btn-restart {
+    width: 100%;
+    padding: 0.75rem;
     border: none;
-    border-radius: 10px;
-    font-size: 1rem;
-    font-weight: 600;
+    border-radius: 0.75rem;
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: white;
+    background: linear-gradient(to right, #f472b6, #ec4899);
+    /* pink-400 to pink-500 */
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
     cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
 }
 
-.btn:hover {
+.btn-restart:hover {
+    transform: scale(1.05);
+}
+
+/* Tombol Home (Putih Border) */
+.btn-home {
+    display: block;
+    /* Karena tag <a> */
+    width: 100%;
+    padding: 0.75rem;
+    border-radius: 0.75rem;
+    font-size: 1.125rem;
+    /* text-lg */
+    font-weight: bold;
+    text-decoration: none;
+
+    background: white;
+    color: #6b7280;
+    /* gray-500 */
+    border: 2px solid #e5e7eb;
+    /* gray-200 */
+    transition: background-color 0.2s;
+}
+
+.btn-home:hover {
+    background-color: #f9fafb;
+    /* gray-50 */
+}
+
+/* ... CSS Modal sebelumnya ... */
+
+/* Wadah Bintang */
+.modal-stars {
+    font-size: 5rem;
+    /* Ukuran besar */
+    line-height: 1;
+    margin-bottom: 1rem;
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+/* Warna Bintang */
+.star-gold {
+    color: #FFD700;
+    /* Emas */
+    text-shadow: 0 2px 0 #d4af37;
+    /* Efek 3D dikit */
+    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
+}
+
+.star-gray {
+    color: #e5e7eb;
+    /* Abu-abu (kalau bintang kosong) */
+}
+
+/* Animasi Bintang Muncul (Pop In) */
+.star-animate {
+    animation: starPop 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    opacity: 0;
+    transform: scale(0);
+}
+
+/* Delay biar munculnya gantian (satu-satu) */
+.star-animate:nth-child(1) {
+    animation-delay: 0.1s;
+}
+
+.star-animate:nth-child(2) {
+    animation-delay: 0.3s;
+}
+
+.star-animate:nth-child(3) {
+    animation-delay: 0.5s;
+}
+
+@keyframes starPop {
+    0% {
+        opacity: 0;
+        transform: scale(0) rotate(-180deg);
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale(1) rotate(0deg);
+    }
+}
+
+/* Base Style Tombol */
+.btn-action {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    /* Hilangkan garis bawah link */
+    transition: transform 0.2s, background-color 0.2s;
+    border: none;
+    font-family: 'Tegak Bersambung_IWK', cursive !important;
+}
+
+.btn-action:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+    /* Efek naik dikit pas hover */
 }
 
-.btn-primary {
-    background: linear-gradient(135deg, #A0E9FF 0%, #7DD3FC 100%);
+/* 1. Tombol Pink (Huruf Berikutnya) */
+.btn-pink {
+    background: linear-gradient(to right, #f472b6, #ec4899);
     color: white;
+    box-shadow: 0 4px 10px rgba(236, 72, 153, 0.3);
 }
 
-.btn-secondary {
-    background: #FFABC1;
-    color: white;
+/* 2. Tombol Outline Pink (Ulangi) */
+.btn-outline-pink {
+    background: white;
+    color: #db2777;
+    /* Pink tua */
+    border: 2px solid #fbcfe8;
+    /* Pink muda */
+}
+
+.btn-outline-pink:hover {
+    background: #fdf2f8;
+    border-color: #f472b6;
+}
+
+/* 3. Tombol Ghost (Menu) */
+.btn-ghost {
+    background: transparent;
+    color: #9ca3af;
+    /* Abu-abu */
+    font-size: 1rem;
+}
+
+.btn-ghost:hover {
+    color: #6b7280;
+    text-decoration: underline;
+    transform: none;
+    /* Gak usah naik */
+}
+
+/* Sembunyikan tombol Next kalau sudah huruf terakhir */
+.hidden {
+    display: none !important;
 }
 
 /* ========================================
@@ -597,7 +901,7 @@ body {
 
     .letter-name-display {
         font-size: 1.25rem;
-        
+
     }
 
     .exit-button {
@@ -617,7 +921,7 @@ body {
     }
 
     .final-stars {
-        font-size: 2.5rem;
+        font-size: 5rem;
     }
 }
 
@@ -695,15 +999,6 @@ body {
     margin-top: 20px;
 }
 
-@font-face {
-    font-family: 'Tegak Bersambung_IWK';
-    src: url('/fonts/TegakBersambung_IWK.ttf') format('truetype');
-}
-
-
-.font-cursive-iwk {
-    font-family: 'Tegak Bersambung_IWK', cursive !important;
-}
 
 
 .balloon {
@@ -728,9 +1023,12 @@ body {
 
 /* Animasi Balon Goyang versi CSS biasa */
 @keyframes bounce-slow {
-    0%, 100% {
+
+    0%,
+    100% {
         transform: translateY(-20px);
     }
+
     50% {
         transform: translateY(0);
     }
@@ -738,4 +1036,50 @@ body {
 
 .animate-bounce-slow {
     animation: bounce-slow 5s ease-in-out infinite;
+}
+
+/* ========================================
+   EXIT BUTTON STYLES (MATCHING LABIRIN)
+   ======================================== */
+.btn-kembali {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 140px;
+    height: 45px;
+    border-radius: 9999px;
+    /* rounded-full */
+    background-color: #f472b6;
+    /* bg-pink-400 */
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    /* shadow-md */
+    transition: transform 0.2s;
+    text-decoration: none;
+    color: white;
+}
+
+.btn-kembali:hover {
+    transform: scale(1.05);
+    /* hover:scale-105 */
+}
+
+.btn-kembali-icon {
+    position: absolute;
+    left: 1rem;
+    /* left-4 */
+    display: flex;
+    align-items: center;
+}
+
+.btn-kembali-text {
+    font-family: 'Tegak Bersambung_IWK', cursive;
+    font-size: 25px;
+    font-weight: normal;
+    line-height: 1;
+    padding-top: 0.5rem;
+    /* pt-2 */
+    padding-left: 1rem;
+    /* pl-4 */
+    color: white;
 }
