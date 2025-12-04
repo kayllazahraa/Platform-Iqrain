@@ -6,7 +6,7 @@
         <div class="mb-4 flex justify-between items-center">
             <div>
                 <h1 class="text-3xl text-white font-bold">Kelola Mentor</h1>
-                <p class="text-gray-400 mt-1">Manajemen data mentor IQRAIN</p>
+                <p class="text-white mt-1">Manajemen data mentor IQRAIN</p>
             </div>
             <a href="{{ route('admin.mentor.create') }}" 
                class="inline-flex items-center px-4 py-2 bg-pink-500 hover:bg-pink-600 text-white font-medium rounded-lg transition-colors duration-200">

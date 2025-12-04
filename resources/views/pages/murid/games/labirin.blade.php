@@ -5,12 +5,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    
+
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>Labirin Hijaiyah</title>
 
+    {{-- 1. IMPORT FONT MOOLI & TEGAK BERSAMBUNG --}}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Mooli&display=swap" rel="stylesheet">
+
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+
 
     {{-- CSS Kustom --}}
     <style>
@@ -20,30 +27,8 @@
             z-index: 1;
             overflow: hidden;
             min-height: 100vh;
-
-            /* BACKGROUND BARU: Gradien Biru Sesuai Permintaan (tanpa pattern) */
             background: linear-gradient(180deg, #56B1F3 0%, #D3F2FF 100%);
         }
-
-        /* HAPUS atau KOMENTARI bagian ::before yang terkait dengan pattern gambar */
-        /* Kode ini dihapus atau dikomentari agar pattern tidak muncul */
-        /*
-        #game-content-wrapper::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-image: url('/images/games/game-pattern.webp');
-            background-repeat: no-repeat;
-            background-size: cover;
-            background-attachment: fixed;
-            background-position: center;
-            opacity: 0.3;
-            z-index: -1;
-        }
-        */
 
         /* Font Kustom */
         @font-face {
@@ -53,6 +38,11 @@
 
         .font-cursive-iwk {
             font-family: 'Tegak Bersambung_IWK', cursive !important;
+        }
+
+        /* Font Mooli untuk Skor */
+        .font-mooli {
+            font-family: 'Mooli', sans-serif !important;
         }
 
         /* Styling Grid Labirin */
@@ -67,46 +57,60 @@
 
         .maze-wall {
             background-color: #D75C82;
-            /* Warna Dinding */
         }
 
         .maze-path {
             background-color: #D9D9D9;
-            /* Warna Jalan */
+        }
+
+        /* Animasi pop untuk skor saat berubah */
+        @keyframes popScale {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.3);
+                color: #D75C82;
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .score-pop {
+            animation: popScale 0.3s ease-out;
         }
     </style>
 </head>
-
-{{-- PENTING: Ganti class "bg-gray-50" di tag body menjadi "bg-white" atau hapus saja --}}
-{{-- Saya sarankan "bg-white" agar tidak ada warna abu-abu default yang menimpa --}}
 
 <body class="bg-white">
 
     {{-- Konten Halaman --}}
     <div id="game-content-wrapper">
-    {{-- Main --}}
-    <div class="font-sans text-center min-h-screen flex flex-col bg-gradient-to-b from-[#56B1F3] to-[#D3F2FF]">
-        {{-- Tombol Kembali --}}
-        <div class="p-4">    
-            <a href="{{ route('murid.games.index', $tingkatan->tingkatan_id) }}"
-                class="relative flex items-center justify-center w-[140px] h-[45px] rounded-full bg-pink-400 shadow-md transition-transform hover:scale-105">        
-                {{-- icon < --}}
-                <div class="absolute left-4 flex items-center">
-                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"></path>
-                    </svg>
-                </div>                    
-                <span class="font-['TegakBersambung'] text-white text-[25px] font-normal leading-none pt-2 pl-4">
-                    Kembali
-                </span>
+        {{-- Main --}}
+        <div class="font-sans text-center min-h-screen flex flex-col bg-gradient-to-b from-[#56B1F3] to-[#D3F2FF]">
+            {{-- Tombol Kembali --}}
+            <div class="p-4">
+                <a href="{{ route('murid.games.index', $tingkatan->tingkatan_id) }}"
+                    class="relative flex items-center justify-center w-[140px] h-[45px] rounded-full bg-pink-400 shadow-md transition-transform hover:scale-105">
+                    {{-- icon < --}} <div class="absolute left-4 flex items-center">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="3"
+                            viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"></path>
+                        </svg>
+            </div>
+            <span class="font-['TegakBersambung'] text-white text-[25px] font-normal leading-none pt-2 pl-4">
+                Kembali
+            </span>
             </a>
         </div>
 
         {{-- Balon kiri --}}
         <div class="fixed left-4 top-1/3 w-40 md:w-50 h-auto animate-bounce-slow z-10 pointer-events-none">
             <img src="{{ asset('images/icon/balon.webp') }}" alt="Balon Kiri" class="w-full h-auto drop-shadow-lg">
-        </div>    
+        </div>
 
         <div class="container mx-auto p-2 max-w-4xl">
 
@@ -128,10 +132,12 @@
                 {{-- Kolom Kiri: Papan Game --}}
                 <div class="w-full md:w-auto flex flex-col items-center md:items-start">
 
-                    {{-- Tampilan Progres Skor --}}
-                    <p id="skor-labirin-display" class="text-lg font-cursive-iwk text-gray-800 mb-2 pl-2">
-                        Huruf: 0/4
-                    </p>
+                    {{-- 3. TAMPILAN PROGRES SKOR (DIPERBAIKI) --}}
+                    <div class="mb-3 bg-white/60 px-6 py-2 rounded-full shadow-sm border-2 border-[#AC3F61]">
+                        <p id="skor-labirin-display" class="text-medium font-mooli text-[#D75C82]">
+                            Huruf: 0/4
+                        </p>
+                    </div>
 
                     {{-- Grid Labirin (Akan diisi JS) --}}
                     <div id="maze-grid"
@@ -198,7 +204,7 @@
                         </div>
                     </div>
 
-                    <p class="font-cursive-iwk text-lg text-center text-red-500 px-4">
+                    <p class="font-cursive-iwk text-lg text-center text-xl text-red-500 px-4">
                         Gunakan panah layar atau keyboard untuk bergerak.
                     </p>
                 </div>
@@ -207,11 +213,88 @@
 
         {{-- Balon kanan --}}
         <div class="fixed right-4 top-1/4 w-40 md:w-50 h-auto animate-bounce-slow z-10 pointer-events-none">
-            <img src="{{ asset('images/icon/balon.webp') }}" alt="Balon Kanan" class="w-full h-auto drop-shadow-lg transform scale-x-[-1]"> 
+            <img src="{{ asset('images/icon/balon.webp') }}" alt="Balon Kanan"
+                class="w-full h-auto drop-shadow-lg transform scale-x-[-1]">
         </div>
 
         {{-- Spacer Bottom --}}
         <div class="h-24"></div>
+    </div>
+
+    {{-- Ucapan selamat datang --}}
+    <div id="welcome-backdrop" class="fixed inset-0 z-40 transition-opacity duration-1000"
+        style="background-color: rgba(255, 255, 255, 0.4);"></div>
+    <h1 id="welcome-message" class="font-['TegakBersambung'] fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 
+                                        text-7xl md:text-8xl font-bold text-pink-400  
+                                        opacity-0 transition-opacity duration-1000 ease-out"
+        style="text-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);">
+        Selamat Bermain
+    </h1>
+    </div>
+
+    {{-- POP UP SELESAI BERMAIN --}}
+    <div id="success-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden">
+        <div class="absolute inset-0 transition-opacity duration-300" style="background-color: rgba(0, 0, 0, 0.6);">
+        </div>
+
+        <div
+            class="relative bg-white rounded-3xl p-8 max-w-sm w-full mx-4 shadow-2xl transform  scale-90 transition-transform duration-300 border-4 border-pink-300 text-center">
+            <div class=" mb-4 animate-bounce">
+                <img src="{{ asset('images/icon/piala.webp') }}" alt="Piala" class="w-24 h-auto mx-auto">
+            </div>
+
+            <h2 class="font-['TegakBersambung'] text-4xl text-pink-500 font-bold mb-2">
+                Luar Biasa!
+            </h2>
+
+            <p class="font-['TegakBersambung'] text-gray-600 mb-6 text-lg">
+                Kamu berhasil menyelesaikan permainan!
+            </p>
+
+            <div class="bg-pink-50 rounded-xl p-4 mb-6 border border-pink-100">
+                <p class="text-gray-500 text-sm font-bold uppercase">Total Poin</p>
+                <p class="text-4xl font-bold text-pink-600" id="modal-score">0</p>
+            </div>
+
+            <div class="flex flex-col gap-3">
+                <button onclick="restartGame()"
+                    class="w-full py-3 bg-gradient-to-r from-pink-400 to-pink-500 text-white rounded-xl font-bold text-xl shadow-lg hover:scale-105 transition-transform font-['TegakBersambung']">
+                    Main Lagi ↻
+                </button>
+
+                <a href="{{ route('murid.games.index', $tingkatan->tingkatan_id) }}"
+                    class="w-full py-3 bg-white border-2 border-gray-200 text-gray-500 rounded-xl font-bold text-lg hover:bg-gray-50 transition-colors font-['TegakBersambung']">
+                    Kembali ke Menu
+                </a>
+            </div>
+        </div>
+    </div>
+
+
+    {{-- POP UP BELUM SELESAI --}}
+    <div id="incomplete-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden">
+        <div class="absolute inset-0 transition-opacity duration-300" style="background-color: rgba(0, 0, 0, 0.6);">
+        </div>
+
+        <div
+            class="relative bg-white rounded-3xl p-8 max-w-sm w-full mx-4 shadow-2xl transform scale-90 transition-transform duration-300 border-4 border-yellow-400 text-center">
+            <div class="mb-4 animate-bounce">
+                <img src="{{ asset('images/icon/tanda-tanya.webp') }}" alt="Tanda Tanya" class="w-24 h-auto mx-auto">
+            </div>
+
+            <h2 class="font-['TegakBersambung'] text-4xl text-yellow-500 font-bold mb-2">
+                Belum Selesai!
+            </h2>
+
+            <p id="incomplete-message" class="font-['TegakBersambung'] text-gray-600 mb-6 text-lg">
+                Masih ada huruf yang belum dikumpulkan.
+            </p>
+
+            <button onclick="closeIncompleteModal()"
+                class="w-full py-3 bg-gradient-to-r from-yellow-400 to-yellow-500 text-white rounded-xl font-bold text-xl shadow-lg hover:scale-105 transition-transform font-['TegakBersambung']">
+                Lanjut Main
+            </button>
+        </div>
     </div>
 
     {{-- JavaScript Game --}}
@@ -222,35 +305,105 @@
             targetLetters: @json($targetLetters),
             targetFiles: @json($targetFiles)
         };
-        
-        // const gameStaticId = null; 
-        // Ambil ID langsung dari $jenisGame
+
         const jenisGameId = {{ $jenisGame->jenis_game_id }};
 
         // URL Routes
         const saveScoreUrl = '{{ route('murid.game.saveScore') }}';
         const redirectUrl = '{{ route('murid.games.index', $tingkatan->tingkatan_id) }}';
 
-        // --- 2. FUNGSI SIMPAN SKOR (ASYNC) ---
+        // --- 2. FUNGSI GLOBAL (UI & SKOR) ---
+
+        // A. Fungsi Restart Game (Dipanggil tombol HTML)
+        window.restartGame = function () {
+            location.reload();
+        }
+
+        // B. Fungsi Tampilkan Modal Menang
+        function showSuccessModal(skorAkhir) {
+            const modal = document.getElementById('success-modal');
+            const scoreText = document.getElementById('modal-score');
+
+            // Update teks skor
+            if (scoreText) scoreText.innerText = skorAkhir;
+
+            // Tampilkan Modal
+            modal.classList.remove('hidden');
+            modal.classList.add('flex'); // Pastikan display flex agar tengah
+
+            // Animasi Masuk
+            const modalBox = modal.querySelector('div.relative');
+            setTimeout(() => {
+                modalBox.classList.remove('scale-90');
+                modalBox.classList.add('scale-100');
+            }, 10);
+
+            // Panggil Confetti
+            triggerWinConfetti();
+        }
+
+        // B.2. Fungsi Tampilkan Modal Belum Selesai
+        window.showIncompleteModal = function (remaining) {
+            const modal = document.getElementById('incomplete-modal');
+            const message = document.getElementById('incomplete-message');
+
+            if (message) message.innerText = `Kumpulkan ${remaining} huruf lagi ya!`;
+
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+
+            const modalBox = modal.querySelector('div.relative');
+            setTimeout(() => {
+                modalBox.classList.remove('scale-90');
+                modalBox.classList.add('scale-100');
+            }, 10);
+        }
+
+        window.closeIncompleteModal = function () {
+            const modal = document.getElementById('incomplete-modal');
+            const modalBox = modal.querySelector('div.relative');
+
+            modalBox.classList.remove('scale-100');
+            modalBox.classList.add('scale-90');
+
+            setTimeout(() => {
+                modal.classList.remove('flex');
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        // C. Fungsi Confetti
+        function triggerWinConfetti() {
+            var duration = 3 * 1000;
+            var animationEnd = Date.now() + duration;
+            var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 9999 };
+
+            var random = function (min, max) { return Math.random() * (max - min) + min; }
+
+            var interval = setInterval(function () {
+                var timeLeft = animationEnd - Date.now();
+                if (timeLeft <= 0) return clearInterval(interval);
+
+                var particleCount = 50 * (timeLeft / duration);
+                confetti(Object.assign({}, defaults, { particleCount, origin: { x: random(0.1, 0.3), y: Math.random() - 0.2 } }));
+                confetti(Object.assign({}, defaults, { particleCount, origin: { x: random(0.7, 0.9), y: Math.random() - 0.2 } }));
+            }, 250);
+        }
+
+        // D. Fungsi Simpan Skor (Background Process)
         async function saveScore(skor, poin) {
-            // Cek validitas ID game
-            if (!jenisGameId) {
-                console.error("JenisGameID hilang. Skor tidak akan disimpan.");
-                alert("Terjadi kesalahan konfigurasi game. Skor tidak tersimpan.");
-                return;
-            }
+            if (!jenisGameId) return console.error("Error: Jenis Game ID tidak ditemukan.");
 
             try {
-                // Kirim Request ke Server
+                // Kita tetap await fetch agar data terkirim rapi, TAPI UI tidak menunggu ini selesai
                 const response = await fetch(saveScoreUrl, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        // Ambil CSRF Token dari meta tag Laravel
                         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
                     },
-                    body: JSON.stringify({                        
-                        jenis_game_id: jenisGameId,                      
+                    body: JSON.stringify({
+                        jenis_game_id: jenisGameId,
                         skor: skor,
                         total_poin: poin
                     })
@@ -258,56 +411,82 @@
 
                 const data = await response.json();
 
-                // Jika Sukses
+                // HAPUS showSuccessModal() DARI SINI
                 if (data.success) {
-                    console.log("Skor Berhasil Disimpan!", data);                    
-                    alert("Alhamdulillah! Kamu berhasil menyelesaikan Labirin!\nPoin kamu: " + data.poin_didapat);                    
-                    location.reload();
+                    console.log("Data tersimpan di background:", data);
                 } else {
-                    console.error("Gagal response:", data);
-                    alert("Gagal menyimpan skor.");
+                    console.warn("Gagal simpan di background:", data);
                 }
 
             } catch (error) {
-                console.error('Error saving score:', error);
-                alert("Terjadi kesalahan koneksi saat menyimpan skor.");
+                console.error('Error saving score in background:', error);
             }
         }
 
-        // --- 3. LOGIKA UTAMA GAME ---
+        // --- 3. LOGIKA UTAMA GAME (Jalan saat Load) ---
         document.addEventListener("DOMContentLoaded", () => {
+
+            // === LOGIKA WELCOME MESSAGE (BARU DITAMBAHKAN) ===
+            const welcomeBackdrop = document.getElementById("welcome-backdrop");
+            const welcomeMessage = document.getElementById("welcome-message");
+
+            if (welcomeBackdrop && welcomeMessage) {
+                // 1. Tampilkan teks (fade in)
+                setTimeout(() => {
+                    welcomeMessage.classList.remove("opacity-0");
+                    welcomeMessage.classList.add("opacity-100");
+                }, 100);
+
+                // 2. Setel alarm untuk menyembunyikan (fade out)
+                setTimeout(() => {
+                    welcomeMessage.classList.remove("opacity-100");
+                    welcomeMessage.classList.add("opacity-0");
+
+                    welcomeBackdrop.classList.remove("opacity-100");
+                    welcomeBackdrop.classList.add("opacity-0");
+
+                    // 3. Setelah animasi fade out selesai, baru sembunyikan sepenuhnya (display: none)
+                    setTimeout(() => {
+                        welcomeBackdrop.classList.add("hidden");
+                        welcomeMessage.classList.add("hidden");
+                    }, 1000);
+
+                }, 2000); // Teks muncul selama 2 detik sebelum hilang
+            }
+            // ==================================================
+
             const gridContainer = document.getElementById("maze-grid");
             const scoreDisplay = document.getElementById("skor-labirin-display");
 
-            // Ambil data dari object window
             const mapLayout = window.gameData.mapLayout;
-            const targetFiles = window.gameData.targetFiles; // File gambar huruf yang harus dicari
+            const targetFiles = window.gameData.targetFiles;
 
-            const gridRows = 8;
-            const gridCols = 9;
+            // Dinamis Grid (Biar aman kalau map berubah ukuran)
+            const gridRows = mapLayout.length;
+            const gridCols = mapLayout[0].length;
 
-            // State Game
-            let playerPosition = {
-                x: 0,
-                y: 0
-            };
+            let playerPosition = { x: 0, y: 0 };
             let collectedLetters = [];
             let gameItems = [];
 
-            // A. Render Papan
+            // Setup Awal
+            function initGame() {
+                renderBoard();
+                placeItems();
+            }
+
+            // Render Grid
             function renderBoard() {
                 gridContainer.innerHTML = "";
-                // Setup CSS Grid dinamis sesuai jumlah kolom
                 gridContainer.style.gridTemplateColumns = `repeat(${gridCols}, minmax(0, 1fr))`;
 
                 for (let y = 0; y < gridRows; y++) {
                     for (let x = 0; x < gridCols; x++) {
                         const cell = document.createElement("div");
-                        cell.className = "maze-cell"; // Kelas dasar
+                        cell.className = "maze-cell";
                         cell.dataset.x = x;
                         cell.dataset.y = y;
 
-                        // Cek Tembok (1) atau Jalan (0)
                         if (mapLayout[y][x] === 1) {
                             cell.classList.add("maze-wall");
                         } else {
@@ -318,221 +497,144 @@
                 }
             }
 
-            // B. Penempatan Item Random
+            // Place Items Logic
             function placeItems() {
                 const validCells = [];
-
-                // Cari semua sel jalan (0)
                 for (let y = 0; y < gridRows; y++) {
                     for (let x = 0; x < gridCols; x++) {
-                        if (mapLayout[y][x] === 0) {
-                            validCells.push({
-                                x,
-                                y
-                            });
-                        }
+                        if (mapLayout[y][x] === 0) validCells.push({ x, y });
                     }
                 }
 
-                // Acak posisi
-                shuffleArray(validCells);
-
-                if (validCells.length < 6) {
-                    console.error("Map terlalu kecil untuk menampung item!");
-                    return;
+                // Shuffle function helper
+                for (let i = validCells.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [validCells[i], validCells[j]] = [validCells[j], validCells[i]];
                 }
 
-                // Ambil posisi unik untuk Player, 4 Huruf, 1 Finish
-                const playerPos = validCells.pop();
-                const letterPos1 = validCells.pop();
-                const letterPos2 = validCells.pop();
-                const letterPos3 = validCells.pop();
-                const letterPos4 = validCells.pop();
-                const goalPos = validCells.pop();
+                if (validCells.length < 6) return console.error("Map terlalu kecil!");
 
-                // Set Posisi Player
-                playerPosition = playerPos;
+                playerPosition = validCells.pop(); // Set Player Pos
 
-                // Set Data Item
-                gameItems = [{
-                        type: 'letter',
-                        value: targetFiles[0],
-                        ...letterPos1,
-                        collected: false
-                    },
-                    {
-                        type: 'letter',
-                        value: targetFiles[1],
-                        ...letterPos2,
-                        collected: false
-                    },
-                    {
-                        type: 'letter',
-                        value: targetFiles[2],
-                        ...letterPos3,
-                        collected: false
-                    },
-                    {
-                        type: 'letter',
-                        value: targetFiles[3],
-                        ...letterPos4,
-                        collected: false
-                    },
-                    {
-                        type: 'goal',
-                        ...goalPos,
-                        collected: false
-                    }
+                // Set Items
+                gameItems = [
+                    { type: 'letter', value: targetFiles[0], ...validCells.pop(), collected: false },
+                    { type: 'letter', value: targetFiles[1], ...validCells.pop(), collected: false },
+                    { type: 'letter', value: targetFiles[2], ...validCells.pop(), collected: false },
+                    { type: 'letter', value: targetFiles[3], ...validCells.pop(), collected: false },
+                    { type: 'goal', ...validCells.pop(), collected: false }
                 ];
 
                 updateItemDisplay();
             }
 
-            // C. Update Tampilan Item di Grid
+            // Update Tampilan Icon
             function updateItemDisplay() {
-                // Hapus item lama
                 gridContainer.querySelectorAll('.game-item').forEach(item => item.remove());
 
-                // 1. Gambar Player
+                // Player Icon
                 const playerCell = getCell(playerPosition.x, playerPosition.y);
                 if (playerCell) {
                     const playerIcon = document.createElement('div');
                     playerIcon.className = "game-item w-full h-full flex items-center justify-center animate-pulse";
-                    playerIcon.innerHTML =
-                        `<img src="/images/games/qira-labirin.webp" alt="Player" class="w-full h-full object-contain drop-shadow-md">`;
+                    playerIcon.innerHTML = `<img src="/images/games/qira-labirin.webp" alt="Player" class="w-full h-full object-contain drop-shadow-md">`;
                     playerCell.appendChild(playerIcon);
                 }
 
-                // 2. Gambar Item (Huruf & Goal)
+                // Items Icons
                 gameItems.forEach(item => {
-                    if (item.collected) return; // Jangan gambar jika sudah diambil
-
+                    if (item.collected) return;
                     const itemCell = getCell(item.x, item.y);
                     if (itemCell) {
                         const itemIcon = document.createElement('div');
                         itemIcon.className = "game-item w-full h-full flex items-center justify-center";
 
                         if (item.type === 'letter') {
-                            // Gambar Huruf
-                            itemIcon.innerHTML =
-                                `<img src="/images/hijaiyah/${item.value}" alt="Hijaiyah" class="w-5 h-5 object-contain hover:scale-125 transition-transform">`;
+                            itemIcon.innerHTML = `<img src="/images/hijaiyah/${item.value}" alt="Hijaiyah" class="w-5 h-5 object-contain hover:scale-125 transition-transform">`;
                         } else {
-                            // Gambar Goal (Bendera/Pintu)
-                            itemIcon.innerHTML =
-                                `<img src="/images/games/finish-labirin.webp" alt="Finish" class="w-full h-full object-contain">`;
+                            itemIcon.innerHTML = `<img src="/images/games/finish-labirin.webp" alt="Finish" class="w-full h-full object-contain">`;
                         }
                         itemCell.appendChild(itemIcon);
                     }
                 });
             }
 
-            // D. Gerakan Player
+            // Move Logic
             function movePlayer(dx, dy) {
+                // Cek Modal sudah muncul atau belum (biar gak bisa jalan pas menang)
+                if (!document.getElementById('success-modal').classList.contains('hidden')) return;
+
                 const newX = playerPosition.x + dx;
                 const newY = playerPosition.y + dy;
 
-                // Cek batas grid
                 if (newX < 0 || newX >= gridCols || newY < 0 || newY >= gridRows) return;
-
-                // Cek tabrak tembok
                 if (mapLayout[newY][newX] === 1) return;
 
-                // Update Posisi
                 playerPosition.x = newX;
                 playerPosition.y = newY;
 
                 updateItemDisplay();
-                checkCollisionWithItems();
+                checkCollision();
             }
 
-            // E. Cek Tabrakan dengan Item (Logika Menang)
-            function checkCollisionWithItems() {
-                // Cari item di posisi player saat ini yang belum diambil
-                const item = gameItems.find(i =>
-                    !i.collected && i.x === playerPosition.x && i.y === playerPosition.y
-                );
-
+            // Collision Check
+            function checkCollision() {
+                const item = gameItems.find(i => !i.collected && i.x === playerPosition.x && i.y === playerPosition.y);
                 if (!item) return;
 
                 if (item.type === 'letter') {
-                    // Jika kena huruf
                     item.collected = true;
                     collectedLetters.push(item.value);
 
-                    // Update teks skor
+                    // Update Score UI
                     scoreDisplay.textContent = `Huruf: ${collectedLetters.length}/4`;
+                    scoreDisplay.classList.remove('score-pop');
+                    void scoreDisplay.offsetWidth;
+                    scoreDisplay.classList.add('score-pop');
 
-                    // Refresh tampilan (hilangkan huruf dari grid)
                     updateItemDisplay();
 
                 } else if (item.type === 'goal') {
-                    // Jika kena goal
                     if (collectedLetters.length === 4) {
-                        // MENANG!
-                        // Panggil fungsi saveScore dengan nilai 100
-                        // Controller akan memastikan ini aman
+                        // PERUBAHAN DISINI:
+
+                        // 1. Tampilkan Pop-up & Confetti LANGSUNG (Tanpa Loading)
+                        showSuccessModal(100);
+
+                        // 2. Simpan ke database di latar belakang (User tidak perlu nunggu ini)
                         saveScore(100, 100);
+
                     } else {
-                        // Belum lengkap
-                        alert(`Belum selesai! Kumpulkan ${4 - collectedLetters.length} huruf lagi.`);
+                        showIncompleteModal(4 - collectedLetters.length);
                     }
                 }
             }
 
-            // Helper: Ambil elemen DIV cell berdasarkan koordinat
             function getCell(x, y) {
                 return gridContainer.querySelector(`div[data-x='${x}'][data-y='${y}']`);
             }
 
-            // Helper: Acak Array (Fisher-Yates Shuffle)
-            function shuffleArray(array) {
-                for (let i = array.length - 1; i > 0; i--) {
-                    const j = Math.floor(Math.random() * (i + 1));
-                    [array[i], array[j]] = [array[j], array[i]];
-                }
-            }
-
-            // --- 4. EVENT LISTENERS (INPUT) ---
-
-            // Tombol Layar (Mouse/Touch)
+            // Input Listener
             document.getElementById("btn-up").onclick = () => movePlayer(0, -1);
             document.getElementById("btn-down").onclick = () => movePlayer(0, 1);
             document.getElementById("btn-left").onclick = () => movePlayer(-1, 0);
             document.getElementById("btn-right").onclick = () => movePlayer(1, 0);
 
-            // Keyboard (Arrow Keys)
             document.addEventListener("keydown", (e) => {
-                // Mencegah scrolling halaman saat main game
-                if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].indexOf(e.code) > -1) {
-                    e.preventDefault();
-                }
-
-                switch (e.key) {
-                    case "ArrowUp":
-                        movePlayer(0, -1);
-                        break;
-                    case "ArrowDown":
-                        movePlayer(0, 1);
-                        break;
-                    case "ArrowLeft":
-                        movePlayer(-1, 0);
-                        break;
-                    case "ArrowRight":
-                        movePlayer(1, 0);
-                        break;
-                }
+                if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].indexOf(e.code) > -1) e.preventDefault();
+                if (e.key === "ArrowUp") movePlayer(0, -1);
+                if (e.key === "ArrowDown") movePlayer(0, 1);
+                if (e.key === "ArrowLeft") movePlayer(-1, 0);
+                if (e.key === "ArrowRight") movePlayer(1, 0);
             });
 
-            // Tombol Reset
-            document.getElementById("reset-button").onclick = () => {
-                location.reload();
-            };
+            document.getElementById("reset-button").onclick = () => location.reload();
 
-            // --- 5. MULAI GAME ---
-            renderBoard();
-            placeItems();
+            // Start
+            initGame();
         });
     </script>
+
 </body>
 
 </html>

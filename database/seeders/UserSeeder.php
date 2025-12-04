@@ -49,7 +49,7 @@ class UserSeeder extends Seeder
             'nama_lengkap' => 'Mentor Hebat',
             'email' => 'mentor@iqrain.com',
             'no_wa' => '081234567890',
-            'status_approval' => 'approved', // Set 'approved' agar bisa login
+            'status_approval' => 'approved', 
             'tgl_persetujuan' => now(),
         ]);
 
