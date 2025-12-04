@@ -102,11 +102,7 @@ class Murid extends Model
                 'ranking_global' => 0,            // Sementara 0
                 'ranking_mentor' => 0,            // Sementara 0
             ]);
-
-            // B. [SOLUSI UTAMA] HITUNG ULANG RANKING SEKARANG JUGA!
-            // Fungsi ini akan mengurutkan semua murid berdasarkan skor.
-            // Karena murid baru skornya 0, dia akan otomatis dikasih nomor urut Paling Bawah (misal: 25).
-            // Jadi rankingnya TIDAK AKAN 0 lagi.
+         
             Leaderboard::refreshAllRankings();
         });
 

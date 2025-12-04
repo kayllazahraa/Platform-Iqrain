@@ -32,6 +32,7 @@
             text-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
         }
     </style>
+
 @endpush
 
 @section('content')
@@ -80,12 +81,12 @@
             <div class="bg-white rounded-full p-1 shadow-lg inline-flex">
                 <button onclick="switchTab('leaderboard')" 
                         id="tab-leaderboard" 
-                        class="font-cursive-iwk tab-button px-8 py-3 rounded-full font-bold text-3xl transition-all duration-300 bg-pink-500 text-white transition-all duration-300 cursor-pointer">
+                        class="font-cursive-iwk tab-button px-8 py-3 rounded-full font-bold text-3xl transition-all duration-300 bg-[var(--color-iqrain-pink)] text-white transition-all duration-300 cursor-pointer">
                     Leaderboard
                 </button>
                 <button onclick="switchTab('evaluasi')" 
                         id="tab-evaluasi" 
-                        class="font-cursive-iwk tab-button px-8 py-3 rounded-full font-bold text-3xl transition-all duration-300 text-pink-500 transition-all duration-300 cursor-pointer">
+                        class="font-cursive-iwk tab-button px-8 py-3 rounded-full font-bold text-3xl transition-all duration-300  text- transition-all duration-300 cursor-pointer text-pink-500">
                     Evaluasi
                 </button>
             </div>
@@ -95,29 +96,62 @@
         <div id="content-leaderboard" class="tab-content flex justify-center items-center">
             <div class="bg-white rounded-3xl shadow-2xl" style="width: 800px; height: 900px; overflow: hidden; display: flex; flex-direction: column;">
                    
-                {{-- Tombol lokal dan global --}}
-                <div class="flex justify-end mb-4 px-6 pt-6 flex-shrink-0">
-                    <div class="relative inline-block text-left">
-                        
-                        <select onchange="changeLeaderboardType(this.value)" 
-                                class="appearance-none w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 pl-6 pr-12 rounded-full shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 transition-all duration-300 cursor-pointer border border-blue-500">
+                {{-- Custom Dropdown Filter --}}
+                <div class="flex justify-end mb-4 px-6 pt-6 flex-shrink-0 relative z-20">
+                    
+                    {{-- Tombol Pemicu (Trigger) --}}
+                    <div class="relative">
+                        <button onclick="toggleDropdown()" 
+                                id="dropdownButton"
+                                class="flex items-center gap-3 hover:bg-blue-700 text-white px-6 py-3 rounded-full shadow-lg hover:shadow-blue-500/30 transition-all duration-300 transform active:scale-95 border-2 border-blue-500" style="background-color: var(--color-iqrain-blue) !important;">
                             
-                            <option value="global" class="bg-white text-gray-800 py-2" {{ $leaderboardType === 'global' ? 'selected' : '' }}>
-                                Global Rank
-                            </option>
-                            
-                            <option value="mentor" class="bg-white text-gray-800 py-2" {{ $leaderboardType === 'mentor' ? 'selected' : '' }}>
-                                Mentor Rank
-                            </option>
+                            {{-- Teks Berubah Sesuai Pilihan --}}
+                            <span class="font-cursive-iwk tracking-wide text-xl">
+                                {{ $leaderboardType === 'mentor' ? 'Lingkup Mentor' : 'Lingkup Global' }}
+                            </span>
 
-                        </select>
-
-                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-white">
-                            <svg class="h-5 w-5 transform group-hover:rotate-180 transition-transform duration-200" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            {{-- Icon Panah (Akan berputar nanti) --}}
+                            <svg id="dropdownArrow" class="w-5 h-5 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path>
                             </svg>
-                        </div>
+                        </button>
 
+                        {{-- Isi Menu (Awalnya Sembunyi) --}}
+                        <div id="dropdownMenu" 
+                            class="hidden absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden origin-top-right transition-all duration-200 transform scale-95 opacity-0">
+                            
+                            <div class="p-1.5">
+                                {{-- Pilihan Global --}}
+                                <div onclick="selectOption('global')" 
+                                    class="flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer transition-colors {{ $leaderboardType === 'global' ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-50' }}">
+                                    <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                    </div>
+                                    <div class="flex flex-col ">
+                                        <span class="font-cursive-iwk text-xl">Global Rank</span>
+                                        <span class="font-cursive-iwk text-sm opacity-70">Semua Murid</span>
+                                    </div>
+                                    @if($leaderboardType === 'global')
+                                        <svg class="w-5 h-5 ml-auto text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                    @endif
+                                </div>
+
+                                {{-- Pilihan Mentor --}}
+                                <div onclick="selectOption('mentor')" 
+                                    class="flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer transition-colors {{ $leaderboardType === 'mentor' ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-50' }}">
+                                    <div class="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center text-purple-600">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                                    </div>
+                                    <div class="flex flex-col">
+                                        <span class="font-cursive-iwk text-xl">Mentor Rank</span>
+                                        <span class="font-cursive-iwk text-sm opacity-70">Teman Sekelas</span>
+                                    </div>
+                                    @if($leaderboardType === 'mentor')
+                                        <svg class="w-5 h-5 ml-auto text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -151,8 +185,10 @@
                         {{-- Rank 1 --}}
                         <div class="text-center pb-0" style="width: 180px;">
                             <div class="relative inline-block">                            
-                                <div class="absolute -top-12 left-1/2 -translate-x-1/2 z-20 animate-bounce">
-                                    <span class="text-7xl drop-shadow-md">👑</span>
+                                <div class="absolute -top-14 left-1/2 -translate-x-1/2 z-20 animate-bounce">
+                                    <img src="{{ asset('images/icon/mahkota.webp') }}" 
+                                         alt="Mahkota" 
+                                         class="w-180 h-auto drop-shadow-lg">
                                 </div>
 
                                 <img src="{{ asset('images/maskot/ceria.webp') }}"
@@ -186,9 +222,7 @@
                 @endif
                 
                 <div class="flex-1 min-h-0 overflow-y-auto space-y-2 px-6">
-                    @php
-                        // Kalau podium tampil, list mulai dari orang ke-4 (skip 3).
-                        // Kalau podium TIDAK tampil (cuma 1-2 orang), list tampilkan SEMUA (skip 0).
+                    @php                        
                         $listItems = $cukupBuatPodium ? $leaderboards->skip(3) : $leaderboards;
                     @endphp
 
@@ -210,9 +244,20 @@
                             <p class="text-lg font-bold text-pink-500">{{ $leaderboard->total_poin_semua_game }}</p>
                         </div>
                         @empty
-                        <div class="font-cursive-iwk text-lg text-center text-gray-500 py-8">
-                            Belum ada peringkat lainnya
-                        </div>
+                            <div class="flex flex-col items-center justify-center py-10">
+                                {{-- Gambar Qira Bingung --}}
+                                <img src="{{ asset('images/maskot/qira-bingung.webp') }}" 
+                                    alt="Belum ada data" 
+                                    class="w-40 h-auto mb-4 drop-shadow-md opacity-90 hover:scale-110 transition-transform duration-300">
+                                
+                                {{-- Teks Keterangan --}}
+                                <p class="font-cursive-iwk text-xl text-gray-500">
+                                    Belum ada peringkat lainnya
+                                </p>
+                                <p class="font-cursive-iwk text-xl text-gray-400 mt-1">
+                                    Pilih mentor mu
+                                </p>
+                            </div>
                     @endforelse
                 </div>
                 
@@ -306,11 +351,11 @@
     
     if (tab === 'leaderboard') {
         // Aktifkan Leaderboard
-        leaderboardTab.classList.add('bg-pink-500', 'text-white');
+        leaderboardTab.classList.add('bg-[var(--color-iqrain-pink)]', 'text-white');
         leaderboardTab.classList.remove('text-pink-500', 'bg-transparent');
         
         // Nonaktifkan Evaluasi
-        evaluasiTab.classList.remove('bg-pink-500', 'text-white');
+        evaluasiTab.classList.remove('bg-[var(--color-iqrain-pink)]', 'text-white');
         evaluasiTab.classList.add('text-pink-500', 'bg-transparent');
         
         // Toggle content
@@ -318,11 +363,11 @@
         evaluasiContent.classList.add('hidden');
     } else {
         // Aktifkan Evaluasi
-        evaluasiTab.classList.add('bg-pink-500', 'text-white');
+        evaluasiTab.classList.add('bg-[var(--color-iqrain-pink)]', 'text-white');
         evaluasiTab.classList.remove('text-pink-500', 'bg-transparent');
         
         // Nonaktifkan Leaderboard
-        leaderboardTab.classList.remove('bg-pink-500', 'text-white');
+        leaderboardTab.classList.remove('bg-[var(--color-iqrain-pink)]', 'text-white');
         leaderboardTab.classList.add('text-pink-500', 'bg-transparent');
         
         // Toggle content
@@ -337,6 +382,53 @@
     
     // Initialize
     sessionStorage.setItem('current_tingkatan_id', tingkatanId);
+
+
+    // --- LOGIKA CUSTOM DROPDOWN ---
+    function toggleDropdown() {
+        const menu = document.getElementById('dropdownMenu');
+        const arrow = document.getElementById('dropdownArrow');
+        
+        // Cek apakah sedang tersembunyi
+        if (menu.classList.contains('hidden')) {
+            // Buka Menu
+            menu.classList.remove('hidden');
+            // Animasi Masuk (sedikit delay biar smooth)
+            setTimeout(() => {
+                menu.classList.remove('scale-95', 'opacity-0');
+                menu.classList.add('scale-100', 'opacity-100');
+            }, 10);
+            // Putar Panah
+            arrow.classList.add('rotate-180');
+        } else {
+            // Tutup Menu
+            menu.classList.remove('scale-100', 'opacity-100');
+            menu.classList.add('scale-95', 'opacity-0');
+            // Putar Panah Balik
+            arrow.classList.remove('rotate-180');
+            // Sembunyikan div setelah animasi selesai
+            setTimeout(() => {
+                menu.classList.add('hidden');
+            }, 200);
+        }
+    }
+
+    // Fungsi saat pilihan diklik
+    function selectOption(type) {
+        // Panggil fungsi ganti leaderboard yang lama
+        changeLeaderboardType(type);
+    }
+
+    // Tutup dropdown kalau klik di luar
+    window.addEventListener('click', function(e) {
+        const btn = document.getElementById('dropdownButton');
+        const menu = document.getElementById('dropdownMenu');
+        if (!btn.contains(e.target) && !menu.contains(e.target)) {
+            if (!menu.classList.contains('hidden')) {
+                toggleDropdown(); // Tutup paksa
+            }
+        }
+    });
 </script>
 @endpush
 

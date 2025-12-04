@@ -14,36 +14,37 @@ use Illuminate\Support\Facades\Auth;
 
 class ModulController extends Controller
 {
-    public function index($tingkatan_id){
+    public function index($tingkatan_id)
+    {
         $tingkatan = TingkatanIqra::findOrFail($tingkatan_id);
-    
+
         // Ambil MODULS (huruf) melalui relasi materi
-        $hurufs = Modul::whereHas('materiPembelajaran', function($query) use ($tingkatan_id) {
+        $hurufs = Modul::whereHas('materiPembelajaran', function ($query) use ($tingkatan_id) {
             $query->where('tingkatan_id', $tingkatan_id);
         })
-        ->with('materiPembelajaran')
-        ->orderBy('urutan')
-        ->get();
-        
+            ->with('materiPembelajaran')
+            ->orderBy('urutan')
+            ->get();
+
         // Ambil video pembelajaran untuk tingkatan ini
         $videos = VideoPembelajaran::where('tingkatan_id', $tingkatan_id)
             ->orderBy('video_id')
             ->get();
-        
+
         // ✅ INISIALISASI VARIABEL PROGRESS (Default ke 0)
         $progressPercentage = 0;
         $completedModulsCount = 0;
         $totalModuls = $hurufs->count();
 
         $user = Auth::user();
-        
+
         // Hitung progress hanya jika user login sebagai murid
         if ($user && $user->murid) {
             $murid_id = $user->murid->murid_id;
-            
+
             if ($totalModuls > 0) {
                 $modulIds = $hurufs->pluck('modul_id');
-                
+
                 $completedModulsCount = ProgressModul::where('murid_id', $murid_id)
                     ->whereIn('modul_id', $modulIds)
                     ->where('status', 'selesai')
@@ -53,14 +54,14 @@ class ModulController extends Controller
                 $progressPercentage = round(($completedModulsCount / $totalModuls) * 100);
             }
         }
-        
+
         // ✅ RETURN DI LUAR IF BLOCK - SELALU JALAN!
         return view('pages.murid.modul.index', compact(
-            'tingkatan', 
-            'hurufs', 
-            'videos', 
-            'progressPercentage', 
-            'completedModulsCount', 
+            'tingkatan',
+            'hurufs',
+            'videos',
+            'progressPercentage',
+            'completedModulsCount',
             'totalModuls'
         ));
     }
@@ -69,20 +70,20 @@ class ModulController extends Controller
     {
         $tingkatan = TingkatanIqra::findOrFail($tingkatan_id);
         $videos = VideoPembelajaran::where('tingkatan_id', $tingkatan_id)->get();
-        
+
         // ✅ Gunakan nama variabel yang SAMA dengan index()
         $progressPercentage = 0;
         $completedModulsCount = 0; // Bukan completedMaterialsCount
         $totalModuls = 0; // Bukan totalMaterials
-        
+
         // Ambil data huruf juga (supaya konsisten dengan index)
-        $hurufs = Modul::whereHas('materiPembelajaran', function($query) use ($tingkatan_id) {
+        $hurufs = Modul::whereHas('materiPembelajaran', function ($query) use ($tingkatan_id) {
             $query->where('tingkatan_id', $tingkatan_id);
         })
-        ->with('materiPembelajaran')
-        ->orderBy('urutan')
-        ->get();
-        
+            ->with('materiPembelajaran')
+            ->orderBy('urutan')
+            ->get();
+
         $totalModuls = $hurufs->count();
 
         return view('pages.murid.modul.index', compact(
@@ -123,8 +124,8 @@ class ModulController extends Controller
     public function updateProgress(Request $request)
     {
         $request->validate([
-        'modul_id' => 'required|integer',  // ✅ Pakai modul_id
-        'status' => 'nullable|string|in:belum_dibuka,selesai'
+            'modul_id' => 'required|integer',  // ✅ Pakai modul_id
+            'status' => 'nullable|string|in:belum_dibuka,selesai'
         ]);
 
         $user = Auth::user();
@@ -141,28 +142,28 @@ class ModulController extends Controller
                     'tanggal_selesai' => now(),
                 ]
             );
-        return response()->json(['success' => true]);
-    }
+            return response()->json(['success' => true]);
+        }
 
-    return response()->json(['success' => false, 'message' => 'Unauthorized'], 403);
+        return response()->json(['success' => false, 'message' => 'Unauthorized'], 403);
     }
 
     public function getCompletedModuls()
     {
         $user = Auth::user();
-        
+
         if ($user && $user->murid) {
             $completedModuls = ProgressModul::where('murid_id', $user->murid->murid_id)
                 ->where('status', 'selesai')
                 ->pluck('modul_id')
                 ->toArray();
-            
+
             return response()->json([
                 'success' => true,
                 'completed_moduls' => $completedModuls
             ]);
         }
-        
+
         return response()->json(['success' => false], 403);
     }
 }

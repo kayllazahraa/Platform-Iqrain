@@ -158,7 +158,14 @@ function startGame() {
 
         let front = document.createElement("div");
         front.classList.add("card-front");
-        front.innerHTML = '❓';
+        let basePath = (typeof ASSET_BASE !== "undefined" ? ASSET_BASE : ""); 
+        
+        front.innerHTML = `
+            <img src="${basePath}images/icon/tanda-tanya.webp" 
+                 alt="?" 
+                 class="w-12 h-12 sm:w-14 sm:h-14 object-contain opacity-80"
+            >
+        `;
 
         let back = document.createElement("div");
         back.classList.add("card-back");
@@ -185,7 +192,7 @@ function startGame() {
         // 5. BUKA KUNCI PAPAN, game siap dimainkan!
         lockBoard = false; 
         
-    }, 2000); 
+    }, 3000); 
 } 
 
 function selectCard() {
@@ -243,43 +250,35 @@ async function update() {
 
         // Cek Menang
         if (pasanganDitemukan === totalPasangan) {
-            
-            const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+            // Langsung diberitahu kemenangan dahulu baru cek database
+            showSuccessModal(Math.round(poinBenar)); 
 
-            const response = await fetch('/murid/game/save-score', { 
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+                        
+            fetch('/murid/game/save-score', { 
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'X-CSRF-TOKEN': csrfToken
                 },
                 body: JSON.stringify({
-                    jenis_game_id: jenisGameId,                    
+                    jenis_game_id: jenisGameId, 
                     skor: pasanganDitemukan,
                     total_poin: Math.round(poinBenar)
                 })
-            });
-
-                const data = await response.json();
-
-           if (data.success) {
-                    confetti({
-                        particleCount: 150,
-                        spread: 70,
-                        origin: { y: 0.6 }
-                    });
-
-                    setTimeout(() => {
-                        alert("Selamat! Kamu Menang! Skor tersimpan.");
-                        shuffleCards();
-                        startGame();
-                    }, 500);
-                
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    console.log("Data berhasil disimpan ke database!");                     
                 } else {
-                    // Tampilkan error jika server bilang gagal (tapi koneksi sukses)
-                    alert('Wah, menang! Tapi skor gagal disimpan. (Server Error)');
-                    shuffleCards();
-                    startGame();
+                    console.error("Gagal simpan:", data);
                 }
+            })
+            .catch(error => {
+                console.error("Error koneksi:", error);
+            });
+            
         }
     }
 
@@ -287,4 +286,58 @@ async function update() {
     card1Selected = null;
     card2Selected = null;
     lockBoard = false; // Buka kunci papan
+}
+
+
+
+// FUngsi untuk memunculkan pop up dan confeti 
+function showSuccessModal(skorAkhir) {
+    const modal = document.getElementById('success-modal');
+    const scoreText = document.getElementById('modal-score');
+    
+    // Update teks skor di dalam modal
+    if (scoreText) scoreText.innerText = skorAkhir;
+
+    // Tampilkan Modal (Hapus class hidden)
+    modal.classList.remove('hidden');
+    
+    // Animasi Masuk (Opsional, biar smooth)
+    const modalBox = modal.querySelector('div.relative');
+    setTimeout(() => {
+        modalBox.classList.remove('scale-90');
+        modalBox.classList.add('scale-100');
+    }, 10);
+
+    // TEMBAK CONFETTI YANG MERIAH! 🎉
+    var duration = 3 * 1000; // 3 detik
+    var animationEnd = Date.now() + duration;
+    var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 60 };
+
+    function randomInOut(min, max) {
+      return Math.random() * (max - min) + min;
+    }
+
+    var interval = setInterval(function() {
+      var timeLeft = animationEnd - Date.now();
+
+      if (timeLeft <= 0) {
+        return clearInterval(interval);
+      }
+
+      var particleCount = 50 * (timeLeft / duration);
+      // Tembak dari kiri dan kanan
+      confetti({ ...defaults, particleCount, origin: { x: randomInOut(0.1, 0.3), y: Math.random() - 0.2 } });
+      confetti({ ...defaults, particleCount, origin: { x: randomInOut(0.7, 0.9), y: Math.random() - 0.2 } });
+    }, 250);
+}
+
+// 2. Fungsi Restart Game (Dipanggil tombol di modal)
+// Kita bikin global biar bisa dipanggil onclick HTML
+window.restartGame = function() {
+    const modal = document.getElementById('success-modal');
+    modal.classList.add('hidden'); // Sembunyikan modal
+    
+    // Reset logika game
+    shuffleCards();
+    startGame();
 }
