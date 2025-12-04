@@ -113,7 +113,7 @@ class CreateMurid extends Component
                 ]);
             }
 
-            DB::commit();
+            DB::commit();   
 
             session()->flash('success', 'Murid "' . $this->username . '" berhasil ditambahkan!');
             return redirect()->route('mentor.murid.index');
