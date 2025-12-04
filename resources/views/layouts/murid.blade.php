@@ -216,9 +216,7 @@
                 {{-- Desktop Navigation --}}
                 <div class="hidden md:flex items-center justify-between max-w-4xl mx-auto">
                     <a href="{{ route('murid.pilih-iqra') }}" class="flex items-center space-x-2">
-                        <div class="bg-white rounded-full w-12 h-12 flex items-center justify-center">
-                            <span class="text-2xl font-bold text-pink-500">IQ</span>
-                        </div>
+                        <img src="{{ asset('images/asset/logo.webp') }}" alt="Logo IQRAIN" class="w-12 h-12 object-contain">
                     </a>
 
                     <div class="flex items-center space-x-2">
@@ -280,9 +278,7 @@
                     <div class="flex items-center justify-between">
                         {{-- Logo --}}
                         <a href="{{ route('murid.pilih-iqra') }}" class="flex items-center space-x-2">
-                            <div class="bg-white rounded-full w-10 h-10 flex items-center justify-center">
-                                <span class="text-xl font-bold text-pink-500">IQ</span>
-                            </div>
+                            <img src="{{ asset('images/asset/logo.webp') }}" alt="Logo IQRAIN" class="w-10 h-10 object-contain">
                         </a>
 
                         <div class="flex items-center space-x-3">
