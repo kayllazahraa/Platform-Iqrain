@@ -45,7 +45,6 @@
             content: "";
             position: absolute;
             inset: 0;
-            background-image: url('images/pattern/game-pattern.webp');
             background-size: 500px;
             background-repeat: repeat;
             opacity: 0.4; 
