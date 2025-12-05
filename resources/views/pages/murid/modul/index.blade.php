@@ -45,7 +45,6 @@
     </div>
 </div>
 
-{{-- CONTAINER KONTEN UTAMA (z-index: 10 di bawah footer z-20) --}}
 <div class="w-full relative overflow-x-hidden" style="z-index: 10;">
 
     {{-- WELCOMING SECTION (BARU!) --}}
