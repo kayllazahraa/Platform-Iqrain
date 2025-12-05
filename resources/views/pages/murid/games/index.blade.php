@@ -171,17 +171,20 @@
             
             {{-- Text Header (KIRI) --}}
             <div class="md:w-1/2 text-center md:text-left">
-                <h1 class="font-titan text-[50px] lg:text-[80px] text-[#234275] leading-none">
+                <h1 class="pl-30 font-titan text-[50px] lg:text-[80px] text-[#234275] leading-none">
                     Siap untuk Berpetualang?
                 </h1>
-                <h2 class="font-cursive-iwk text-[35px] lg:text-[55px] text-[#234275] leading-tight mt-2">
-                    Mainkan dan Raih Skormu
+                <h2 class="pl-30 text-[#234275] leading-tight mt-2">
+                <span class="mr-2 text-[35px] lg:text-[55px] font-cursive-iwk phrase-biru-tua">Mainkan </span>   
+                <span class="mr-2 text-[35px] lg:text-[55px] font-cursive-iwk phrase-biru-tua">dan </span> 
+                <span class="mr-2 text-[35px] lg:text-[55px] font-cursive-iwk phrase-biru-tua">Raih </span> 
+                <span class="text-[35px] lg:text-[55px] font-cursive-iwk phrase-biru-tua">Skormu</span> 
                 </h2>
             </div>
             
             {{-- Maskot Qira Game (KANAN) --}}
             <div class="md:w-1/2 flex justify-center md:justify-end">
-                <img src="{{ asset('images/games/qira-game.webp') }}" alt="Qira Game" class="max-w-xs md:max-w-md drop-shadow-xl">
+                <img src="{{ asset('images/games/qira-game.webp') }}" alt="Qira Game" class="max-w-xs md:max-w-md pr-10 drop-shadow-xl">
             </div>
         </div>
     </div>
@@ -192,7 +195,7 @@
     <div class="container mx-auto px-6 pb-20">
         
         {{-- ✨ CONTAINER PUTIH (Untuk wrap semua game cards) ✨ --}}
-        <div class="bg-white rounded-[40px] shadow-2xl p-6 md:p-12">
+        <div class="bg-white rounded-[40px] shadow-2xl p-6 md:p-12 scale-[0.9] origin-top mx-auto">
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
 
@@ -202,8 +205,18 @@
                     <div class="flex flex-col md:flex-row items-center justify-between gap-6 h-full">
                         <div class="md:w-1/2 text-center md:text-left">
                             <h3 class="font-titan text-3xl mb-3">Kartu Memori</h3>
-                            <p class="font-cursive-iwk text-2xl md:text-3xl leading-snug">
-                                Yuk cocokin huruf yang sama. Buka kartunya dan ingat letaknya!
+                            <p class="leading-snug">
+                                <span class="mr-1 font-cursive-iwk text-2xl md:text-4xl phrase-biru-tua">Yuk</span>
+                                <span class="mr-1 font-cursive-iwk text-2xl md:text-4xl phrase-biru-tua">cocokin</span>
+                                <span class="mr-1 font-cursive-iwk text-2xl md:text-4xl phrase-biru-tua">huruf</span>
+                                <span class="mr-1 font-cursive-iwk text-2xl md:text-4xl phrase-biru-tua">yang</span>
+                                <span class="mr-1 font-cursive-iwk text-2xl md:text-4xl phrase-biru-tua">sama.</span>
+                                <span class="mr-1 font-cursive-iwk text-2xl md:text-4xl phrase-biru-tua">Buka</span>
+                                <span class="mr-1 font-cursive-iwk text-2xl md:text-4xl phrase-biru-tua">kartunya</span>
+                                <span class="mr-1 font-cursive-iwk text-2xl md:text-4xl phrase-biru-tua">dan</span>   
+                                <span class="mr-1 font-cursive-iwk text-2xl md:text-4xl phrase-biru-tua">ingat</span>
+                                <span class="font-cursive-iwk text-2xl md:text-4xl phrase-biru-tua">letaknya</span> 
+                                <span class="font-nanum text-2xl md:text-4xl">!</span>
                             </p>
                         </div>
                         <div class="md:w-1/2 flex justify-center">
@@ -218,8 +231,18 @@
                     <div class="flex flex-col md:flex-row-reverse items-center justify-between gap-6 h-full">
                         <div class="md:w-1/2 text-center md:text-left">
                             <h3 class="font-titan text-3xl mb-3">Labirin Hijaiyah</h3>
-                            <p class="font-cursive-iwk text-2xl md:text-3xl leading-snug">
-                                Temukan jalan menuju huruf hijaiyah! Hati-hati jangan tersesat.
+                            <p class="leading-snug">
+                                <span class="mr-1 font-cursive-iwk text-2xl md:text-4xl phrase-biru-tua">Temukan</span>
+                                <span class="mr-1 font-cursive-iwk text-2xl md:text-4xl phrase-biru-tua">jalan</span>
+                                <span class="mr-1 font-cursive-iwk text-2xl md:text-4xl phrase-biru-tua">menuju</span>
+                                <span class="mr-1 font-cursive-iwk text-2xl md:text-4xl phrase-biru-tua">huruf</span>
+                                <span class="font-cursive-iwk text-2xl md:text-4xl phrase-biru-tua">hijaiyah</span>
+                                <span class="mr-2 font-nanum text-2xl md:text-4xl">!</span>
+                                <span class="mr-1 font-cursive-iwk text-2xl md:text-4xl phrase-biru-tua">Hati</span>
+                                <span class="mr-1 font-cursive-iwk text-2xl md:text-4xl">-</span>
+                                <span class="mr-1 font-cursive-iwk text-2xl md:text-4xl phrase-biru-tua">hati</span>
+                                <span class="mr-1 font-cursive-iwk text-2xl md:text-4xl phrase-biru-tua">jangan</span>
+                                <span class="mr-1 font-cursive-iwk text-2xl md:text-4xl phrase-biru-tua">tersesat.</span>
                             </p>
                         </div>
                         <div class="md:w-1/2 flex justify-center">
@@ -234,8 +257,18 @@
                     <div class="flex flex-col md:flex-row items-center justify-between gap-6 h-full">
                         <div class="md:w-1/2 text-center md:text-left">
                             <h3 class="font-titan text-3xl mb-3">Seret & Lepas</h3>
-                            <p class="font-cursive-iwk text-2xl md:text-3xl leading-snug">
-                                Seret huruf hijaiyah ke tempat yang cocok. Pasangkan dengan benar!
+                            <p class="leading-snug">
+                                <span class="mr-1 font-cursive-iwk text-2xl md:text-4xl phrase-biru-tua">Seret</span>
+                                <span class="mr-1 font-cursive-iwk text-2xl md:text-4xl phrase-biru-tua">huruf</span>
+                                <span class="mr-1 font-cursive-iwk text-2xl md:text-4xl phrase-biru-tua">hijaiyah</span>
+                                <span class="mr-1 font-cursive-iwk text-2xl md:text-4xl phrase-biru-tua">ke</span>
+                                <span class="mr-1 font-cursive-iwk text-2xl md:text-4xl phrase-biru-tua">tempat</span>
+                                <span class="mr-1 font-cursive-iwk text-2xl md:text-4xl phrase-biru-tua">yang</span>
+                                <span class="mr-1 font-cursive-iwk text-2xl md:text-4xl phrase-biru-tua">cocok.</span>
+                                <span class="mr-1 font-cursive-iwk text-2xl md:text-4xl phrase-biru-tua">Pasangkan</span>
+                                <span class="mr-1 font-cursive-iwk text-2xl md:text-4xl phrase-biru-tua">dengan</span>
+                                <span class="mr-1 font-cursive-iwk text-2xl md:text-4xl phrase-biru-tua">benar</span>
+                                <span class="font-nanum text-2xl md:text-4xl">!</span>
                             </p>
                         </div>
                         <div class="md:w-1/2 flex justify-center">
@@ -250,8 +283,18 @@
                     <div class="flex flex-col md:flex-row-reverse items-center justify-between gap-6 h-full">
                         <div class="md:w-1/2 text-center md:text-left">
                             <h3 class="font-titan text-3xl mb-3">Tulis Huruf</h3>
-                            <p class="font-cursive-iwk text-2xl md:text-3xl leading-snug">
-                                Ikuti garis titik-titik dan tulis huruf hijaiyah dengan rapi.
+                            <p class="leading-snug">
+                                <span class="mr-1 font-cursive-iwk text-2xl md:text-4xl phrase-biru-tua">Ikuti</span>
+                                <span class="mr-1 font-cursive-iwk text-2xl md:text-4xl phrase-biru-tua">garis</span>
+                                <span class="font-cursive-iwk text-2xl md:text-4xl phrase-biru-tua">titik</span>
+                                <span class="font-cursive-iwk text-2xl md:text-4xl">-</span>
+                                <span class="mr-1 font-cursive-iwk text-2xl md:text-4xl phrase-biru-tua">titik</span>
+                                <span class="mr-1 font-cursive-iwk text-2xl md:text-4xl phrase-biru-tua">dan</span>
+                                <span class="mr-1 font-cursive-iwk text-2xl md:text-4xl phrase-biru-tua">tulis</span>
+                                <span class="mr-1 font-cursive-iwk text-2xl md:text-4xl phrase-biru-tua">huruf</span>
+                                <span class="mr-1 font-cursive-iwk text-2xl md:text-4xl phrase-biru-tua">hijaiyah</span>
+                                <span class="mr-1 font-cursive-iwk text-2xl md:text-4xl phrase-biru-tua">dengan</span>
+                                <span class="mr-1 font-cursive-iwk text-2xl md:text-4xl phrase-biru-tua">rapi.</span>
                             </p>
                         </div>
                         <div class="md:w-1/2 flex justify-center">
