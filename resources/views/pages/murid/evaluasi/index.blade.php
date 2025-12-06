@@ -39,7 +39,6 @@
 @endpush
 
 @section('content')
-{{-- FIXED BACKGROUND LAYER --}}
 <div class="fixed inset-0 w-full h-full pointer-events-none"
     style="background: linear-gradient(180deg, #56B1F3 0%, #D3F2FF 100%); z-index: -1;">
     
@@ -56,34 +55,32 @@
 <div class="w-full relative overflow-x-hidden" style="z-index: 10;">
     <div class="">
                 
-        {{-- HEADER SECTION --}}
-        
         <!--  -->
-        <div class="container mx-auto px-6 py-12">
-        <div class="flex flex-col md:flex-row items-center justify-between gap-8">
-            
-            {{-- Text Header (KIRI) --}}
-            <div class="md:w-1/2 text-center md:text-left">
-                <h1 class="pl-30 font-titan text-[50px] lg:text-[80px] text-[#234275] leading-none">
-                    Bagaimana Permainannya?
-                </h1>
-                <h2 class="pl-30 text-[#234275] leading-tight mt-2">
-                    <span class="mr-2 font-cursive-iwk text-[35px] lg:text-[55px] phrase-biru-tua">Lihat</span>
-                    <span class="mr-2 font-cursive-iwk text-[35px] lg:text-[55px] phrase-biru-tua">kemajuan</span>
-                    <span class="mr-2 font-cursive-iwk text-[35px] lg:text-[55px] phrase-biru-tua">dan</span>
-                    <span class="mr-2 font-cursive-iwk text-[35px] lg:text-[55px] phrase-biru-tua">bersiap</span><br>
-                    <span class="mr-2 font-cursive-iwk text-[35px] lg:text-[55px] phrase-biru-tua">untuk</span>
-                    <span class="mr-2 font-cursive-iwk text-[35px] lg:text-[55px] phrase-biru-tua">tantangan</span>
-                    <span class="mr-2 font-cursive-iwk text-[35px] lg:text-[55px] phrase-biru-tua">berikutnya</span> 
-                </h2>
-            </div>
-            
-            {{-- Maskot Qira Game (KANAN) --}}
-            <div class="md:w-1/2 flex justify-center md:justify-end">
-                <img src="{{ asset('images/maskot/qira-bingung.webp') }}" alt="Qira Game" class="max-w-xs md:max-w-md pr-25 drop-shadow-xl">
+        <div class="container mx-auto px-4 pt-8 pb-12">
+            <div class="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-12 max-w-6xl mx-auto">
+
+                {{-- Maskot Qira Bingung (KIRI) --}}
+                <div class="w-[180px] md:w-[280px] transform hover:rotate-3 transition-transform duration-500">
+                    <img src="{{ asset('images/maskot/qira-bingung.webp') }}" alt="Qira Bingung" class="w-full h-auto drop-shadow-2xl">
+                </div>
+
+                {{-- Text Header (KANAN) --}}
+                <div class="text-center md:text-left">
+                    <h1 class="font-titan text-[40px] md:text-[55px] text-[#234275] leading-tight mb-2 text-shadow-header">
+                        Bagaimana Permainannya?
+                    </h1>
+                    <p class="text-[35px] md:text-[40px] text-[#234275] my-5 leading-none text-shadow-header">
+                        <span class="font-cursive-iwk phrase-biru-tua">Lihat</span>
+                        <span class="font-cursive-iwk phrase-biru-tua">kemajuan</span>
+                        <span class="font-cursive-iwk phrase-biru-tua">dan</span>
+                        <span class="font-cursive-iwk phrase-biru-tua">bersiap</span>
+                        <span class="font-cursive-iwk phrase-biru-tua">untuk</span>
+                        <span class="font-cursive-iwk phrase-biru-tua">tantangan</span>
+                        <span class="font-cursive-iwk phrase-biru-tua">berikutnya!</span>
+                    </p>
+                </div>
             </div>
         </div>
-    </div>
         
     
         <!-- Tab Toggle -->

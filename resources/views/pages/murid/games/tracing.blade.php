@@ -43,10 +43,19 @@
 </head>
 
 <body>
-    <div id="welcome-backdrop" class="welcome-backdrop"></div>
+    {{-- Ucapan selamat bermain --}}
+    <div id="welcome-backdrop" class="fixed inset-0 z-[60] transition-all duration-1000 opacity-0 pointer-events-none"
+        style="background: linear-gradient(135deg, rgba(255, 255, 255, 0.5) 0%, rgba(214, 93, 177, 0.3) 100%); backdrop-filter: blur(8px);">
+    </div>
 
-    <h1 id="welcome-message" class="welcome-message welcome-title">Selamat Bermain</h1>
-
+    <div id="welcome-message-container"
+        class="fixed inset-0 z-[70] flex items-center justify-center opacity-0 transition-all duration-1000 pointer-events-none">
+        <h1 id="welcome-message"
+            class="font-cursive-iwk text-7xl md:text-8xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-400 via-pink-500 to-pink-600 transform scale-75 transition-all duration-1000 p-4 leading-normal"
+            style="text-shadow: 0 8px 24px rgba(236, 72, 153, 0.6), 0 0 40px rgba(236, 72, 153, 0.4);">
+            Selamat Bermain
+        </h1>
+    </div>
 
     <!-- Game Container -->
     <div id="game-container" class="game-container">

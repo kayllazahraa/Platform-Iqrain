@@ -139,7 +139,7 @@
         </div>
     </div>
 
-    <div class="w-full max-w-6xl mx-auto relative z-10 pt-24">
+    <div class="w-full max-w-6xl mx-auto relative z-10 pt-24 px-4">
 
 
 
