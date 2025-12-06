@@ -21,6 +21,10 @@
             font-weight: normal;
             font-style: normal;
         }
+        /* Font Mooli untuk Skor */
+        .font-mooli {
+            font-family: 'Mooli', sans-serif !important;
+        }
 
         /* Import Font Titan One dari Google Fonts secara global */
         @import url('https://fonts.googleapis.com/css2?family=Titan+One&display=swap');
@@ -54,7 +58,7 @@
 
         /* Navbar Link Items */
         .nav-item {
-            font-family: 'Tegak Bersambung IWK', cursive;
+            font-family: 'Mooli', sans-serif;
             font-size: 25px;
             transition: all 0.3s ease;
         }

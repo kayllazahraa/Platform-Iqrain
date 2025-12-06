@@ -6,12 +6,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Memory Card Game</title>
+    <style>
+        .font-mooli {
+            font-family: 'Mooli', sans-serif !important;
+        }
+    </style>
 
     <script>
         var ASSET_BASE = "{{ asset('') }}";
         var JENIS_GAME_ID = {{ $jenisGame->jenis_game_id }};
         var POIN_MAKSIMAL = {{ $jenisGame->poin_maksimal ?? 100 }};
-        var SESSION_ID = {{ $sessionGame->hasil_game_id }};    
     </script>
 
     @vite(['resources/css/app.css', 'resources/js/memory-card.js'])
@@ -29,62 +33,59 @@
                         viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"></path>
                     </svg>
-        </div>
-        <span class="font-['TegakBersambung'] text-white text-[25px] font-normal leading-none pt-2 pl-4">
-            Kembali
-        </span>
-        </a>
-    </div>
-
-    {{-- Balon kiri --}}
-    <div class="fixed left-4 top-1/3 w-40 md:w-50 h-auto animate-bounce-slow z-10 pointer-events-none">
-        <img src="{{ asset('images/icon/balon.webp') }}" alt="Balon Kiri" class="w-full h-auto drop-shadow-lg">
-    </div>
-
-    {{-- Letak Game utama nya --}}
-    <main class="relative z-20 flex-grow flex flex-col items-center pt-8">
-        <div class="flex justify-between items-center w-full max-w-[420px] mb-5 px-3">
-            <div class="flex items-center gap-2.5">
-                <span class="font-['TegakBersambung'] text-3xl font-bold text-[#ffffff]">Poin :</span>
-                <div
-                    class="bg-gradient-to-br from-[#E897BA] to-[#D084A8] text-white px-7 py-2 rounded-full text-xl font-bold shadow-md">
-                    <span id="poin-benar">0</span>
                 </div>
-            </div>
-            <div class="text-2xl font-bold text-[#ffffff]">
-                <span id="current-matches">0</span>/6
-            </div>
-            <button id="reset-button"
-                class="font-['TegakBersambung'] bg-white text-[#D084A8] border-2 border-[#D084A8] px-5 py-2 rounded-full text-2xl font-bold cursor-pointer shadow-sm transition-all duration-300 hover:bg-[#D084A8] hover:text-white">
-                ↻ Restart
-            </button>
+                <span class="font-mooli font-semibold text-white text-[18px] font-normal leading-none pl-4">
+                    Kembali
+                </span>
+            </a>
         </div>
 
-        <div id="board"
-            class="w-fit mx-auto grid grid-cols-4 gap-3 p-5 bg-white border-[12px] border-pink-200 rounded-3xl shadow-2xl">
+        {{-- Balon kiri --}}
+        <div class="fixed left-4 top-1/3 w-40 md:w-50 h-auto animate-bounce-slow z-10 pointer-events-none">
+            <img src="{{ asset('images/icon/balon.webp') }}" alt="Balon Kiri" class="w-full h-auto drop-shadow-lg">
         </div>
 
-    </main>
+        {{-- Letak Game utama nya --}}
+        <main class="relative z-20 flex-grow flex flex-col items-center pt-8">
+            <div class="flex justify-between items-center w-full max-w-[420px] mb-5 px-3">
+                <div class="flex items-center gap-2.5">
+                    <span class="font-['TegakBersambung'] text-3xl font-bold text-[#ffffff]">Poin :</span>
+                    <div
+                        class="bg-gradient-to-br from-[#E897BA] to-[#D084A8] text-white px-7 py-2 rounded-full text-xl font-bold shadow-md">
+                        <span id="poin-benar">0</span>
+                    </div>
+                </div>
+                <div class="text-2xl font-bold text-[#ffffff]">
+                    <span id="current-matches">0</span>/6
+                </div>
+                <button id="reset-button"
+                    class="font-mooli font-semibold text-[18px] bg-white text-[#D084A8] border-2 border-[#D084A8] px-5 py-2 rounded-full text-2xl font-bold cursor-pointer shadow-sm transition-all duration-300 hover:bg-[#D084A8] hover:text-white">
+                    ↻ Restart
+                </button>
+            </div>
 
-    {{-- Balon kanan --}}
-    <div class="fixed right-4 top-1/4 w-40 md:w-50 h-auto animate-bounce-slow z-10 pointer-events-none">
-        <img src="{{ asset('images/icon/balon.webp') }}" alt="Balon Kanan"
-            class="w-full h-auto drop-shadow-lg transform scale-x-[-1]">
-    </div>
+            <div id="board"
+                class="w-fit mx-auto grid grid-cols-4 gap-3 p-5 bg-white border-[12px] border-pink-200 rounded-3xl shadow-2xl">
+            </div>
 
-    {{-- Ucapan selamat bermain --}}
-    <div id="welcome-backdrop" class="fixed inset-0 z-40 transition-all duration-1000 opacity-0"
-        style="background: linear-gradient(135deg, rgba(255, 255, 255, 0.5) 0%, rgba(214, 93, 177, 0.3) 100%); backdrop-filter: blur(8px);">
-    </div>
+        </main>
 
-    <div id="welcome-message-container"
-        class="fixed inset-0 z-50 flex items-center justify-center opacity-0 transition-all duration-1000 pointer-events-none">
+        {{-- Balon kanan --}}
+        <div class="fixed right-4 top-1/4 w-40 md:w-50 h-auto animate-bounce-slow z-10 pointer-events-none">
+            <img src="{{ asset('images/icon/balon.webp') }}" alt="Balon Kanan"
+                class="w-full h-auto drop-shadow-lg transform scale-x-[-1]">
+        </div>
+
+        {{-- Ucapan selamat datang --}}
+        <div id="welcome-backdrop" class="fixed inset-0 z-40 transition-opacity duration-1000"
+            style="background-color: rgba(255, 255, 255, 0.4);"></div>
         <h1 id="welcome-message"
-            class="font-['TegakBersambung'] text-7xl md:text-8xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-400 via-pink-500 to-pink-600 transform scale-75 transition-all duration-1000 p-4 leading-normal"
-            style="text-shadow: 0 8px 24px rgba(236, 72, 153, 0.6), 0 0 40px rgba(236, 72, 153, 0.4);">
+            class="font-['TegakBersambung'] fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 
+                                        text-7xl md:text-8xl font-bold text-pink-400  
+                                        opacity-0 transition-opacity duration-1000 ease-out"
+            style="text-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);">
             Selamat Bermain
         </h1>
-    </div>
     </div>
 
     {{-- POP UP SELESAI BERMAIN --}}
@@ -99,11 +100,15 @@
             </div>
 
             <h2 class="font-['TegakBersambung'] text-4xl text-pink-500 font-bold mb-2">
-                Luar Biasa!
+                <span class="phrase-pink-kontras">Luar </span>
+                <span class="phrase-pink-kontras">Biasa!</span>
             </h2>
 
-            <p class="font-['TegakBersambung'] text-gray-600 mb-6 text-lg">
-                Kamu berhasil menyelesaikan permainan!
+            <p class="font-['TegakBersambung'] text-[gray-600] mb-6 text-2xl">
+                <span class="phrase-hitam">Kamu </span>
+                <span class="phrase-hitam">berhasil </span>
+                <span class="phrase-hitam">menyelesaikan </span>
+                <span class="phrase-hitam">permainan! </span>
             </p>
 
             <div class="bg-pink-50 rounded-xl p-4 mb-6 border border-pink-100">
@@ -113,14 +118,13 @@
 
             <div class="flex flex-col gap-3">
                 <button onclick="restartGame()"
-                    class="w-full py-3 bg-gradient-to-r from-pink-400 to-pink-500 text-white rounded-xl font-bold text-xl shadow-lg hover:scale-105 transition-transform font-['TegakBersambung']">
+                    class="w-full py-3 bg-gradient-to-r from-pink-400 to-pink-500 text-white rounded-xl font-bold text-xl shadow-lg hover:scale-105 transition-transform font-mooli font-semibold text-base">
                     Main Lagi ↻
                 </button>
 
                 <a href="{{ route('murid.games.index', $tingkatan->tingkatan_id) }}"
-                    class="w-full py-3 bg-white border-2 border-gray-200 text-gray-500 rounded-xl font-bold text-lg hover:bg-gray-50 transition-colors font-['TegakBersambung']">
-                    Kembali ke Menu
-                </a>
+                    class="w-full py-3 bg-white border-2 border-gray-200 text-gray-500 rounded-xl font-bold text-lg hover:bg-gray-50 transition-colors  font-mooli font-semibold text-base">
+                    Kembali ke Menu </a>
             </div>
         </div>
     </div>

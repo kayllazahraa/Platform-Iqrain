@@ -77,6 +77,7 @@
             transform: scale(1.05);
         }
     </style>
+    
 @endpush
 
 {{-- 2. Konten Utama --}}
