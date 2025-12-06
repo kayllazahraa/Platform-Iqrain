@@ -10,23 +10,6 @@
     <link rel="stylesheet" href="{{ asset('css/game-tracing.css') }}">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-    <style>
-        /* Font Kustom */
-        @font-face {
-            font-family: 'Tegak Bersambung_IWK';
-            src: url("{{ asset('fonts/TegakBersambung_IWK.ttf') }}") format('truetype');
-        }
-
-        .font-cursive-iwk {
-            font-family: 'Tegak Bersambung_IWK', cursive !important;
-        }
-
-        /* Font Mooli untuk Skor */
-        .font-mooli {
-            font-family: 'Mooli', sans-serif !important;
-        }
-    </style>
-
     <script>
         var ASSET_BASE = "{{ asset('') }}";
         var REDIRECT_URL = "{{ route('murid.games.index', $tingkatan->tingkatan_id) }}";
@@ -34,6 +17,7 @@
         // ID Game (Dari $jenisGame)
         var JENIS_GAME_ID = {{ $jenisGame->jenis_game_id }};
         var TINGKATAN_ID = {{ $tingkatan->tingkatan_id }};
+        var HASIL_GAME_ID = {{ $sessionGame->hasil_game_id }};
 
         // Data Huruf (Convert PHP Array ke JSON)
         // Asumsi: materiPembelajarans punya kolom 'huruf_arab' dan 'nama_latin'
@@ -44,39 +28,68 @@
 
 <body>
     {{-- Ucapan selamat bermain --}}
-    <div id="welcome-backdrop" class="fixed inset-0 z-[60] transition-all duration-1000 opacity-0 pointer-events-none"
+    <div id="welcome-backdrop" class="fixed inset-0 z-40 transition-all duration-1000 opacity-0"
         style="background: linear-gradient(135deg, rgba(255, 255, 255, 0.5) 0%, rgba(214, 93, 177, 0.3) 100%); backdrop-filter: blur(8px);">
     </div>
 
     <div id="welcome-message-container"
-        class="fixed inset-0 z-[70] flex items-center justify-center opacity-0 transition-all duration-1000 pointer-events-none">
+        class="fixed inset-0 z-50 flex items-center justify-center opacity-0 transition-all duration-1000 pointer-events-none">
         <h1 id="welcome-message"
-            class="font-cursive-iwk text-7xl md:text-8xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-400 via-pink-500 to-pink-600 transform scale-75 transition-all duration-1000 p-4 leading-normal"
+            class="font-['TegakBersambung'] text-7xl md:text-8xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-400 via-pink-500 to-pink-600 transform scale-75 transition-all duration-1000 p-4 leading-normal"
             style="text-shadow: 0 8px 24px rgba(236, 72, 153, 0.6), 0 0 40px rgba(236, 72, 153, 0.4);">
             Selamat Bermain
         </h1>
     </div>
 
-    <!-- Game Container -->
-    <div id="game-container" class="game-container">
 
-        <!-- Header with Exit Button -->
-        <div class="game-header">
+    <!-- Letter Menu Container (Initial View) -->
+    <div id="letter-menu-container" class="letter-menu-container">
+        <!-- Header Menu -->
+        <div class="menu-header">
             <a href="{{ route('murid.games.index', $tingkatan->tingkatan_id) }}" class="btn-kembali">
                 <div class="btn-kembali-icon">
-                    <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="3"
-                        viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"></path>
                     </svg>
                 </div>
-                <span class="font-mooli font-semibold text-white text-[18px] font-normal leading-none pl-4">
-                    Kembali
-                </span>
+                <span class="btn-kembali-text">Kembali</span>
             </a>
+
+            <div class="menu-title-wrapper">
+                <h1 class="menu-title">
+                    Pilih Huruf Hijaiyah
+                </h1>
+            </div>
+
+            <div class="w-[140px]"></div> <!-- Spacer for centering (matches btn-kembali width) -->
+        </div>
+
+        <!-- Grid Container -->
+        <div id="letter-grid"
+            class="w-full max-w-6xl px-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 md:gap-6">
+            <!-- Di sini akan mucnul kartu  -->
+        </div>
+    </div>
+
+    <!-- Game Container (Hidden by Default) -->
+    <div id="game-container" class="game-container" style="display: none;">
+
+        <!-- Header with Exit Button -->
+        <div class="game-header">
+            <!-- Tombol Kembali ke Menu -->
+            <button onclick="showMenu()" class="btn-kembali">
+                <div class="btn-kembali-icon">
+                    <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"></path>
+                    </svg>
+                </div>
+                <span class="btn-kembali-text">
+                    Menu
+                </span>
+            </button>
             <div class="letter-info-display">
                 <span id="current-letter-arabic" class="arabic-letter" style="color:white;">ا</span>
-                <span id="current-letter-name" class="letter-name-display phrase-putih"
-                    style="color: white;">Alif</span>
+                <span id="current-letter-name" class="letter-name-display" style="color: white;">Alif</span>
             </div>
         </div>
 
@@ -90,22 +103,16 @@
 
             <!-- Canvas Area (Left Side) -->
             <div class="canvas-section">
-                <div class="canvas-wrapper relative w-full bg-white rounded-3xl shadow-lg overflow-hidden" 
-                    style="aspect-ratio: 4/3;">
-                    
-                    {{-- HAPUS class 'object-contain', ganti jadi 'block' --}}
-                    <canvas id="guideCanvas" width="400" height="300" 
-                            class="absolute top-0 left-0 w-full h-full block"></canvas>
-                    
-                    <canvas id="tracingCanvas" width="400" height="300" 
-                            class="absolute top-0 left-0 w-full h-full block cursor-crosshair"></canvas>
+                <div class="canvas-wrapper">
+                    <!-- Guide Canvas - Shows the dotted path -->
+                    <canvas id="guideCanvas" width="400" height="300"></canvas>
+                    <!-- Tracing Canvas - Where user draws -->
+                    <canvas id="tracingCanvas" width="400" height="300"></canvas>
                 </div>
 
-                <div class="canvas-controls"> {{-- Hapus font-cursive-iwk dari sini --}}
-                    {{-- Tambahkan font-mooli font-semibold di tombol --}}
-                    <button id="clear-button" class="control-btn btn-clear font-mooli font-semibold">Hapus</button>
-                    <button id="replay-button" class="control-btn btn-replay font-mooli font-semibold">Ulang
-                        Animasi</button>
+                <div class="canvas-controls font-cursive-iwk">
+                    <button id="clear-button" class="control-btn btn-clear">Hapus</button>
+                    <button id="replay-button" class="control-btn btn-replay">Ulang Animasi</button>
                 </div>
             </div>
 
@@ -120,10 +127,10 @@
             <h2 id="final-score" class="text-2xl font-titan mt-4" style="display:none;">Skor Akhir: 0</h2>
             {{-- Tombol untuk menyimpan skor (muncul setelah game selesai) --}}
             {{-- PENTING: data-tingkatan-id harus diisi dari controller --}}
-            <!-- <button id="save-score-btn"
+            <!-- <button id="save-score-btn" 
                     class="btn bg-indigo-500 hover:bg-indigo-600 text-white mt-4"
                     data-tingkatan-id="{{ $tingkatan->tingkatan_id ?? 0 }}" {{-- Pastikan $tingkatan tersedia dari controller tracing() --}}
-                    style="display:none;"
+                    style="display:none;" 
                     onclick="saveTracingScore()">
                 Simpan Skor
             </button> -->
@@ -149,30 +156,22 @@
         <!-- Progress Footer -->
         <div class="game-footer">
             <div class="progress-container">
-                {{-- UBAH font-titan JADI font-cursive-iwk --}}
-                <div class="progress-label font-cursive-iwk text-[40px] hidden">Progress:</div>
-                <div class="font-cursive-iwk font-semibold text-[30px] text-iqrain-pink phrase-pink">Progress</div>
+                <div class="progress-label font-titan">Progress:</div>
                 <div class="progress-bar">
                     <div id="progress-fill" class="progress-fill"></div>
                 </div>
-                {{-- UBAH font-titan JADI font-cursive-iwk --}}
-                <div id="progress-text" class="progress-text font-mooli font-semibold text-xl">0%</div>
+                <div id="progress-text" class="progress-text font-titan">0%</div>
             </div>
 
             <div class="score-container">
-                {{-- Pastikan ini tetap font-cursive-iwk --}}
-                <div class="score-label font-cursive-iwk text-[40px] hidden">Akurasi:</div>
-                <div class="font-cursive-iwk font-semibold text-[30px]  text-iqrain-pink phrase-pink">Akurasi</div>
-                <div id="score-display" class="score-display font-mooli font-semibold text-xl">0%</div>
+                <div class="score-label font-cursive-iwk">Akurasi:</div>
+                <div id="score-display" class="score-display font-cursive-iwk">0%</div>
                 <div id="stars-display" class="stars-display">☆☆☆</div>
             </div>
 
             <div class="navigation-buttons">
-                {{-- UBAH Tombol Navigasi jadi font-mooli --}}
-                <button id="prev-button"
-                    class="nav-btn btn-prev font-mooli font-semibold"><span>←</span>Sebelumnya</button>
-                <button id="next-button" class="nav-btn btn-next font-mooli font-semibold">Berikutnya
-                    <span>→</span></button>
+                <button id="prev-button" class="nav-btn btn-prev"><span>←</span>Sebelumnya</button>
+                <button id="next-button" class="nav-btn btn-next">Berikutnya <span>→</span></button>
             </div>
         </div>
 
@@ -191,17 +190,10 @@
                 <img src="{{ asset('images/icon/piala.webp') }}" alt="Piala">
             </div>
 
-            <h2 class="modal-title font-cursive-iwk text-4xl text-pink-500 font-bold mb-2">
-                <span class="phrase-pink-kontras">Luar </span>
-                <span class="phrase-pink-kontras">Biasa!</span>
-            </h2>
+            <h2 class="modal-title font-cursive-iwk">Luar Biasa!</h2>
 
-            <p class="modal-subtitle font-cursive-iwk text-[gray-600] mb-6 text-2xl">
-                <span class="phrase-hitam">Kamu </span>
-                <span class="phrase-hitam">berhasil </span>
-                <span class="phrase-hitam">menyelesaikan </span>
-                <span class="phrase-hitam">huruf </span>
-                <span class="phrase-hitam">ini!</span>
+            <p class="modal-subtitle font-cursive-iwk">
+                Kamu berhasil menyelesaikan huruf ini!
             </p>
 
             {{-- WADAH BINTANG (Perbaikan Class) --}}
@@ -217,19 +209,18 @@
             <div class="modal-actions">
 
                 {{-- 1. Tombol Lanjut (Primary - Pink) --}}
-                <button id="btn-next-letter" onclick="loadNextLetter()"
-                    class="btn-action btn-pink font-mooli font-semibold">
+                <button id="btn-next-letter" onclick="loadNextLetter()" class="btn-action btn-pink font-cursive-iwk">
                     Huruf Berikutnya ➔
                 </button>
 
                 {{-- 2. Tombol Ulangi (Secondary - Putih Border Pink) --}}
-                <button onclick="restartCurrentLetter()" class="btn-action btn-outline-pink font-mooli font-semibold">
+                <button onclick="restartCurrentLetter()" class="btn-action btn-outline-pink font-cursive-iwk">
                     Ulangi Huruf Ini ↺
                 </button>
 
                 {{-- 3. Tombol Menu (Tertiary - Abu) --}}
                 <a href="{{ route('murid.games.index', $tingkatan->tingkatan_id) }}"
-                    class="btn-action btn-ghost font-mooli font-semibold">
+                    class="btn-action btn-ghost font-cursive-iwk">
                     Kembali ke Menu
                 </a>
             </div>
@@ -261,7 +252,7 @@
             // window.gameAccuracyPercentage = accuracyPercentage;
 
             // // 1. Update Tampilan Modal
-            // document.getElementById('final-accuracy').innerText = `Akurasi: ${accuracyPercentage}%`; 
+            // document.getElementById('final-accuracy').innerText = Akurasi: ${accuracyPercentage}%; 
             // document.getElementById('success-modal').style.display = 'flex'; 
 
             // // 2. Langsung Panggil Fungsi Penyimpanan Skor
