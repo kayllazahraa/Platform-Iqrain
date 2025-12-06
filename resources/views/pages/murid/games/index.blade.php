@@ -105,10 +105,8 @@
                     Panduan Bermain
                 </h3>
 
-                {{-- Layout Grid: Kiri Video, Kanan Teks --}}
                 <div class="flex flex-col lg:flex-row gap-8 mb-8">
 
-                    {{-- BAGIAN KIRI: VIDEO --}}
                     <div class="w-full lg:w-1/2 flex flex-col justify-center">
                         <div class="relative w-full pt-[56.25%] rounded-2xl overflow-hidden shadow-lg border-2 border-gray-100 bg-black">
                             <iframe id="gameVideoIframe" class="absolute top-0 left-0 w-full h-full" src=""
@@ -117,12 +115,8 @@
                                 allowfullscreen>
                             </iframe>
                         </div>
-                        <p class="text-center text-gray-500 mt-3 font-cursive-iwk text-lg">
-                            Tonton video untuk panduan lengkap
-                        </p>
                     </div>
 
-                    {{-- BAGIAN KANAN: LANGKAH-LANGKAH --}}
                     <div class="w-full lg:w-1/2 flex flex-col justify-center">
                         <div class="space-y-4">
                             {{-- Step 1 --}}

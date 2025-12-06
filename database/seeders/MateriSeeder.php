@@ -262,7 +262,5 @@ class MateriSeeder extends Seeder
                 $huruf
             );
         }
-
-        $this->command->info('✅ 30 Huruf Hijaiyah berhasil di-seed!');
     }
 }

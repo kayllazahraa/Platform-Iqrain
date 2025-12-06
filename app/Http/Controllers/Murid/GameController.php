@@ -295,7 +295,6 @@ class GameController extends Controller
     }
 
 
-    // ==== Untuk menyimpan nilai  ===
     public function saveScore(Request $request)
     {
         $request->validate([
@@ -319,9 +318,6 @@ class GameController extends Controller
             $poinMaksimal = $hasilGame->jenisGame->poin_maksimal ?? 100;
             $finalScore = min($request->skor, $poinMaksimal);
 
-            // 4. LAKUKAN UPDATE
-            // Saat di-update, Model Observer (booted/saved) akan otomatis jalan lagi
-            // untuk merevisi Leaderboard. Jadi Leaderboard aman.
             $hasilGame->update([
                 'skor' => $finalScore, // Gunakan skor yang sudah dicap
                 'total_poin' => $finalScore,
@@ -347,9 +343,7 @@ class GameController extends Controller
             ], 500);
         }
     }
-    // ==================================================================
-    // FUNGSI LEADERBOARD (TIDAK BERUBAH)
-    // ==================================================================
+
     private function updateLeaderboardAndRankings($murid_id)
     {
         //Hitung Total Skor Baru si Murid
