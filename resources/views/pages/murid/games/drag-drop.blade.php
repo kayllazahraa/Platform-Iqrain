@@ -111,12 +111,12 @@
         <a href="{{ route('murid.games.index', $tingkatan->tingkatan_id) }}"
             class="relative flex items-center justify-center w-[140px] h-[45px] rounded-full bg-pink-400 shadow-md transition-transform hover:scale-105">
             <div class="absolute left-4 flex items-center">
-                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="3"
+                    viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"></path>
                 </svg>
             </div>
-            <span class="font-['TegakBersambung'] text-white text-[25px] font-normal leading-none pt-2 pl-4">
+            <span class="font-mooli font-semibold text-white text-[18px] font-normal leading-none pl-4">
                 Kembali
             </span>
         </a>
@@ -124,7 +124,7 @@
 
     <div class="absolute top-6 right-6 z-20 flex items-center gap-4">
         <button onclick="initGame()"
-            class="font-cursive flex items-center gap-2 bg-yellow-400 hover:bg-yellow-500 text-white text-xl px-6 py-2 rounded-full shadow-md transition-all hover:scale-105 active:scale-95 border-2 border-yellow-200">
+            class="font-mooli font-semibold flex items-center gap-2 bg-yellow-400 hover:bg-yellow-500 text-white text-xl px-6 py-2 rounded-full shadow-md transition-all hover:scale-105 active:scale-95 border-2 border-yellow-200">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
                 stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -134,7 +134,7 @@
         </button>
 
         <div class="bg-white border-2 border-pink-200 rounded-full px-6 py-2 shadow-sm flex items-center gap-2">
-            <span class="font-cursive text-pink-400 text-xl">Skor:</span>
+            <span class="font-mooli font-semibold text-pink-400 text-xl">Skor:</span>
             <span id="scoreDisplay" class="font-mooli text-2xl font-bold text-pink-500">0</span>
         </div>
     </div>
@@ -149,7 +149,10 @@
                 <div
                     class="bg-white/90 backdrop-blur-sm rounded-[2rem] p-6 shadow-xl border-4 border-pink-100 min-h-[450px] relative overflow-hidden">
                     <div class="absolute top-0 left-0 w-full h-2 bg-pink-200"></div>
-                    <h3 class="text-center text-pink-400 font-bold mb-6 text-3xl font-cursive">Pilih Huruf</h3>
+                    <h3 class="text-center text-pink-400 font-bold mb-6 text-3xl font-cursive">
+                        <span class="phrase-pink">Pilih </span>
+                        <span class="phrase-pink"> Huruf </span>
+                    </h3>
                     <div id="draggableContainer" class="grid grid-cols-3 sm:grid-cols-4 gap-4 justify-items-center">
                     </div>
                 </div>
@@ -157,7 +160,10 @@
 
             <div class="order-1 md:order-2">
                 <div class="bg-white rounded-[2rem] p-6 shadow-xl border-4 border-pink-50 min-h-[450px]">
-                    <h3 class="text-center text-gray-400 font-bold mb-6 text-3xl font-cursive">Tempel Disini</h3>
+                    <h3 class="text-center text-gray-400 font-bold mb-6 text-3xl font-cursive">
+                        <span class="phrase-abu">Tempel </span>
+                        <span class="phrase-abu">Disini</span>
+                    </h3>
                     <div id="dropzoneContainer" class="grid grid-cols-2 gap-4"></div>
                 </div>
             </div>
@@ -182,12 +188,16 @@
                 <img src="{{ asset('images/icon/piala.webp') }}" alt="Piala" class="w-24 h-auto mx-auto">
             </div>
 
-            <h2 class="font-cursive text-4xl text-pink-500 font-bold mb-2">
-                Luar Biasa!
+            <h2 class="font-['TegakBersambung'] text-4xl text-pink-500 font-bold mb-2">
+                <span class="phrase-pink-kontras">Luar </span>
+                <span class="phrase-pink-kontras">Biasa!</span>
             </h2>
 
-            <p class="font-cursive text-gray-600 mb-6 text-lg">
-                Kamu berhasil menyelesaikan permainan!
+            <p class="font-['TegakBersambung'] text-[gray-600] mb-6 text-2xl">
+                <span class="phrase-hitam">Kamu </span>
+                <span class="phrase-hitam">berhasil </span>
+                <span class="phrase-hitam">menyelesaikan </span>
+                <span class="phrase-hitam">permainan! </span>
             </p>
 
             <div class="bg-pink-50 rounded-xl p-4 mb-6 border border-pink-100">
@@ -196,15 +206,14 @@
             </div>
 
             <div class="flex flex-col gap-3">
-                <button onclick="initGame()"
-                    class="w-full py-3 bg-gradient-to-r from-pink-400 to-pink-500 text-white rounded-xl font-bold text-xl shadow-lg hover:scale-105 transition-transform font-cursive">
+                <button onclick="restartGame()"
+                    class="w-full py-3 bg-gradient-to-r from-pink-400 to-pink-500 text-white rounded-xl font-bold text-xl shadow-lg hover:scale-105 transition-transform font-mooli font-semibold text-base">
                     Main Lagi ↻
                 </button>
 
                 <a href="{{ route('murid.games.index', $tingkatan->tingkatan_id) }}"
-                    class="w-full py-3 bg-white border-2 border-gray-200 text-gray-500 rounded-xl font-bold text-lg hover:bg-gray-50 transition-colors font-['TegakBersambung']">
-                    Kembali ke Menu
-                </a>
+                    class="w-full py-3 bg-white border-2 border-gray-200 text-gray-500 rounded-xl font-bold text-lg hover:bg-gray-50 transition-colors  font-mooli font-semibold text-base">
+                    Kembali ke Menu </a>
             </div>
         </div>
     </div>
@@ -270,8 +279,12 @@
                 // Events
                 div.addEventListener('dragstart', handleDragStart);
                 div.addEventListener('dragend', handleDragEnd);
-                div.addEventListener('touchstart', handleTouchStart, { passive: false });
-                div.addEventListener('touchmove', handleTouchMove, { passive: false });
+                div.addEventListener('touchstart', handleTouchStart, {
+                    passive: false
+                });
+                div.addEventListener('touchmove', handleTouchMove, {
+                    passive: false
+                });
                 div.addEventListener('touchend', handleTouchEnd);
 
                 draggableContainer.appendChild(div);
@@ -291,11 +304,13 @@
                 div.setAttribute('data-target', item.file);
 
                 const text = document.createElement('span');
-                text.className = "font-cursive text-2xl md:text-3xl font-bold text-gray-400 select-none ml-2";
+                text.className =
+                    "font-cursive text-2xl md:text-3xl font-bold text-gray-400 phrase-abu select-none ml-2";
                 text.textContent = item.latin;
 
                 const slot = document.createElement('div');
-                slot.className = "w-12 h-12 md:w-16 md:h-16 bg-gray-100 rounded-xl flex items-center justify-center border border-gray-200";
+                slot.className =
+                    "w-12 h-12 md:w-16 md:h-16 bg-gray-100 rounded-xl flex items-center justify-center border border-gray-200";
                 slot.innerHTML = '<span class="font-mooli text-2xl opacity-20">?</span>';
 
                 div.appendChild(text);
@@ -312,25 +327,74 @@
         // --- GAME LOGIC ---
         // (Logic Drag/Drop sama persis, saya persingkat di sini agar fokus ke fitur baru)
         let draggedElement = null;
-        function handleDragStart(e) { draggedElement = this; setTimeout(() => this.classList.add('opacity-50', 'scale-95', 'grayscale'), 0); e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', this.getAttribute('data-id')); }
-        function handleDragEnd(e) { this.classList.remove('opacity-50', 'scale-95', 'grayscale'); draggedElement = null; }
-        function handleDragOver(e) { e.preventDefault(); if (this.classList.contains('locked')) return; e.dataTransfer.dropEffect = 'move'; this.classList.add('bg-pink-50', 'border-pink-300', 'scale-[1.02]'); this.classList.remove('border-dashed'); }
-        function handleDragLeave(e) { if (this.classList.contains('locked')) return; this.classList.remove('bg-pink-50', 'border-pink-300', 'scale-[1.02]'); this.classList.add('border-dashed'); }
-        function handleDrop(e) { e.preventDefault(); if (this.classList.contains('locked')) return; this.classList.remove('bg-pink-50', 'border-pink-300', 'scale-[1.02]'); const draggedId = e.dataTransfer.getData('text/plain'); const targetId = this.getAttribute('data-target'); checkMatch(draggedId, targetId, this); }
-        function checkMatch(draggedId, targetId, dropzoneElement) { if (draggedId === targetId) { handleCorrectMatch(dropzoneElement, draggedId); } else { handleWrongMatch(dropzoneElement); } }
+
+        function handleDragStart(e) {
+            draggedElement = this;
+            setTimeout(() => this.classList.add('opacity-50', 'scale-95', 'grayscale'), 0);
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/plain', this.getAttribute('data-id'));
+        }
+
+        function handleDragEnd(e) {
+            this.classList.remove('opacity-50', 'scale-95', 'grayscale');
+            draggedElement = null;
+        }
+
+        function handleDragOver(e) {
+            e.preventDefault();
+            if (this.classList.contains('locked')) return;
+            e.dataTransfer.dropEffect = 'move';
+            this.classList.add('bg-pink-50', 'border-pink-300', 'scale-[1.02]');
+            this.classList.remove('border-dashed');
+        }
+
+        function handleDragLeave(e) {
+            if (this.classList.contains('locked')) return;
+            this.classList.remove('bg-pink-50', 'border-pink-300', 'scale-[1.02]');
+            this.classList.add('border-dashed');
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            if (this.classList.contains('locked')) return;
+            this.classList.remove('bg-pink-50', 'border-pink-300', 'scale-[1.02]');
+            const draggedId = e.dataTransfer.getData('text/plain');
+            const targetId = this.getAttribute('data-target');
+            checkMatch(draggedId, targetId, this);
+        }
+
+        function checkMatch(draggedId, targetId, dropzoneElement) {
+            if (draggedId === targetId) {
+                handleCorrectMatch(dropzoneElement, draggedId);
+            } else {
+                handleWrongMatch(dropzoneElement);
+            }
+        }
 
         function handleCorrectMatch(dropzone, id) {
             dropzone.classList.remove('bg-white', 'border-gray-300', 'border-dashed');
             dropzone.classList.add('bg-green-50', 'border-green-400', 'border-solid', 'locked', 'shadow-md');
 
             const slot = dropzone.querySelector('div');
-            if (slot) { slot.innerHTML = `<span class="text-3xl animate-bounce">✅</span>`; slot.className = "w-12 h-12 md:w-16 md:h-16 flex items-center justify-center"; }
+            if (slot) {
+                slot.innerHTML = `<span class="text-3xl animate-bounce">✅</span>`;
+                slot.className = "w-12 h-12 md:w-16 md:h-16 flex items-center justify-center";
+            }
 
             const text = dropzone.querySelector('span');
-            if (text) { text.classList.remove('text-gray-400'); text.classList.add('text-green-600'); }
+            if (text) {
+                text.classList.remove('text-gray-400');
+                text.classList.add('text-green-600');
+            }
 
             const draggable = document.querySelector(`.draggable-item[data-id="${id}"]`);
-            if (draggable) { draggable.style.transform = "scale(0) rotate(360deg)"; draggable.style.opacity = "0"; setTimeout(() => { draggable.style.display = 'none'; }, 300); }
+            if (draggable) {
+                draggable.style.transform = "scale(0) rotate(360deg)";
+                draggable.style.opacity = "0";
+                setTimeout(() => {
+                    draggable.style.display = 'none';
+                }, 300);
+            }
 
             currentScore += (MAX_SCORE / QUESTIONS_PER_SESSION);
             matchedCount++;
@@ -342,7 +406,16 @@
             }
         }
 
-        function handleWrongMatch(dropzone) { dropzone.classList.add('animate-shake', 'bg-red-50', 'border-red-300'); const originalBorder = dropzone.classList.contains('border-dashed'); dropzone.classList.remove('border-dashed'); playSound('wrong'); setTimeout(() => { dropzone.classList.remove('animate-shake', 'bg-red-50', 'border-red-300'); if (originalBorder) dropzone.classList.add('border-dashed'); }, 500); }
+        function handleWrongMatch(dropzone) {
+            dropzone.classList.add('animate-shake', 'bg-red-50', 'border-red-300');
+            const originalBorder = dropzone.classList.contains('border-dashed');
+            dropzone.classList.remove('border-dashed');
+            playSound('wrong');
+            setTimeout(() => {
+                dropzone.classList.remove('animate-shake', 'bg-red-50', 'border-red-300');
+                if (originalBorder) dropzone.classList.add('border-dashed');
+            }, 500);
+        }
 
         // --- 5. LOGIKA FINISH GAME & CONFETTI ---
         function finishGame() {
@@ -368,17 +441,36 @@
         function triggerWinConfetti() {
             var duration = 3 * 1000;
             var animationEnd = Date.now() + duration;
-            var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 9999 };
+            var defaults = {
+                startVelocity: 30,
+                spread: 360,
+                ticks: 60,
+                zIndex: 9999
+            };
 
-            var random = function (min, max) { return Math.random() * (max - min) + min; }
+            var random = function(min, max) {
+                return Math.random() * (max - min) + min;
+            }
 
-            var interval = setInterval(function () {
+            var interval = setInterval(function() {
                 var timeLeft = animationEnd - Date.now();
                 if (timeLeft <= 0) return clearInterval(interval);
 
                 var particleCount = 50 * (timeLeft / duration);
-                confetti(Object.assign({}, defaults, { particleCount, origin: { x: random(0.1, 0.3), y: Math.random() - 0.2 } }));
-                confetti(Object.assign({}, defaults, { particleCount, origin: { x: random(0.7, 0.9), y: Math.random() - 0.2 } }));
+                confetti(Object.assign({}, defaults, {
+                    particleCount,
+                    origin: {
+                        x: random(0.1, 0.3),
+                        y: Math.random() - 0.2
+                    }
+                }));
+                confetti(Object.assign({}, defaults, {
+                    particleCount,
+                    origin: {
+                        x: random(0.7, 0.9),
+                        y: Math.random() - 0.2
+                    }
+                }));
             }, 250);
         }
 
@@ -390,7 +482,9 @@
             modalBox.classList.add('scale-90');
         }
 
-        function updateScoreUI() { scoreDisplay.textContent = Math.round(currentScore); }
+        function updateScoreUI() {
+            scoreDisplay.textContent = Math.round(currentScore);
+        }
 
         async function saveScoreToServer(score) {
             const url = "{{ route('murid.game.saveScore') }}";
@@ -398,19 +492,78 @@
             try {
                 const response = await fetch(url, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
-                    body: JSON.stringify({ jenis_game_id: jenisGameId, skor: score })
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({
+                        jenis_game_id: jenisGameId,
+                        skor: score
+                    })
                 });
-            } catch (error) { console.error('Failed to save score:', error); }
+            } catch (error) {
+                console.error('Failed to save score:', error);
+            }
         }
 
         // Mobile Touch Logic (Singkat)
-        let touchEl = null; let touchStartX = 0; let touchStartY = 0;
-        function handleTouchStart(e) { e.preventDefault(); touchEl = this; const touch = e.touches[0]; touchStartX = touch.clientX; touchStartY = touch.clientY; this.style.zIndex = 1000; this.style.position = 'relative'; this.classList.add('scale-110', 'shadow-2xl'); }
-        function handleTouchMove(e) { e.preventDefault(); if (!touchEl) return; const touch = e.touches[0]; const deltaX = touch.clientX - touchStartX; const deltaY = touch.clientY - touchStartY; touchEl.style.transform = `translate(${deltaX}px, ${deltaY}px) scale(1.1)`; }
-        function handleTouchEnd(e) { if (!touchEl) return; touchEl.style.display = 'none'; const touch = e.changedTouches[0]; const elementBelow = document.elementFromPoint(touch.clientX, touch.clientY); touchEl.style.display = 'flex'; const dropzone = elementBelow ? elementBelow.closest('.dropzone-item') : null; const draggedId = touchEl.getAttribute('data-id'); if (dropzone && !dropzone.classList.contains('locked')) { const targetId = dropzone.getAttribute('data-target'); if (draggedId === targetId) { checkMatch(draggedId, targetId, dropzone); } else { returnToOrigin(touchEl); handleWrongMatch(dropzone); } } else { returnToOrigin(touchEl); } touchEl = null; }
-        function returnToOrigin(el) { el.style.transition = 'transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)'; el.style.transform = 'translate(0, 0)'; el.classList.remove('scale-110', 'shadow-2xl'); el.style.zIndex = ''; setTimeout(() => { el.style.transition = ''; }, 300); }
-        function playSound(type) { }
+        let touchEl = null;
+        let touchStartX = 0;
+        let touchStartY = 0;
+
+        function handleTouchStart(e) {
+            e.preventDefault();
+            touchEl = this;
+            const touch = e.touches[0];
+            touchStartX = touch.clientX;
+            touchStartY = touch.clientY;
+            this.style.zIndex = 1000;
+            this.style.position = 'relative';
+            this.classList.add('scale-110', 'shadow-2xl');
+        }
+
+        function handleTouchMove(e) {
+            e.preventDefault();
+            if (!touchEl) return;
+            const touch = e.touches[0];
+            const deltaX = touch.clientX - touchStartX;
+            const deltaY = touch.clientY - touchStartY;
+            touchEl.style.transform = `translate(${deltaX}px, ${deltaY}px) scale(1.1)`;
+        }
+
+        function handleTouchEnd(e) {
+            if (!touchEl) return;
+            touchEl.style.display = 'none';
+            const touch = e.changedTouches[0];
+            const elementBelow = document.elementFromPoint(touch.clientX, touch.clientY);
+            touchEl.style.display = 'flex';
+            const dropzone = elementBelow ? elementBelow.closest('.dropzone-item') : null;
+            const draggedId = touchEl.getAttribute('data-id');
+            if (dropzone && !dropzone.classList.contains('locked')) {
+                const targetId = dropzone.getAttribute('data-target');
+                if (draggedId === targetId) {
+                    checkMatch(draggedId, targetId, dropzone);
+                } else {
+                    returnToOrigin(touchEl);
+                    handleWrongMatch(dropzone);
+                }
+            } else {
+                returnToOrigin(touchEl);
+            }
+            touchEl = null;
+        }
+
+        function returnToOrigin(el) {
+            el.style.transition = 'transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+            el.style.transform = 'translate(0, 0)';
+            el.classList.remove('scale-110', 'shadow-2xl');
+            el.style.zIndex = '';
+            setTimeout(() => {
+                el.style.transition = '';
+            }, 300);
+        }
+
+        function playSound(type) {}
     </script>
 </body>
 
